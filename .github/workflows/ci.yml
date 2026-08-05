@@ -37,22 +37,51 @@ jobs:
         with:
           r-version: "4.5.3"
           use-public-rspm: true
+
       - name: Linux system libraries
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev libfontconfig1-dev libfreetype6-dev libpng-dev libtiff-dev libjpeg-dev libwebp-dev libharfbuzz-dev libfribidi-dev libfftw3-dev
-      - name: Install R dependencies
+          sudo apt-get install -y \
+            build-essential pkg-config pandoc \
+            libcurl4-openssl-dev libssl-dev libxml2-dev \
+            libfontconfig1-dev libfreetype6-dev libharfbuzz-dev libfribidi-dev \
+            libpng-dev libtiff-dev libjpeg-dev libwebp-dev \
+            libfftw3-dev libuv1-dev libicu-dev
+
+      - name: Install R dependencies on Linux
+        if: runner.os == 'Linux'
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          cache-version: 2
+          dependencies: '"hard"'
+          packages: |
+            deps::.
+            any::sessioninfo
+
+      - name: Install R dependencies on Windows
+        if: runner.os == 'Windows'
         shell: bash
         run: Rscript scripts/install_dependencies.R --lib=Rlib
+
+      - name: Verify R dependencies
+        shell: Rscript {0}
+        run: |
+          required <- c("EBImage", "data.table", "ggplot2", "ragg", "svglite")
+          missing <- required[!vapply(required, requireNamespace, logical(1), quietly = TRUE)]
+          if (length(missing)) stop("Missing R packages: ", paste(missing, collapse = ", "))
+          cat("PASS: required R packages are available\n")
+
       - name: Run synthetic smoke test on Linux
-        if: runner.os != 'Windows'
+        if: runner.os == 'Linux'
         shell: bash
         run: bash tests/run_synthetic_smoke_test.sh
+
       - name: Run synthetic smoke test on Windows
         if: runner.os == 'Windows'
         shell: pwsh
         run: powershell -ExecutionPolicy Bypass -File .\tests\run_synthetic_smoke_test.ps1
+
       - name: Upload synthetic QC and figures on failure
         if: failure()
         uses: actions/upload-artifact@v4
