@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.2.2 CI hotfix 3 — 2026-08-05
+
+- Expose the repository-local `Rlib` to subsequent Windows R sessions in GitHub Actions.
+- Invoke Linux launch scripts through `bash` so CI does not depend on a Windows-preserved executable bit.
+- Make release-manifest verification robust to Git LF/CRLF normalization while keeping binary files byte-exact.
+- No IHC quantification formulas, thresholds, segmentation rules, or result schemas were changed.
+
+
 ## 2.2.2 — 2026-08-05
 
 ### Fixed

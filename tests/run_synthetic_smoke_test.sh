@@ -6,13 +6,17 @@ OUT="${1:-$ROOT/tests/synthetic_output}"
 LOCAL_LIB="${2:-$ROOT/Rlib}"
 [[ -d "$LOCAL_LIB" ]] || LOCAL_LIB=""
 rm -rf "$OUT"
-"$ROOT/run_one_click.sh" \
+
+# Invoke through bash rather than relying on the executable bit, which may be
+# lost when a repository is prepared on Windows.
+bash "$ROOT/run_one_click.sh" \
   "$FIXTURE/manifest.csv" \
   "$OUT" \
   "$FIXTURE/roi_annotations.csv" \
   "$ROOT/references/templates/analysis_parameters_template.csv" \
   "$LOCAL_LIB" \
   "control,treatment"
+
 [[ -n "$LOCAL_LIB" ]] && export R_LIBS_USER="$LOCAL_LIB"
 Rscript "$ROOT/tests/verify_synthetic_output.R" "$OUT"
 Rscript "$ROOT/tests/verify_plot_contract.R"

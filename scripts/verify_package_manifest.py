@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Verify PACKAGE_MANIFEST.sha256 and detect missing or unlisted release files."""
+"""Verify PACKAGE_MANIFEST.sha256 across LF/CRLF checkouts.
+
+Git can normalize text line endings differently on Windows and Linux. For files
+without NUL bytes, verification therefore accepts the raw-byte digest as well as
+digests of LF-normalized and CRLF-normalized content. Binary files remain
+strictly byte-for-byte verified.
+"""
 from __future__ import annotations
 
 import hashlib
@@ -11,20 +17,36 @@ MANIFEST = ROOT / "PACKAGE_MANIFEST.sha256"
 EXCLUDED = {Path("PACKAGE_MANIFEST.sha256")}
 
 
-def digest(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            h.update(chunk)
-    return h.hexdigest()
+def sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def digest_candidates(path: Path) -> set[str]:
+    data = path.read_bytes()
+    candidates = {sha256_bytes(data)}
+
+    # Git only performs line-ending conversion on text files. Treat files with
+    # a NUL byte as binary and require an exact raw-byte digest for them.
+    if b"\x00" in data:
+        return candidates
+
+    # Normalize all conventional line endings to LF, then also construct CRLF.
+    lf = data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    crlf = lf.replace(b"\n", b"\r\n")
+    candidates.add(sha256_bytes(lf))
+    candidates.add(sha256_bytes(crlf))
+    return candidates
 
 
 def main() -> int:
     if not MANIFEST.is_file():
         print("ERROR\tmanifest\tPACKAGE_MANIFEST.sha256 is missing")
         return 1
+
     expected: dict[Path, str] = {}
-    for line_number, line in enumerate(MANIFEST.read_text(encoding="utf-8").splitlines(), start=1):
+    for line_number, line in enumerate(
+        MANIFEST.read_text(encoding="utf-8").splitlines(), start=1
+    ):
         if not line.strip():
             continue
         try:
@@ -32,19 +54,28 @@ def main() -> int:
         except ValueError:
             print(f"ERROR\tmanifest\tinvalid line {line_number}: {line}")
             return 1
-        expected[Path(rel)] = hash_value
+        if len(hash_value) != 64 or any(ch not in "0123456789abcdef" for ch in hash_value.lower()):
+            print(f"ERROR\tmanifest\tinvalid SHA256 on line {line_number}: {hash_value}")
+            return 1
+        expected[Path(rel)] = hash_value.lower()
+
     actual_files = {
         path.relative_to(ROOT)
         for path in ROOT.rglob("*")
-        if path.is_file() and path.relative_to(ROOT) not in EXCLUDED and ".git" not in path.parts
+        if path.is_file()
+        and path.relative_to(ROOT) not in EXCLUDED
+        and ".git" not in path.parts
     }
+
     missing = sorted(set(expected) - actual_files)
     unlisted = sorted(actual_files - set(expected))
-    mismatched = []
+    mismatched: list[Path] = []
+
     for rel, expected_hash in expected.items():
         path = ROOT / rel
-        if path.is_file() and digest(path) != expected_hash:
+        if path.is_file() and expected_hash not in digest_candidates(path):
             mismatched.append(rel)
+
     if missing or unlisted or mismatched:
         for rel in missing:
             print(f"ERROR\tmissing\t{rel}")
@@ -53,6 +84,7 @@ def main() -> int:
         for rel in mismatched:
             print(f"ERROR\thash_mismatch\t{rel}")
         return 1
+
     print(f"PASS\tmanifest\t{len(expected)} files verified")
     return 0
 
