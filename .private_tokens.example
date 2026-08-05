@@ -1,0 +1,3 @@
+# Copy this file to .private_tokens.txt before a local preflight.
+# Add one private sample identifier, project code, username, or local folder token per line.
+# .private_tokens.txt is ignored by Git and must never be committed.

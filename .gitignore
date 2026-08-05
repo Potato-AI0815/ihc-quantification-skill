@@ -1,0 +1,50 @@
+# R session and IDE
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+*.Rproj
+
+# Local libraries and dependency caches
+Rlib/
+renv/library/
+renv/staging/
+renv/python/
+
+# Generated analysis outputs
+results/
+ihc_results/
+tests/synthetic_output/
+work/
+
+# Raw microscopy and whole-slide data: never commit by default
+*.tif
+*.tiff
+*.svs
+*.ndpi
+*.mrxs
+*.scn
+*.czi
+*.lif
+
+# Local/private manifests and environment files
+.env
+.env.*
+*_private.csv
+*_private.tsv
+*_local.csv
+*_local.tsv
+ASSET_MANIFEST*.csv
+
+# OS/editor artifacts
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
+
+# Local public-release token blocklist
+.private_tokens.txt
+
+# Derived figures and QC evidence are private unless intentionally copied into docs/assets/synthetic/
+*_qc_overview.png
+ihc_main_*.png

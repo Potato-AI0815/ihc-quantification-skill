@@ -1,0 +1,5 @@
+image_id,biological_unit_id,condition,field_id,batch_id,marker,tissue_type,magnification,pixel_size_um,is_negative_control,source_file,analysis_status
+S01_CTRL_F1,S01,control,1,synthetic_batch,SyntheticMarker,synthetic_tissue,40x,0.5,FALSE,images/S01_CTRL_F1.png,include
+S01_TREAT_F1,S01,treatment,1,synthetic_batch,SyntheticMarker,synthetic_tissue,40x,0.5,FALSE,images/S01_TREAT_F1.png,include
+S02_CTRL_F1,S02,control,1,synthetic_batch,SyntheticMarker,synthetic_tissue,40x,0.5,FALSE,images/S02_CTRL_F1.png,include
+S02_TREAT_F1,S02,treatment,1,synthetic_batch,SyntheticMarker,synthetic_tissue,40x,0.5,FALSE,images/S02_TREAT_F1.png,include

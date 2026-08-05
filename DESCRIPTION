@@ -1,0 +1,10 @@
+Package: ihcQuantificationSkill
+Type: Project
+Title: Reproducible DAB IHC Quantification Workflow
+Version: 2.2.2
+Authors@R: person("IHC Quantification Skill", "Contributors", role = c("aut", "cre"), email = "noreply@example.invalid")
+Description: A script-based R and EBImage workflow for auditable DAB and hematoxylin brightfield immunohistochemistry quantification. It provides whole-tissue default analysis, reviewed ROI support, four measurement domains, H-DAB QC, and biological-unit-level figures.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 4.5.0)
+Imports: data.table, ggplot2, ragg, svglite, EBImage

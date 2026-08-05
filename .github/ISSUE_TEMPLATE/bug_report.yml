@@ -1,0 +1,35 @@
+name: Bug report
+description: Report a reproducible software problem using synthetic or de-identified data only.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Do not upload identifiable clinical images, specimen labels, or private paths."
+  - type: input
+    id: version
+    attributes:
+      label: Skill version
+      placeholder: "2.2.2"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: "Windows 11; R 4.5.3; EBImage 4.52.0"
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command and error
+      description: Redact paths and identifiers.
+    validations:
+      required: true
+  - type: textarea
+    id: reproducer
+    attributes:
+      label: Synthetic or de-identified reproducer
+    validations:
+      required: true

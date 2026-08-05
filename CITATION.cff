@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "Please cite this software and the EBImage package when reporting analyses produced with this workflow."
+title: "IHC Quantification Skill"
+type: software
+authors:
+  - name: "IHC Quantification Skill contributors"
+version: 2.2.2
+date-released: 2026-08-05
+license: MIT
+abstract: >-
+  A reproducible and auditable R/EBImage workflow for DAB/hematoxylin
+  brightfield IHC quantification with global-first analysis, reviewed ROI
+  support, H-DAB quality control, four explicit measurement domains, and
+  biological-unit-level comparison figures.
+keywords:
+  - immunohistochemistry
+  - DAB
+  - image analysis
+  - EBImage
+  - H-score
+  - reproducible research

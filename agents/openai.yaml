@@ -1,0 +1,4 @@
+interface:
+  display_name: "IHC Quantification v2.2.2"
+  short_description: "Global-first DAB IHC quantification with H-DAB QC and four domain plots"
+  default_prompt: "Use $ihc-quantification v2.2.2 to quantify chromogenic DAB/hematoxylin IHC images. Preserve raw images, validate inputs, keep GLOBAL whole-tissue analysis as the default ROI compartment, quantify global/nuclear/cytoplasmic/extracellular measurement domains, generate H-DAB and fixed-color QC overlays plus ROI evidence crops, aggregate by biological_unit_id, and create four separate bar-background paired-point figures with fixed 0-100% fraction axes and fixed 0-300 H-score axes. When each condition has n=1, show observed values without claiming an SE. Do not call extracellular tissue stroma without reviewed provenance, do not use H-score for extracellular tissue, and surface all low-n and QC limitations."

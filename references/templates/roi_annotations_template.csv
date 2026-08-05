@@ -1,0 +1,9 @@
+image_id,roi_id,compartment,action,selection_source,selection_method,reviewer,annotation_status,vertex_order,x,y
+S01_TREAT_F1,stroma_1,stroma,include,manual,rectangle,Reviewer01,selected,1,120,140
+S01_TREAT_F1,stroma_1,stroma,include,manual,rectangle,Reviewer01,selected,2,520,140
+S01_TREAT_F1,stroma_1,stroma,include,manual,rectangle,Reviewer01,selected,3,520,460
+S01_TREAT_F1,stroma_1,stroma,include,manual,rectangle,Reviewer01,selected,4,120,460
+S01_TREAT_F1,artifact_1,artifact,exclude,manual,polygon,Reviewer01,selected,1,850,600
+S01_TREAT_F1,artifact_1,artifact,exclude,manual,polygon,Reviewer01,selected,2,1020,600
+S01_TREAT_F1,artifact_1,artifact,exclude,manual,polygon,Reviewer01,selected,3,1020,760
+S01_TREAT_F1,artifact_1,artifact,exclude,manual,polygon,Reviewer01,selected,4,850,760
