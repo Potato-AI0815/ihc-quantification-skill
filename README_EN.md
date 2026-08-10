@@ -2,6 +2,21 @@
 
 A reproducible and auditable R/EBImage workflow for DAB/hematoxylin brightfield IHC research images.
 
+## Install as an AI Skill
+
+**Skill name:** `ihc-quantification`
+
+> Repository name ≠ Skill name. The Skill ID is `ihc-quantification`; the repository is `Potato-AI0815/ihc-quantification-skill`.
+
+**Install:**
+
+```bash
+npx skills add Potato-AI0815/ihc-quantification-skill \
+  --skill ihc-quantification
+```
+
+Public GitHub installation: verified.
+
 The workflow is global-first, supports reviewed ROIs, quantifies global tissue, nuclear, cytoplasmic, and extracellular domains, and produces H-DAB QC plus four biological-unit-level comparison figures. Publication-facing fraction axes are fixed at 0–100% and H-score axes at 0–300. Data-scaled zoomed plots are optional QC diagnostics only. When each condition has one biological unit, the caption reports observed values and does not claim an SE.
 
 Run the bundled synthetic smoke test before real data:

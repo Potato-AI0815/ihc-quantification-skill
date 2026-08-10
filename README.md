@@ -4,6 +4,21 @@
 
 [English summary](README_EN.md) · [完整分析合同](SKILL.md) · [发布检查表](GITHUB_RELEASE_CHECKLIST.md) · [GitHub 上传说明](UPLOAD_TO_GITHUB.md)
 
+## 作为 AI Skill 安装
+
+**Skill 名称：** `ihc-quantification`
+
+> 仓库名 ≠ Skill 名。Skill ID 是 `ihc-quantification`，仓库是 `Potato-AI0815/ihc-quantification-skill`。
+
+**安装：**
+
+```bash
+npx skills add Potato-AI0815/ihc-quantification-skill \
+  --skill ihc-quantification
+```
+
+Public GitHub installation: verified.
+
 ## 核心能力
 
 - 默认执行排除已记录伪影后的 `GLOBAL` 全组织定量；
