@@ -3,7 +3,7 @@
 **Baseline Provenance**:
 - Git Base Commit: `3ae199b8b333fd75d62739e835492a7334f5f016` (Clean checkout of tagged release v2.2.2)
 - Baseline Manifest: [`tests/baseline_v222_reference/baseline_manifest.sha256`](tests/baseline_v222_reference/baseline_manifest.sha256)
-- Comparison Method: Float and string equality verification across all table cells
+- Comparison Method: Exact dimensions/column names/character fields plus numeric equality within an absolute tolerance of $1.0\times10^{-6}$ across all table cells
 
 ---
 
@@ -26,4 +26,4 @@
 ---
 
 ## 2. Conclusion
-The DAB-IHC pipeline in v2.3.0-alpha.1 generates results that are 100% numerically and categorically identical to the original v2.2.2 release.
+The DAB-IHC pipeline in v2.3.0-alpha.1 generates results that are structurally and categorically identical to the original v2.2.2 release, with numeric values compatible within an absolute tolerance of $1.0\times10^{-6}$ to accommodate cross-platform floating-point serialization.

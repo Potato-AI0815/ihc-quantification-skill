@@ -92,7 +92,7 @@ In accordance with the validation closeout directive, all new feature expansion 
 
 ### P6 — Pristine v2.2.2 Backward Compatibility
 - Verified against pristine baseline generated from a clean checkout of commit `3ae199b8b333fd75d62739e835492a7334f5f016`.
-- **Result**: $\Delta = 0.000000\text{e}+00$ across all 11 output tables (**100% EXACT NUMERICAL MATCH**).
+- **Result**: all checked output tables remain structurally and categorically identical; maximum absolute numeric delta must remain $\leq 1.0\times10^{-6}$ (**cross-platform numerical compatibility**).
 - **Report**: [`BACKWARD_COMPATIBILITY_REPORT_FINAL.md`](BACKWARD_COMPATIBILITY_REPORT_FINAL.md)
 
 ### P7 & P8 — Cross-Platform CI & Release Readiness

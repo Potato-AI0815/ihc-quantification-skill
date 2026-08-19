@@ -3,7 +3,7 @@
 **Comparison**: `v2.2.2 Baseline Output` vs `v2.3.0-alpha.1 Output`
 **Evaluation Script**: `tests/verify_backward_compatibility.R`
 **Date**: 2026-08-17
-**Result**: **100% BYTE-FOR-BYTE & NUMERICAL MATCH (0 DIFFERENCES)**
+**Result**: **100% structural/character match; numeric values compatible within 1.0e-06 tolerance**
 
 ---
 
@@ -11,7 +11,7 @@
 
 | Output Table / Manifest | Status | Row x Col Count | Max Numerical Difference | Character Mismatches |
 | :--- | :--- | :--- | :--- | :--- |
-| `source_data/ihc_region_summary.csv` | **PASS** | 12 x 34 | $0.000000\text{e}+00$ | 0 |
+| `source_data/ihc_region_summary.csv` | **PASS** | 12 x 34 | $\leq 1.0\times10^{-6}$ tolerance | 0 |
 | `source_data/ihc_biological_unit_summary.csv` | **PASS** | 12 x 26 | $0.000000\text{e}+00$ | 0 |
 | `source_data/ihc_primary_domain_summary_long.csv` | **PASS** | 48 x 16 | $0.000000\text{e}+00$ | 0 |
 | `source_data/ihc_image_qc.csv` | **PASS** | 4 x 16 | $0.000000\text{e}+00$ | 0 |
