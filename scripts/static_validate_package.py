@@ -280,12 +280,22 @@ def main() -> int:
     version_sources = {
         "scripts/ihc_helpers.R": extract_simple_version(ROOT / "scripts/ihc_helpers.R", r'version\s*=\s*"([^"]+)"'),
         "SKILL.md": extract_simple_version(ROOT / "SKILL.md", r'^version:\s*([^\s]+)'),
-        "DESCRIPTION": extract_simple_version(ROOT / "DESCRIPTION", r'^Version:\s*([^\s]+)'),
         "CITATION.cff": extract_simple_version(ROOT / "CITATION.cff", r'^version:\s*([^\s]+)'),
     }
     for scope, found_version in version_sources.items():
         if found_version != package_version:
             findings.append(("ERROR", scope, f"version {found_version!r} does not match VERSION {package_version!r}"))
+
+    # DESCRIPTION is consumed by R's package tooling, whose Version field
+    # rejects prerelease hyphens (e.g. 2.3.0-alpha.1). Keep a valid numeric
+    # package version there while requiring an explicit public release label.
+    description_version = extract_simple_version(ROOT / "DESCRIPTION", r'^Version:\s*([^\s]+)')
+    description_release_version = extract_simple_version(ROOT / "DESCRIPTION", r'^X-Release-Version:\s*([^\s]+)')
+    r_compatible_version = re.sub(r"-(?:alpha|beta|rc)\.", ".", package_version)
+    if description_release_version != package_version:
+        findings.append(("ERROR", "DESCRIPTION", f"X-Release-Version {description_release_version!r} does not match VERSION {package_version!r}"))
+    if description_version not in {package_version, r_compatible_version}:
+        findings.append(("ERROR", "DESCRIPTION", f"R package Version {description_version!r} is not compatible with VERSION {package_version!r}"))
 
     renv_path = ROOT / "renv.lock"
     if renv_path.is_file():
