@@ -1,9 +1,10 @@
-# Public release audit — v2.2.2 CI candidate
+# Public release audit — v2.3.0-alpha.1 CI candidate
 
 ## Included
 
 - source code, templates, documentation, CI configuration, and synthetic fixtures;
 - four synthetic PNG inputs under `tests/synthetic_fixture/images/`;
+- IF fixture generators and manifests; IF TIFF inputs are generated at test time and are not committed;
 - synthetic manifest and reviewed synthetic ROI annotations.
 
 ## Excluded

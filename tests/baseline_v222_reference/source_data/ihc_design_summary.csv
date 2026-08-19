@@ -1,0 +1,3 @@
+marker,tissue_type,batch_id,condition,n_images,n_biological_units
+SyntheticMarker,synthetic_tissue,synthetic_batch,control,2,2
+SyntheticMarker,synthetic_tissue,synthetic_batch,treatment,2,2

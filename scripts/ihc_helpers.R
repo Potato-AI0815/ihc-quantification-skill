@@ -7,7 +7,7 @@ suppressPackageStartupMessages({
 # pixel_size_um is available; otherwise explicit pixel fallbacks are recorded.
 ihc_default_config <- function() {
   list(
-    version = "2.2.2",
+    version = "2.3.0-alpha.1",
     max_image_pixels = 80000000,
     white_quantile = 0.98,
     tissue_od_min = 0.10,

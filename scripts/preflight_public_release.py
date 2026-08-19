@@ -14,7 +14,13 @@ TEXT_SUFFIXES = {
 }
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp", ".tif", ".tiff", ".svs", ".ndpi", ".mrxs", ".scn", ".czi", ".lif"}
 RAW_IMAGE_SUFFIXES = {".tif", ".tiff", ".svs", ".ndpi", ".mrxs", ".scn", ".czi", ".lif"}
-PUBLIC_IMAGE_PREFIXES = {Path("tests/synthetic_fixture/images"), Path("docs/assets/synthetic")}
+PUBLIC_IMAGE_PREFIXES = {
+    Path("tests/synthetic_fixture/images"),
+    Path("tests/synthetic_if_fixture/images"),
+    Path("tests/synthetic_coloc_fixture/images"),
+    Path("tests/synthetic_puncta_fixture/images"),
+    Path("docs/assets/synthetic")
+}
 PRIVATE_FILENAME_PATTERNS = [
     re.compile(r"^ASSET_MANIFEST", re.IGNORECASE),
     re.compile(r"^IHC_TEST_REPORT", re.IGNORECASE),
@@ -62,7 +68,7 @@ def main() -> int:
         rel = relative(path)
         if rel in {Path("scripts/preflight_public_release.py"), Path("PACKAGE_MANIFEST.sha256"), Path(".private_tokens.txt")}:
             continue
-        if any(part in {".git", "renv", "Rlib", "synthetic_output", "__pycache__"} for part in rel.parts):
+        if any(part in {".git", "renv", "Rlib", "work", "synthetic_output", "synthetic_if_output", "synthetic_coloc_output", "synthetic_puncta_output", "__pycache__"} for part in rel.parts):
             continue
 
         for pattern in PRIVATE_FILENAME_PATTERNS:

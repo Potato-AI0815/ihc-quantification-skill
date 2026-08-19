@@ -1,38 +1,33 @@
-# IHC Quantification Skill v2.2.2
+# IHC & Immunofluorescence (IF) Quantification Skill v2.3.0-alpha.1
 
-A reproducible and auditable R/EBImage workflow for DAB/hematoxylin brightfield IHC research images.
+A reproducible, QC-first, auditable R/EBImage workflow for **brightfield DAB-IHC** and **multi-channel immunofluorescence (IF)** quantification.
 
-## Install as an AI Skill
+> [!IMPORTANT]
+> - **Brightfield DAB Workflow**: **Stable** (Full v2.2.2 backward compatibility maintained).
+> - **Immunofluorescence (IF) Workflow**: **v2.3.0-alpha.1** (Multi-channel TIFF, 4-compartment MFI, Colocalization, Puncta detection, 8-panel QC).
+> - **IF public-image runtime status**: **Repaired public smoke test PASS_WITH_WARNINGS**; FluorescentCells uses a reviewed artifact-exclusion ROI and remains a teaching image rather than a biological replication benchmark.
+> - **Current release gate**: Local dual-modality smoke tests pass; GitHub Ubuntu/Windows CI is pending for the v2.3.0-alpha.1 candidate.
+> - **Research Use Only (RUO)**: Designed strictly for scientific quantification and methodological auditing, not for clinical diagnosis or treatment decisions.
 
-**Skill name:** `ihc-quantification`
+---
 
-> Repository name ≠ Skill name. The Skill ID is `ihc-quantification`; the repository is `Potato-AI0815/ihc-quantification-skill`.
+## Key Features
 
-**Install:**
+1. **Automatic Modality Routing**: Seamlessly routes tasks based on the `modality` declared in `manifest.csv` (`brightfield_dab` vs `immunofluorescence`).
+2. **Brightfield DAB-IHC (Stable v2.2.2)**: Whole-tissue global burden, 4-compartment H-scores (0–300), H-DAB color deconvolution, and ROI evidence crops.
+3. **Multi-channel IF (v2.3.0-alpha.1)**: Multi-channel TIFF / OME-TIFF / Z-stacks, 8/12/16/32-bit linear intensity preservation, background correction (Rolling Ball / Top-hat), 4-compartment quantification (GLOBAL, NUCLEUS, CYTOPLASM, EXTRACELLULAR), single-cell N/C ratios, dual-channel colocalization (Pearson $r$, Manders $M_1/M_2$), and foci/puncta quantification (DoG).
+4. **Biological Unit Contract**: In all statistical inferences, $n$ equals the number of independent biological units (`biological_unit_id`), preventing pseudo-replication.
+5. **Standardized QC Overviews**: 8-panel diagnostic montages and automated quality flags (`HIGH_SATURATION`, `LOW_DYNAMIC_RANGE`, `HIGH_BACKGROUND`, `LOW_CELL_COUNT`).
+6. **Reviewed IF ROI support**: optional include/exclude polygons constrain analysis or remove burned-in artifacts without rewriting raw pixels; applied pixels and ROI IDs are recorded.
+
+---
+
+## Running the Smoke Test
 
 ```bash
-npx skills add Potato-AI0815/ihc-quantification-skill \
-  --skill ihc-quantification
-```
-
-Public GitHub installation: verified.
-
-The workflow is global-first, supports reviewed ROIs, quantifies global tissue, nuclear, cytoplasmic, and extracellular domains, and produces H-DAB QC plus four biological-unit-level comparison figures. Publication-facing fraction axes are fixed at 0–100% and H-score axes at 0–300. Data-scaled zoomed plots are optional QC diagnostics only. When each condition has one biological unit, the caption reports observed values and does not claim an SE.
-
-Run the bundled synthetic smoke test before real data:
-
-```bash
+# Linux / macOS
 bash tests/run_synthetic_smoke_test.sh
+
+# Windows
+powershell -ExecutionPolicy Bypass -File .\tests\run_synthetic_smoke_test.ps1
 ```
-
-Do not commit real microscopy images, specimen identifiers, local absolute paths, or unreviewed outputs to a public repository. See `SKILL.md`, `GITHUB_RELEASE_CHECKLIST.md`, and `RELEASE_STATUS.md` for the complete contract.
-
-Before pushing, copy `.private_tokens.example` to `.private_tokens.txt`, add one private identifier or local path token per line, and run:
-
-```bash
-python scripts/static_validate_package.py
-python scripts/preflight_public_release.py
-python scripts/verify_package_manifest.py
-```
-
-Only the bundled synthetic images are intended for public distribution. GitHub Actions runs the synthetic workflow on Ubuntu and Windows.

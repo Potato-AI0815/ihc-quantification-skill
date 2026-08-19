@@ -1,0 +1,11 @@
+label,hex_colour,semantics
+global,#2563EB,analyzed whole-tissue boundary
+nucleus,#DC2626,segmented nuclear domain
+cytoplasm,#16A34A,propagated cytoplasmic domain
+extracellular,#F97316,tissue outside propagated cells
+exclude,#6B7280,excluded artifact/annotation region
+tumor,#7C3AED,reviewed tumor ROI
+stroma,#0891B2,reviewed stroma ROI
+interface,#CA8A04,reviewed interface ROI
+custom,#DB2777,other reviewed custom ROI
+artifact,#6B7280,artifact ROI

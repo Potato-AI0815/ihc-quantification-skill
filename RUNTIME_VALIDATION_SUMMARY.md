@@ -15,8 +15,8 @@ Only aggregate software-validation facts are retained here. The original images,
 - low-n paired inference is blocked;
 - manual review remains required for stain separation, thresholds, segmentation, background, and exclusions.
 
-## v2.2.2 CI candidate
+## v2.3.0-alpha.1 CI candidate
 
-v2.2.2 adds portable path handling for relative paths, Unix paths, Windows drive paths, UNC paths, tilde expansion, and paths containing spaces. It also removes embedded private-token examples, strengthens public-release scanning, and fixes the wrapped-caption plot-contract test. Run the bundled synthetic smoke test and GitHub Actions on Windows and Linux before assigning a stable release tag.
+v2.3.0-alpha.1 adds the IF modality while retaining the v2.2.2 DAB baseline, portable path handling, private-release scanning, and the wrapped-caption plot-contract test. The local macOS R 4.6.0 dual-modality smoke test passes; GitHub Actions on Windows and Linux remains pending until this candidate is pushed. Do not assign a release-candidate or stable tag before that matrix passes.
 
 Runtime success validates software execution, not universal validity across markers, tissues, scanners, magnifications, or staining batches.

@@ -1,113 +1,102 @@
-# IHC Quantification Skill v2.2.2
+# IHC & Immunofluorescence (IF) Quantification Skill v2.3.0-alpha.1
 
-面向 DAB/苏木精明场 IHC 图像的通用、可追溯、可复现 R/EBImage 定量工作流。它用于科研图像定量和方法学审计，不用于诊断、疗效判定或自动病理分类。
+A reproducible, QC-first, auditable R/EBImage workflow for **brightfield DAB-IHC** and **multi-channel immunofluorescence (IF)** quantification.
 
-[English summary](README_EN.md) · [完整分析合同](SKILL.md) · [发布检查表](GITHUB_RELEASE_CHECKLIST.md) · [GitHub 上传说明](UPLOAD_TO_GITHUB.md)
+> [!IMPORTANT]
+> - **Brightfield DAB Workflow**: **Stable** (Full v2.2.2 backward compatibility maintained).
+> - **Immunofluorescence (IF) Workflow**: **v2.3.0-alpha.1** (Multi-channel TIFF, 4-compartment MFI, Colocalization, Puncta detection, 8-panel QC).
+> - **IF public-image runtime status**: **Repaired public smoke test PASS_WITH_WARNINGS**; FluorescentCells uses a reviewed artifact-exclusion ROI and remains a teaching image rather than a biological replication benchmark.
+> - **Current release gate**: Local dual-modality smoke tests pass; GitHub Ubuntu/Windows CI is pending for the v2.3.0-alpha.1 candidate.
+> - **Research Use Only (RUO)**: This tool is designed strictly for reproducible scientific image quantification and methodological auditing, not for clinical diagnosis, diagnostic screening, or treatment decision-making.
 
-## 作为 AI Skill 安装
+[English summary](README_EN.md) · [完整分析合同与规范 (SKILL.md)](SKILL.md) · [方法学与科学边界](docs/immunofluorescence_methodology.md) · [发布状态](RELEASE_STATUS.md)
 
-**Skill 名称：** `ihc-quantification`
+---
 
-> 仓库名 ≠ Skill 名。Skill ID 是 `ihc-quantification`，仓库是 `Potato-AI0815/ihc-quantification-skill`。
+## 核心特性与架构
 
-**安装：**
-
-```bash
-npx skills add Potato-AI0815/ihc-quantification-skill \
-  --skill ihc-quantification
+```
+                     ┌──────────────────────────────────────────────┐
+                     │          manifest.csv (Input Router)         │
+                     └──────────────────────┬───────────────────────┘
+                                            │
+                      ┌─────────────────────┴─────────────────────┐
+                      ▼                                           ▼
+         [modality: brightfield_dab]                 [modality: immunofluorescence]
+                      │                                           │
+                      ▼                                           ▼
+           run_ihc_quantification.R                    run_if_quantification.R
+       ┌───────────────────────────────┐           ┌────────────────────────────────┐
+       │ • H-DAB Color Deconvolution   │           │ • Multi-channel TIFF & Z-stack │
+       │ • DAB Optical Density (OD)    │           │ • Linear Fluorescence MFI/Int  │
+       │ • Nuclear/Cyto H-scores (0-300│           │ • 4-Compartment Quantification │
+       │ • Whole-tissue Burden %       │           │ • Colocalization (Pearson/M1/M2│
+       │ • 4 Main Biological Figures   │           │ • Puncta / Foci Detection (DoG)│
+       └───────────────────────────────┘           │ • 8-Panel IF QC Overviews      │
+                                                   │ • 6 Main Publication Figures   │
+                                                   └────────────────────────────────┘
 ```
 
-Public GitHub installation: verified.
+---
 
 ## 核心能力
 
+### 1. 明场 DAB-IHC 模态 (Stable v2.2.2)
 - 默认执行排除已记录伪影后的 `GLOBAL` 全组织定量；
 - 同时输出全局组织、细胞核、胞质和细胞外组织四个测量域；
-- 支持经审核的 tumor、stroma、interface 和 custom ROI，但不会从单染 IHC 自动推断这些组织学身份；
-- 自动生成 H-DAB 重建、八面板 QC、DAB OD 标尺、DAB 阳性阈值 mask、固定颜色域叠加和 ROI 小框证据图；
-- 自动输出四张独立主图：全局 DAB 阳性面积率、核 H-score、胞质 H-score和细胞外 DAB 阳性面积率；
-- 主图采用浅色条形背景、生物学单位原始点和重复单位连线；
-- 发布图默认固定量程：面积率 0–100%，H-score 0–300；可选 zoomed 图仅作为 QC 诊断；
-- 当每组 `n=1` 时，不绘制或声称 SE，并明确标注为描述性结果；
-- 统计单位固定为 `biological_unit_id`，不把细胞、视野、切片或 ROI 当作独立样本。
+- 自动生成 H-DAB 重建、八面板 QC、DAB OD 标尺、DAB 阳性阈值 mask、固定颜色域叠加和 ROI 证据切片；
+- 自动输出四张独立主图（0–100% 阳性率或 0–300 H-score）。
 
-## 环境
+### 2. 免疫荧光 IF 模态 (v2.3.0-alpha.1)
+- 支持单通道、多通道复合图与 Z-stack TIFF / OME-TIFF；
+- 原生支持 8-bit、12-bit、16-bit 和 32-bit 线性动态范围与饱和度 QC 预警；
+- 自动执行背景扣除（Rolling Ball / Top-hat）、通道配准与光照校正；
+- 四域荧光定量：`GLOBAL`、`NUCLEUS`、`CYTOPLASM`、`EXTRACELLULAR`（严禁将自动细胞外区域标记为 stroma）；
+- 单细胞 MFI、中位数强度、积分荧光强度（严格禁止称为 IOD）与核质比（N/C ratio）；
+- 可选双标共定位模块（Pearson 相关系数 $r$、Manders $M_1/M_2$）；
+- 可选亚细胞斑点/焦点计数模块（$\gamma\text{H2AX}$、LC3、RNA-FISH）；
+- 每张图自动生成标准化 8-Panel IF QC Overview。
+- 可选的人工 IF 多边形 ROI：include 限定分析区域，exclude 排除烧录文字/伪影；原始图像不改写，并输出 ROI 像素审计表。
 
-已获得的运行证据包括 Windows 11、R 4.5.3、EBImage 4.52.0 和 data.table 1.18.2.1。具体状态见 `RELEASE_STATUS.md` 和 `RUNTIME_COMPATIBILITY.md`。
+---
 
-安装依赖：
+## 统计治理：生物学独立重复原则
+- **生物学单位即统计单位**：所有主图与统计推断均以 `biological_unit_id`（患者、动物、独立样本）为单位（$n$），严禁将单细胞、视野或切片数目作为伪重复。
+- 配对设计展示原始点与配对连线；样本量不足（$n < 2$）时自动标记 `NOT_EVALUABLE_N_LT_2`，拒绝伪显著性。
 
-```powershell
-Rscript .\scripts\install_dependencies.R --lib=.\Rlib
-```
+---
 
-## 先运行合成测试
+## 快速运行
 
-Windows：
+### 运行合成集成测试 (DAB + IF + 共定位 + 焦点)
+```bash
+# Linux / macOS
+bash tests/run_synthetic_smoke_test.sh
 
-```powershell
+# Windows
 powershell -ExecutionPolicy Bypass -File .\tests\run_synthetic_smoke_test.ps1
 ```
 
-Linux/macOS：
-
+### 一键运行真实数据
 ```bash
-bash tests/run_synthetic_smoke_test.sh
+# 自动根据 manifest.csv 中的 modality 列路由
+bash run_one_click.sh \
+  "input/manifest.csv" \
+  "results/my_analysis_run" \
+  "input/roi_annotations.csv" \
+  "config/if_analysis_parameters_template.csv" \
+  "Rlib" \
+  "control,treatment"
 ```
 
-测试会验证四域数值、八面板 QC、H-DAB、DAB 阳性 mask、固定纵轴、低样本量图注、配对状态和输出文件完整性。
+---
 
-## 真实数据一键运行
-
-```powershell
-.\run_one_click.ps1 `
-  -Manifest ".\input\manifest.csv" `
-  -Outdir ".\results\ihc_run" `
-  -Roi ".\input\roi_annotations.csv" `
-  -Config ".\references\templates\analysis_parameters_template.csv" `
-  -ConditionOrder "control,treatment"
-```
-
-没有 ROI 文件时仍会完成 GLOBAL 分析。原图不会被覆盖。
-
-## 默认主图规则
-
-| 测量域 | 默认指标 | 发布纵轴 |
-|---|---|---:|
-| Global | tissue DAB-positive area fraction | 0–100% |
-| Nucleus | nuclear H-score | 0–300 |
-| Cytoplasm | cytoplasmic H-score | 0–300 |
-| Extracellular | extracellular DAB-positive area fraction | 0–100% |
-
-将配置中的 `generate_zoomed_plots` 改为 `true` 可额外输出数据缩放图，但文件名会带 `_zoomed`，且仅应用于阈值和分割复核。
-
-## 数据隐私
-
-公开仓库只应包含 `tests/synthetic_fixture/` 中的合成图像。不要提交真实 TIFF、WSI、样本编号、本地绝对路径、资产登记表或未经授权的 QC/结果图。发布前运行：
-
-```bash
-python scripts/preflight_public_release.py
-```
-
-## GitHub CI 前本地预检
-
-```bash
-cp .private_tokens.example .private_tokens.txt
-# 在 .private_tokens.txt 中逐行加入本地样本编号、用户名、项目代号或私有目录名
-python scripts/static_validate_package.py
-python scripts/preflight_public_release.py
-python scripts/verify_package_manifest.py
-```
-
-`.private_tokens.txt` 已被 `.gitignore` 排除。仓库中允许公开的图像仅限 `tests/synthetic_fixture/images/`（以及未来明确建立的 `docs/assets/synthetic/`）。
-
-## 许可与引用
-
-代码采用 MIT License。引用信息见 `CITATION.cff`。发表时还应按照 R 中 `citation("EBImage")` 的结果引用 EBImage。
-
-## 关键边界
-
-- 缺少 `pixel_size_um` 时会使用显式像素回退并产生 QC 警告；原图中可见的比例尺不等于程序获得了物理校准。
-- 单染图像不能可靠决定 tumor/stroma/interface 或特定细胞身份。
-- H-score 适用于经验证的细胞域，不适用于细胞外组织。
-- marker-specific 阈值、染色向量、分割参数和批次稳定性仍需人工验证。
+## 详细文档指南
+- [IF 方法学与科学边界](docs/immunofluorescence_methodology.md)
+- [IF 图像输入与格式支持](docs/if_input_guide.md)
+- [IF 通道映射与 Manifest 规范](docs/if_channel_mapping.md)
+- [IF 分割与四域定义指南](docs/if_segmentation_guide.md)
+- [IF 共定位分析指南](docs/if_colocalization_guide.md)
+- [IF 斑点/焦点检测指南](docs/if_puncta_guide.md)
+- [IF 质控与自动化 Flag 体系](docs/if_qc_guide.md)
+- [公开 Benchmark 评测数据说明](docs/if_validation_datasets.md)

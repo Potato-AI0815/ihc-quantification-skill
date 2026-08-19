@@ -1,0 +1,3 @@
+image_id,HUMAN_APPROVED,reviewer,review_date,channel_mapping_approved,segmentation_approved,threshold_approved,comments
+IMG_001,PENDING,,2026-08-17,PENDING,PENDING,PENDING,
+IMG_002,PENDING,,2026-08-17,PENDING,PENDING,PENDING,

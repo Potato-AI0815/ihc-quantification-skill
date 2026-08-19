@@ -1,0 +1,5 @@
+image_id,width_px,height_px,image_pixels,tissue_fraction,n_segmented_cells,n_overlapping_include_roi_pairs,median_extracellular_background_od,focus_score,scale_mode,pixel_size_um,qc_flags,manual_review_required,biological_unit_id,condition,batch_id,marker,tissue_type
+S01_CTRL_F1,512,384,196608,0.819417317708333,105,0,0.13055576599324,0.0065799720213581,physical_um,0.5,HIGH_EXTRACELLULAR_DAB_BACKGROUND,TRUE,S01,control,synthetic_batch,SyntheticMarker,synthetic_tissue
+S01_TREAT_F1,512,384,196608,0.819417317708333,106,0,0.123251540169186,0.00598494083183831,physical_um,0.5,HIGH_EXTRACELLULAR_DAB_BACKGROUND,TRUE,S01,treatment,synthetic_batch,SyntheticMarker,synthetic_tissue
+S02_CTRL_F1,512,384,196608,0.819483439127604,107,0,0.123251540169186,0.00684435669136464,physical_um,0.5,HIGH_EXTRACELLULAR_DAB_BACKGROUND,TRUE,S02,control,synthetic_batch,SyntheticMarker,synthetic_tissue
+S02_TREAT_F1,512,384,196608,0.819417317708333,110,0,0.13055576599324,0.00610885184886095,physical_um,0.5,HIGH_EXTRACELLULAR_DAB_BACKGROUND,TRUE,S02,treatment,synthetic_batch,SyntheticMarker,synthetic_tissue

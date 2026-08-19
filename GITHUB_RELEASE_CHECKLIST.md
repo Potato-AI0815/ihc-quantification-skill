@@ -2,13 +2,13 @@
 
 ## Code and tests
 
-- [ ] Repository root contains the contents of `ihc-quantification-v2.2.2/`, not an extra nested archive folder.
+- [ ] Repository root contains the contents of `ihc-quantification-skill-repo/`, not an extra nested archive folder.
 
 - [ ] `python scripts/static_validate_package.py` passes.
 - [ ] `python scripts/preflight_public_release.py` passes.
 - [ ] Synthetic smoke test passes on the intended R/EBImage environment.
 - [ ] `tests/verify_plot_contract.R` passes.
-- [ ] GitHub Actions passes on Windows and Linux.
+- [ ] GitHub Actions passes on Windows and Linux for the v2.3.0-alpha.1 candidate.
 
 ## Figures
 
@@ -29,5 +29,5 @@
 ## Release metadata
 
 - [ ] `VERSION`, `SKILL.md`, `DESCRIPTION`, `CITATION.cff`, and `CHANGELOG.md` agree.
-- [ ] `RELEASE_STATUS.md` reflects the exact runtime evidence for this build.
+- [ ] `RELEASE_STATUS.md` reflects the exact runtime evidence for this build, including whether GitHub CI has run.
 - [ ] The release archive SHA256 is published.

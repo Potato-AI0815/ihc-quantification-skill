@@ -1,0 +1,5 @@
+image_id,roi_id,vertex_order,x,y,compartment,action,selection_source,selection_method,reviewer,annotation_status
+IMG_001,ROI_1,1,50,50,global,include,manual_pathologist,polygon,DrSmith,approved
+IMG_001,ROI_1,2,150,50,global,include,manual_pathologist,polygon,DrSmith,approved
+IMG_001,ROI_1,3,150,150,global,include,manual_pathologist,polygon,DrSmith,approved
+IMG_001,ROI_1,4,50,150,global,include,manual_pathologist,polygon,DrSmith,approved

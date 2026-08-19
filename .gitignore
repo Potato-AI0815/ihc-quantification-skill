@@ -15,6 +15,9 @@ renv/python/
 results/
 ihc_results/
 tests/synthetic_output/
+tests/synthetic_if_output/
+tests/synthetic_coloc_output/
+tests/synthetic_puncta_output/
 work/
 
 # Raw microscopy and whole-slide data: never commit by default

@@ -1,0 +1,17 @@
+parameter,value
+z_mode,max_projection
+bg_method,top_hat
+bg_radius,25
+segmentation_engine,ebimage
+nuc_threshold_method,otsu
+nuc_threshold_value,
+nuc_min_area,20
+nuc_max_area,5000
+cell_propagation_radius,15
+pos_threshold_method,otsu
+pos_threshold_value,
+colocalization_enabled,FALSE
+puncta_enabled,FALSE
+puncta_sigma1,1.0
+puncta_sigma2,2.5
+puncta_threshold_sd,3.0

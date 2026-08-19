@@ -1,0 +1,7 @@
+image_id,biological_unit_id,condition,modality,marker,channel_name,channel_index,channel_role,pixel_size_um,z_spacing_um,timepoint,batch,replicate,file_path
+SAMPLE_01,Patient_01,control,immunofluorescence,DAPI,DAPI,1,nucleus,0.325,,T0,BATCH_1,1,images/sample_01.tif
+SAMPLE_01,Patient_01,control,immunofluorescence,SPATS2,Alexa488_SPATS2,2,target,0.325,,T0,BATCH_1,1,images/sample_01.tif
+SAMPLE_01,Patient_01,control,immunofluorescence,Tubulin,Alexa568_Tubulin,3,structural_reference,0.325,,T0,BATCH_1,1,images/sample_01.tif
+SAMPLE_02,Patient_01,treatment,immunofluorescence,DAPI,DAPI,1,nucleus,0.325,,T0,BATCH_1,1,images/sample_02.tif
+SAMPLE_02,Patient_01,treatment,immunofluorescence,SPATS2,Alexa488_SPATS2,2,target,0.325,,T0,BATCH_1,1,images/sample_02.tif
+SAMPLE_02,Patient_01,treatment,immunofluorescence,Tubulin,Alexa568_Tubulin,3,structural_reference,0.325,,T0,BATCH_1,1,images/sample_02.tif

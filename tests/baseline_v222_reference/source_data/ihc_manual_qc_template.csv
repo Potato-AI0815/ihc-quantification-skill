@@ -1,0 +1,5 @@
+image_id,biological_unit_id,condition,batch_id,marker,tissue_type,automatic_qc_flags,review_status,reviewer,segmentation_review,threshold_review,compartment_overlay_review,background_review,final_decision,comments
+S01_CTRL_F1,S01,control,synthetic_batch,SyntheticMarker,synthetic_tissue,HIGH_EXTRACELLULAR_DAB_BACKGROUND,pending,"",pending,pending,pending,pending,pending,""
+S01_TREAT_F1,S01,treatment,synthetic_batch,SyntheticMarker,synthetic_tissue,HIGH_EXTRACELLULAR_DAB_BACKGROUND,pending,"",pending,pending,pending,pending,pending,""
+S02_CTRL_F1,S02,control,synthetic_batch,SyntheticMarker,synthetic_tissue,HIGH_EXTRACELLULAR_DAB_BACKGROUND,pending,"",pending,pending,pending,pending,pending,""
+S02_TREAT_F1,S02,treatment,synthetic_batch,SyntheticMarker,synthetic_tissue,HIGH_EXTRACELLULAR_DAB_BACKGROUND,pending,"",pending,pending,pending,pending,pending,""

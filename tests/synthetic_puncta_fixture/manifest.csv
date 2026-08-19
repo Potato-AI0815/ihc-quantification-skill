@@ -1,0 +1,7 @@
+image_id,biological_unit_id,condition,modality,marker,channel_name,channel_index,channel_role,pixel_size_um,z_spacing_um,timepoint,batch,replicate,file_path
+PUNCTA_5,U1,dose_low,immunofluorescence,DAPI,DAPI,1,nucleus,0.5,,T0,BATCH_PUNCTA,1,images/puncta_5.tif
+PUNCTA_5,U1,dose_low,immunofluorescence,Tubulin,Alexa568_cyto,2,structural_reference,0.5,,T0,BATCH_PUNCTA,1,images/puncta_5.tif
+PUNCTA_5,U1,dose_low,immunofluorescence,GammaH2AX,Alexa488_foci,3,target,0.5,,T0,BATCH_PUNCTA,1,images/puncta_5.tif
+PUNCTA_15,U2,dose_high,immunofluorescence,DAPI,DAPI,1,nucleus,0.5,,T0,BATCH_PUNCTA,1,images/puncta_15.tif
+PUNCTA_15,U2,dose_high,immunofluorescence,Tubulin,Alexa568_cyto,2,structural_reference,0.5,,T0,BATCH_PUNCTA,1,images/puncta_15.tif
+PUNCTA_15,U2,dose_high,immunofluorescence,GammaH2AX,Alexa488_foci,3,target,0.5,,T0,BATCH_PUNCTA,1,images/puncta_15.tif

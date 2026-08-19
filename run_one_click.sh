@@ -26,4 +26,4 @@ VALIDATE_ARGS=("--manifest=$MANIFEST" "--out=$OUTDIR/work/input_validation.tsv")
 [[ -n "$LOCAL_LIB" ]] && VALIDATE_ARGS+=("--local-lib=$LOCAL_LIB")
 mkdir -p "$OUTDIR/work"
 Rscript "$ROOT/scripts/validate_ihc_inputs.R" "${VALIDATE_ARGS[@]}"
-Rscript "$ROOT/scripts/run_ihc_quantification.R" "${R_ARGS[@]}"
+Rscript "$ROOT/scripts/run_quantification.R" "${R_ARGS[@]}"

@@ -14,13 +14,13 @@ dir.create(lib, recursive = TRUE, showWarnings = FALSE)
 lib <- normalizePath(lib, mustWork = TRUE)
 .libPaths(c(lib, .libPaths()))
 
-cran <- c("data.table", "ggplot2", "ragg", "svglite")
+cran <- c("data.table", "ggplot2", "ragg", "svglite", "tiff")
 missing_cran <- cran[!vapply(cran, requireNamespace, logical(1), quietly = TRUE)]
 if (length(missing_cran)) install.packages(missing_cran, lib = lib)
 if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager", lib = lib)
 if (!requireNamespace("EBImage", quietly = TRUE)) BiocManager::install("EBImage", lib = lib, ask = FALSE, update = FALSE)
 cat("IHC skill dependencies available in ", lib, "\n", sep = "")
 cat("R version: ", R.version.string, "\n", sep = "")
-for (pkg in c("EBImage", "data.table", "ggplot2", "ragg", "svglite")) {
+for (pkg in c("EBImage", "data.table", "ggplot2", "ragg", "svglite", "tiff")) {
   cat(pkg, ": ", as.character(utils::packageVersion(pkg)), "\n", sep = "")
 }

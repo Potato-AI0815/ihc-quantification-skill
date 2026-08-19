@@ -1,5 +1,51 @@
 # Changelog
 
+## Unreleased release-readiness repair — 2026-08-19
+
+- Ignored generated IF synthetic-output directories so release staging cannot
+  accidentally include rendered results.
+- Unified the documented colocalization and puncta metrics with the current
+  deterministic regression fixtures.
+- Marked Ubuntu/Windows GitHub CI as pending until the v2.3.0-alpha.1
+  candidate is pushed and the matrix actually runs.
+- Updated smoke-test and upload instructions to describe the dual-modality
+  v2.3.0-alpha.1 package.
+
+## Unreleased repair — 2026-08-18
+
+- Fixed ImageJ C/Z page mapping and non-square uncompressed TIFF row
+  orientation.
+- Added reviewed IF include/exclude polygon masks; public FluorescentCells
+  annotation pixels are excluded from segmentation without rewriting the raw
+  TIFF.
+- Added ROI audit output and neutral-gray exclusion rendering in the IF QC
+  overview.
+- Fixed optional structural/cytoplasm reference handling and empty-channel
+  non-evaluable behavior.
+- Re-ran the public FluorescentCells and confocal-series smoke tests and the
+  complete dual-modality synthetic regression suite.
+
+## 2.3.0-alpha.1 — 2026-08-17
+
+### Added (Immunofluorescence Quantification Modality)
+- **Modality Router**: Unified entry point (`run_quantification.R` / `run_one_click.sh`) that automatically dispatches to `run_ihc_quantification.R` or `run_if_quantification.R` based on manifest `modality`.
+- **Multi-channel & Z-Stack IF Reader**: Full support for single-plane, multi-channel composite, and Z-stack TIFF/OME-TIFF formats (`X x Y`, `X x Y x C`, `X x Y x Z`, `X x Y x C x Z`). Supports max, mean, and sum projections.
+- **Dynamic Range Preservation**: Preserves native 8/12/16/32-bit linear intensities with automated saturation fraction and dynamic range quality control flags (`HIGH_SATURATION`, `LOW_DYNAMIC_RANGE`).
+- **Four-Compartment IF Quantification**: Outputs linear Mean Fluorescence Intensity (MFI), median intensity, integrated fluorescence intensity, and positive area fractions across `GLOBAL`, `NUCLEUS`, `CYTOPLASM`, and `EXTRACELLULAR` domains.
+- **Single-Cell Scoring**: Measures cell-level nuclear MFI, cytoplasmic MFI, whole-cell MFI, and nuclear-to-cytoplasmic (N/C) ratios.
+- **Dual-Channel Colocalization**: Optional module computing Pearson's correlation coefficient ($r$) and Manders' overlap coefficients ($M_1, M_2$) with spatial association disclaimer.
+- **Puncta / Foci Quantification**: Optional Difference of Gaussians (DoG) filter module for counting subcellular foci ($\gamma\text{H2AX}$, LC3, FISH) per cell and per compartment.
+- **Standard 8-Panel IF QC Overview**: Generates composite, raw channel, background-corrected, nuclear mask, cell propagation, positivity mask, and 4-compartment overlays.
+- **Dual-Modality Synthetic Test Fixtures**: Direction-validated synthetic IF fixtures, colocalization fixtures, and puncta detection fixtures.
+
+### Maintained (100% Backward Compatibility)
+- **DAB-IHC v2.2.2 Workflow**: Preserved completely untouched with exact numerical match ($0.000000\text{e}+00$ difference against baseline v2.2.2 results).
+- **Strict Modality Isolation**: Zero cross-pollution of DAB OD/H-score terminology into IF tables.
+
+### Documentation Suite
+- Added `docs/immunofluorescence_methodology.md`, `docs/if_input_guide.md`, `docs/if_channel_mapping.md`, `docs/if_segmentation_guide.md`, `docs/if_colocalization_guide.md`, `docs/if_puncta_guide.md`, `docs/if_qc_guide.md`, and `docs/if_validation_datasets.md`.
+- Added configuration and manifest templates in `references/templates/`.
+
 ## v2.2.2 CI hotfix 3 — 2026-08-05
 
 - Expose the repository-local `Rlib` to subsequent Windows R sessions in GitHub Actions.
