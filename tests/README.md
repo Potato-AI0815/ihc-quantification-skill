@@ -1,6 +1,6 @@
-# Synthetic smoke test — v2.2.2
+# Dual-modality synthetic smoke test — v2.3.0-alpha.1
 
-The fixture contains four deterministic DAB/hematoxylin-like RGB images: two biological units, paired control/treatment conditions, reviewed tumor and stroma rectangles, and bottom-right exclusion regions.
+The fixture contains four deterministic DAB/hematoxylin-like RGB images and four deterministic IF images. It validates the maintained DAB v2.2.2 workflow together with the v2.3.0-alpha.1 IF modality.
 
 Linux/macOS:
 

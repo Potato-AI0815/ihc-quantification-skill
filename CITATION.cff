@@ -1,11 +1,11 @@
 cff-version: 1.2.0
 message: "Please cite this software and the EBImage package when reporting analyses produced with this workflow."
-title: "IHC Quantification Skill"
+title: "IHC and Immunofluorescence Quantification Skill"
 type: software
 authors:
-  - name: "IHC Quantification Skill contributors"
-version: 2.2.2
-date-released: 2026-08-05
+  - name: "IHC and IF Quantification Skill contributors"
+version: 2.3.0-alpha.1
+date-released: 2026-08-20
 license: MIT
 abstract: >-
   A reproducible and auditable R/EBImage workflow for DAB/hematoxylin

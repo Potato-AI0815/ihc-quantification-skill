@@ -1,0 +1,5 @@
+measurement_domain,default_metric,metric_type,valid_range,default_figure,interpretation
+global,tissue_positive_area_fraction,pixel_based,0_to_1,01_global_dab_burden,DAB-positive fraction of analyzed tissue pixels
+nucleus,nuclear_h_score,cell_based,0_to_300,02_nuclear_h_score,Nuclear cell intensity-class H-score
+cytoplasm,cytoplasm_h_score,cell_based,0_to_300,03_cytoplasmic_h_score,Cytoplasmic cell intensity-class H-score
+extracellular,extracellular_positive_area_fraction,pixel_based,0_to_1,04_extracellular_dab_burden,DAB-positive fraction of tissue pixels outside propagated cells

@@ -23,7 +23,7 @@ if ($LocalLib) { $validateArgs += "--local-lib=$LocalLib" }
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $runArgs = @(
-  (Join-Path $Root "scripts/run_ihc_quantification.R"),
+  (Join-Path $Root "scripts/run_quantification.R"),
   "--manifest=$Manifest",
   "--outdir=$Outdir"
 )

@@ -1,0 +1,7 @@
+image_id,biological_unit_id,condition,modality,marker,channel_name,channel_index,channel_role,pixel_size_um,z_spacing_um,timepoint,batch,replicate,file_path
+COLOC_HIGH,U1,high,immunofluorescence,DAPI,DAPI,1,nucleus,0.5,,T0,BATCH_COLOC,1,images/coloc_high.tif
+COLOC_HIGH,U1,high,immunofluorescence,MarkerA,TargetA,2,target,0.5,,T0,BATCH_COLOC,1,images/coloc_high.tif
+COLOC_HIGH,U1,high,immunofluorescence,MarkerB,TargetB,3,target,0.5,,T0,BATCH_COLOC,1,images/coloc_high.tif
+COLOC_LOW,U2,low,immunofluorescence,DAPI,DAPI,1,nucleus,0.5,,T0,BATCH_COLOC,1,images/coloc_low.tif
+COLOC_LOW,U2,low,immunofluorescence,MarkerA,TargetA,2,target,0.5,,T0,BATCH_COLOC,1,images/coloc_low.tif
+COLOC_LOW,U2,low,immunofluorescence,MarkerB,TargetB,3,target,0.5,,T0,BATCH_COLOC,1,images/coloc_low.tif

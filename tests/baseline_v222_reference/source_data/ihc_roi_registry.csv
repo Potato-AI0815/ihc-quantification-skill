@@ -1,0 +1,17 @@
+image_id,roi_id,compartment,action,selection_source,selection_method,reviewer,annotation_status,n_vertices,x_min,x_max,y_min,y_max,selected_area_px,coordinate_space
+S01_CTRL_F1,GLOBAL,global,include,automatic,whole_tissue,,selected,0,1,512,1,384,161104,source_image_pixels
+S01_CTRL_F1,tumor_1,tumor,include,manual,rectangle,SyntheticReviewer,approved,4,30,254,32,342,69440,source_image_pixels
+S01_CTRL_F1,stroma_1,stroma,include,manual,rectangle,SyntheticReviewer,approved,4,270,448,32,342,55180,source_image_pixels
+S01_CTRL_F1,artifact_1,artifact,exclude,manual,rectangle,SyntheticReviewer,approved,4,452,508,344,382,2128,source_image_pixels
+S01_TREAT_F1,GLOBAL,global,include,automatic,whole_tissue,,selected,0,1,512,1,384,161104,source_image_pixels
+S01_TREAT_F1,tumor_1,tumor,include,manual,rectangle,SyntheticReviewer,approved,4,30,254,32,342,69440,source_image_pixels
+S01_TREAT_F1,stroma_1,stroma,include,manual,rectangle,SyntheticReviewer,approved,4,270,448,32,342,55180,source_image_pixels
+S01_TREAT_F1,artifact_1,artifact,exclude,manual,rectangle,SyntheticReviewer,approved,4,452,508,344,382,2128,source_image_pixels
+S02_CTRL_F1,GLOBAL,global,include,automatic,whole_tissue,,selected,0,1,512,1,384,161117,source_image_pixels
+S02_CTRL_F1,tumor_1,tumor,include,manual,rectangle,SyntheticReviewer,approved,4,30,254,32,342,69440,source_image_pixels
+S02_CTRL_F1,stroma_1,stroma,include,manual,rectangle,SyntheticReviewer,approved,4,270,448,32,342,55180,source_image_pixels
+S02_CTRL_F1,artifact_1,artifact,exclude,manual,rectangle,SyntheticReviewer,approved,4,452,508,344,382,2128,source_image_pixels
+S02_TREAT_F1,GLOBAL,global,include,automatic,whole_tissue,,selected,0,1,512,1,384,161104,source_image_pixels
+S02_TREAT_F1,tumor_1,tumor,include,manual,rectangle,SyntheticReviewer,approved,4,30,254,32,342,69440,source_image_pixels
+S02_TREAT_F1,stroma_1,stroma,include,manual,rectangle,SyntheticReviewer,approved,4,270,448,32,342,55180,source_image_pixels
+S02_TREAT_F1,artifact_1,artifact,exclude,manual,rectangle,SyntheticReviewer,approved,4,452,508,344,382,2128,source_image_pixels

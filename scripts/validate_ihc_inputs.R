@@ -33,7 +33,8 @@ add_issue <- function(level, scope, id, issue, detail = "") {
 
 aliases <- list(
   biological_unit_id = c("biological_unit_id", "patient_id", "animal_id", "sample_id"),
-  field_id = c("field_id", "field", "image_field")
+  field_id = c("field_id", "field", "image_field"),
+  file_path = c("file_path", "source_file")
 )
 for (target in names(aliases)) {
   if (!target %in% names(manifest)) {
@@ -41,10 +42,47 @@ for (target in names(aliases)) {
     if (length(found)) setnames(manifest, found[[1]], target)
   }
 }
-required <- c("image_id", "biological_unit_id", "condition", "field_id", "source_file")
+
+is_if_modality <- ("modality" %in% names(manifest) && any(tolower(trimws(manifest$modality)) %in% c("immunofluorescence", "if")))
+
+if (is_if_modality) {
+  required <- c("image_id", "biological_unit_id", "condition", "marker", "channel_name", "channel_role", "file_path")
+  # Channel indices are part of the IF input contract.  They are optional for
+  # legacy DAB manifests, but an IF image must map each physical channel once
+  # and only once before any reader can safely interpret an ImageJ hyperstack.
+  required <- c(required, "channel_index")
+} else {
+  required <- c("image_id", "biological_unit_id", "condition", "field_id", "file_path")
+}
+
 for (nm in setdiff(required, names(manifest))) add_issue("ERROR", "manifest", "ALL", "MISSING_REQUIRED_COLUMN", nm)
 if (!all(required %in% names(manifest))) {
   result <- rbindlist(issues, fill = TRUE)
+} else if (is_if_modality) {
+  # IF Manifest validation
+  manifest[, image_id := as.character(image_id)]
+  for (i in seq_len(nrow(manifest))) {
+    path <- resolve_path_portable(as.character(manifest$file_path[[i]]), dirname(manifest_path), must_work = FALSE)
+    if (!file.exists(path)) add_issue("ERROR", "image", manifest$image_id[[i]], "SOURCE_FILE_NOT_FOUND", path)
+  }
+  allowed_roles <- c("nucleus", "target", "cytoplasm_reference", "membrane_reference", "structural_reference", "background_reference", "other")
+  for (r in unique(tolower(trimws(manifest$channel_role)))) {
+    if (!r %in% allowed_roles) add_issue("ERROR", "manifest", "ALL", "INVALID_CHANNEL_ROLE", r)
+  }
+  for (id in unique(manifest$image_id)) {
+    sub_m <- manifest[image_id == id]
+    roles <- tolower(trimws(sub_m$channel_role))
+    if (!"nucleus" %in% roles) add_issue("ERROR", "image", id, "NO_NUCLEAR_CHANNEL")
+    if (!"target" %in% roles) add_issue("ERROR", "image", id, "NO_TARGET_SIGNAL")
+    idx <- suppressWarnings(as.integer(sub_m$channel_index))
+    if (anyNA(idx) || anyDuplicated(idx) || !setequal(idx, seq_len(nrow(sub_m)))) {
+      add_issue(
+        "ERROR", "image", id, "INVALID_CHANNEL_INDEX_MAPPING",
+        paste0("Expected unique 1..", nrow(sub_m), " channel_index values.")
+      )
+    }
+  }
+  result <- if (length(issues)) rbindlist(issues, fill = TRUE) else data.table(level = "PASS", scope = "all", id = "ALL", issue = "INPUT_VALIDATION_PASS", detail = "")
 } else {
   manifest[, image_id := as.character(image_id)]
   if (anyDuplicated(manifest$image_id)) {
@@ -57,7 +95,8 @@ if (!all(required %in% names(manifest))) {
     for (id in manifest$image_id[!is.finite(px) | px <= 0]) add_issue("WARNING", "image", id, "MISSING_PIXEL_SIZE", "Physical calibration unavailable.")
   }
   for (i in seq_len(nrow(manifest))) {
-    path <- resolve_path_portable(as.character(manifest$source_file[[i]]), dirname(manifest_path), must_work = FALSE)
+    src_f <- if ("file_path" %in% names(manifest)) manifest$file_path[[i]] else manifest$source_file[[i]]
+    path <- resolve_path_portable(as.character(src_f), dirname(manifest_path), must_work = FALSE)
     if (!file.exists(path)) add_issue("ERROR", "image", manifest$image_id[[i]], "SOURCE_FILE_NOT_FOUND", path)
     if (grepl("\\.(svs|ndpi|mrxs|scn)$", tolower(path))) add_issue("ERROR", "image", manifest$image_id[[i]], "NATIVE_WSI_NOT_SUPPORTED", "Export tiles or regions first.")
   }

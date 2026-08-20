@@ -42,6 +42,12 @@
       "Version": "2.2.2",
       "Source": "Repository",
       "Repository": "CRAN"
+    },
+    "tiff": {
+      "Package": "tiff",
+      "Version": "0.1-12",
+      "Source": "Repository",
+      "Repository": "CRAN"
     }
   }
 }
