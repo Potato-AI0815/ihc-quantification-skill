@@ -66,13 +66,8 @@ jobs:
 
       - name: Install R dependencies on Linux
         if: runner.os == 'Linux'
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          cache-version: 3
-          dependencies: '"hard"'
-          packages: |
-            deps::.
-            any::sessioninfo
+        shell: bash
+        run: Rscript scripts/install_dependencies.R --lib=Rlib
 
       - name: Install R dependencies on Windows
         if: runner.os == 'Windows'
