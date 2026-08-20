@@ -1,17 +1,17 @@
 # Changelog
 
-## Unreleased release-readiness repair — 2026-08-19
+## 2.3.0-alpha.1 release closeout — 2026-08-20
 
 - Ignored generated IF synthetic-output directories so release staging cannot
   accidentally include rendered results.
 - Unified the documented colocalization and puncta metrics with the current
   deterministic regression fixtures.
-- Marked Ubuntu/Windows GitHub CI as pending until the v2.3.0-alpha.1
-  candidate is pushed and the matrix actually runs.
+- Recorded successful Ubuntu/Windows GitHub dual-modality CI for the
+  v2.3.0-alpha.1 candidate (Actions run `32331513608`).
 - Updated smoke-test and upload instructions to describe the dual-modality
   v2.3.0-alpha.1 package.
 
-## Unreleased repair — 2026-08-18
+## 2.3.0-alpha.1 runtime repair — 2026-08-18
 
 - Fixed ImageJ C/Z page mapping and non-square uncompressed TIFF row
   orientation.

@@ -1,10 +1,10 @@
 # Immunofluorescence & IHC Skill: Validation Closeout Report
 
 **Skill Name**: `ihc-if-quantification`
-**Current Milestone**: `v2.3.0-alpha.1` (IF public runtime revalidated with warnings; GitHub CI pending; no RC tag yet)
+**Current Milestone**: `v2.3.0-alpha.1` (IF public runtime revalidated with warnings; GitHub Ubuntu/Windows CI passed; prerelease only)
 **Base Provenance**: Tag `v2.2.2` (Git Commit `3ae199b8b333fd75d62739e835492a7334f5f016`)
-**Date**: 2026-08-18
-**Overall Validation Decision**: **ALPHA VALIDATED WITH WARNINGS — local runtime passed after ImageJ/channel/QC/ROI repair; GitHub Ubuntu/Windows CI is pending**
+**Date**: 2026-08-20
+**Overall Validation Decision**: **ALPHA VALIDATED WITH WARNINGS — local runtime and GitHub-hosted Ubuntu/Windows dual-modality CI passed after ImageJ/channel/QC/ROI repair; biological/manual review remains required**
 
 > Important correction: the pre-repair FluorescentCells/confocal output
 > directories are retained for provenance only. The current public outputs were
@@ -31,7 +31,7 @@ In accordance with the validation closeout directive, all new feature expansion 
  [G7]  Puncta / Subcellular Foci Quantitative Detection ....... [ PASS ]
  [G8]  Public Benchmarks (ImageJ & BBBC039 GT) ................ [ PASS_WITH_WARNINGS ]
  [G9]  100% DAB Backward Compatibility (Clean Checkout) ....... [ PASS ]
- [G10] Cross-Platform CI (Ubuntu & Windows Matrix) ............ [ PENDING_GITHUB_CI ]
+ [G10] Cross-Platform CI (Ubuntu & Windows Matrix) ............ [ PASS ]
 ═══════════════════════════════════════════════════════════════════════════════
 ```
 
@@ -96,5 +96,5 @@ In accordance with the validation closeout directive, all new feature expansion 
 - **Report**: [`BACKWARD_COMPATIBILITY_REPORT_FINAL.md`](BACKWARD_COMPATIBILITY_REPORT_FINAL.md)
 
 ### P7 & P8 — Cross-Platform CI & Release Readiness
-- **CI Workflow**: Updated `.github/workflows/ci.yml` supporting static validation, dual-modality synthetic execution on Ubuntu and Windows, and automated backward compatibility verification. The current local candidate has not yet been pushed, so the GitHub result is **PENDING_GITHUB_CI**.
-- **Release Package**: `ihc-if-quantification-skill_v2.3.0-alpha.1.zip`
+- **CI Workflow**: `.github/workflows/ci.yml` completed static validation, dual-modality synthetic execution on Ubuntu and Windows, plot-contract checks, and automated backward-compatibility verification in [Actions run 32331513608](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32331513608) (**PASS**).
+- **Release Package**: `ihc-quantification-skill_v2.3.0-alpha.1.zip`, distributed with a matching SHA-256 sidecar as a GitHub prerelease asset.
