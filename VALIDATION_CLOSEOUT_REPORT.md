@@ -1,10 +1,10 @@
 # Immunofluorescence & IHC Skill: Validation Closeout Report
 
 **Skill Name**: `ihc-if-quantification`
-**Current Milestone**: `v2.3.0-alpha.2` (validation hotfix; exact-main GitHub CI pending; prerelease only)
+**Current Milestone**: `v2.3.0-alpha.2` (validation hotfix; exact-main GitHub Ubuntu/Windows CI passed; prerelease only)
 **Base Provenance**: Tag `v2.2.2` (Git Commit `3ae199b8b333fd75d62739e835492a7334f5f016`)
 **Date**: 2026-08-20
-**Overall Validation Decision**: **ALPHA VALIDATED WITH WARNINGS — validation hotfix rerun passed locally; exact alpha.2 main-commit GitHub CI is pending; biological/manual review remains required**
+**Overall Validation Decision**: **ALPHA VALIDATED WITH WARNINGS — validation hotfix rerun and exact alpha.2 main-commit Ubuntu/Windows CI passed; biological/manual review remains required**
 
 > Important correction: the pre-repair FluorescentCells/confocal output
 > directories are retained for provenance only. The current public outputs were
@@ -31,7 +31,7 @@ In accordance with the validation closeout directive, all new feature expansion 
  [G7]  Puncta / Subcellular Foci Quantitative Detection ....... [ PASS_WITH_WARNINGS ]
  [G8]  Public Benchmarks (ImageJ & BBBC039 GT) ................ [ PASS_WITH_WARNINGS ]
  [G9]  100% DAB Backward Compatibility (Clean Checkout) ....... [ PASS ]
- [G10] Cross-Platform CI (Ubuntu & Windows Matrix) ............ [ PENDING_GITHUB_CI ]
+ [G10] Cross-Platform CI (Ubuntu & Windows Matrix) ............ [ PASS ]
 ═══════════════════════════════════════════════════════════════════════════════
 ```
 
@@ -97,5 +97,5 @@ In accordance with the validation closeout directive, all new feature expansion 
 - **Report**: [`BACKWARD_COMPATIBILITY_REPORT_FINAL.md`](BACKWARD_COMPATIBILITY_REPORT_FINAL.md)
 
 ### P7 & P8 — Cross-Platform CI & Release Readiness
-- **CI Workflow**: `.github/workflows/ci.yml` now includes the IF I/O bit-depth/projection contract in addition to static validation, dual-modality synthetic execution, plot-contract checks, and backward compatibility. The exact alpha.2 main-commit result is pending.
-- **Release Package**: Alpha.2 packaging is blocked until the exact-main CI run is green.
+- **CI Workflow**: `.github/workflows/ci.yml` includes the IF I/O bit-depth/projection contract in addition to static validation, dual-modality synthetic execution, plot-contract checks, and backward compatibility. Exact `main@748016a` passed in [Actions run 32452752381](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32452752381).
+- **Release Package**: `ihc-quantification-skill_v2.3.0-alpha.2.zip`, to be distributed with a matching SHA-256 sidecar as a GitHub prerelease asset.
