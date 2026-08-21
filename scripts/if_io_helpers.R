@@ -1,6 +1,6 @@
 # if_io_helpers.R
 # Auditable Input/Output and Channel Parsing Helpers for Immunofluorescence (IF) Modality.
-# Part of IHC/IF Quantification Skill v2.3.0-alpha.1
+# Part of IHC/IF Quantification Skill v2.3.0-alpha.2
 
 suppressPackageStartupMessages({
   library(EBImage)

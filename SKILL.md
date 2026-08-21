@@ -1,16 +1,16 @@
 ---
 name: ihc-if-quantification
-version: 2.3.0-alpha.1
+version: 2.3.0-alpha.2
 description: Reproducible, auditable quantification of brightfield DAB/hematoxylin IHC and multi-channel immunofluorescence (IF) images. Automatically routes between brightfield DAB-IHC (v2.2.2 backward-compatible) and multi-channel IF pipelines. Supports four measurement domains (global tissue, nucleus, cytoplasm, extracellular), single-cell scoring, H-DAB reconstruction, 8-panel IF QC overviews, colocalization (Pearson/Manders), puncta/foci detection, and publication-ready biological-unit aggregation figures.
 ---
 
-# IHC & Immunofluorescence (IF) Quantification Skill v2.3.0-alpha.1
+# IHC & Immunofluorescence (IF) Quantification Skill v2.3.0-alpha.2
 
 ## Purpose
 
 Use this skill to perform auditable, QC-first quantification of:
-1. **Brightfield Chromogenic DAB/Hematoxylin IHC**: Exported as RGB TIFF, OME-TIFF, PNG, or JPEG fields. (Stable v2.2.2 workflow).
-2. **Multi-channel Fluorescence Microscopy (IF)**: Exported as single-channel, multi-channel composite, or Z-stack TIFF/OME-TIFF. (Alpha v2.3.0 workflow).
+1. **Brightfield Chromogenic DAB/Hematoxylin IHC**: Exported as RGB TIFF, PNG, or JPEG fields. (Stable v2.2.2 workflow; OME-TIFF metadata is not required for DAB routing.)
+2. **Multi-channel Fluorescence Microscopy (IF)**: Validated for single-channel, multi-channel composite, and ImageJ hyperstack/Z-stack TIFF inputs. OME-TIFF metadata-aware ingestion is experimental in v2.3.0-alpha.2 and must not be treated as a validated interchange contract.
 
 ---
 
@@ -120,7 +120,7 @@ results/
             └── if_main_figure_manifest.csv
 ```
 
-ImageJ TIFF and hyperstack files are parsed from their ImageDescription axes (C/Z/T) rather than inferred from an array dimension. Each image must declare unique `channel_index` values `1..N`; duplicate or ambiguous mappings are rejected. The optional `tiff` R package is installed by `scripts/install_dependencies.R` for compressed TIFFs; the built-in reader covers uncompressed 8/16/32-bit single-sample pages.
+ImageJ TIFF and hyperstack files are parsed from their ImageDescription axes (C/Z/T) rather than inferred from an array dimension. Each image must declare unique `channel_index` values `1..N`; duplicate or ambiguous mappings are rejected. The optional `tiff` R package is installed by `scripts/install_dependencies.R` for compressed TIFFs; the built-in reader covers uncompressed 8/16/32-bit single-sample pages. The validated bit-depth contract includes 12-bit detector-range values stored in a 16-bit container; packed native-12-bit TIFF and OME-XML metadata-aware axis parsing remain experimental.
 
 An empty required target channel is `NOT_EVALUABLE`, not zero-threshold positive. The pipeline never treats the full camera canvas as tissue by default; global/extracellular masks are conservative foreground proxies unless a reviewed mask is supplied.
 

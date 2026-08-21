@@ -26,4 +26,4 @@
 ---
 
 ## 2. Conclusion
-The DAB-IHC pipeline in v2.3.0-alpha.1 generates results that are structurally and categorically identical to the original v2.2.2 release, with numeric values compatible within an absolute tolerance of $1.0\times10^{-6}$ to accommodate cross-platform floating-point serialization.
+The DAB-IHC pipeline in v2.3.0-alpha.2 generates results that are structurally and categorically identical to the original v2.2.2 release, with numeric values compatible within an absolute tolerance of $1.0\times10^{-6}$ to accommodate cross-platform floating-point serialization.

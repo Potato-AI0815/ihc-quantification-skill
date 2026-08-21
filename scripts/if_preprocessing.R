@@ -1,6 +1,6 @@
 # if_preprocessing.R
 # Preprocessing, Illumination Correction, Registration, and Saturation QC for IF Modality.
-# Part of IHC/IF Quantification Skill v2.3.0-alpha.1
+# Part of IHC/IF Quantification Skill v2.3.0-alpha.2
 
 suppressPackageStartupMessages({
   library(EBImage)

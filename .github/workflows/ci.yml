@@ -12,8 +12,8 @@ jobs:
   static:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.x"
       - name: Static package validation
@@ -36,7 +36,7 @@ jobs:
       # exist, in which case R continues to use its normal site libraries.
       R_LIBS_USER: ${{ github.workspace }}/Rlib
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: r-lib/actions/setup-r@v2
         if: runner.os == 'Windows'
         with:
@@ -85,6 +85,11 @@ jobs:
           cat("PASS: required R packages are available\n")
           cat("Library paths:\n", paste(.libPaths(), collapse = "\n"), "\n")
 
+      - name: Verify IF I/O bit-depth and projection contract
+        shell: bash
+        run: |
+          Rscript -e 'repo_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE); local_lib <- file.path(repo_root, "Rlib"); if (dir.exists(local_lib)) .libPaths(c(normalizePath(local_lib), .libPaths())); source(file.path(repo_root, "scripts", "verify_if_io_bitdepth_contract.R"))'
+
       - name: Run synthetic smoke test on Linux
         if: runner.os == 'Linux'
         shell: bash
@@ -97,7 +102,7 @@ jobs:
 
       - name: Upload synthetic QC and figures on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: synthetic-output-${{ matrix.os }}
           path: tests/synthetic_output

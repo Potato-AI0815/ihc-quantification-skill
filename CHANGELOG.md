@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.3.0-alpha.2 validation hotfix — 2026-08-21
+
+- Recomputed the BBBC039 segmentation benchmark on the official validation
+  split, decoding color-coded touching-nucleus instances and using one-to-one
+  IoU matching.
+- Downgraded OME-TIFF metadata-aware ingestion and packed native-12-bit TIFF to
+  experimental status; validated 12-bit detector-range values in a 16-bit
+  container instead.
+- Added the IF bit-depth/projection contract to the cross-platform CI matrix.
+- Reclassified puncta validation as synthetic aggregate-count validation, not
+  full object-detector validation.
+
 ## 2.3.0-alpha.1 release closeout — 2026-08-20
 
 - Ignored generated IF synthetic-output directories so release staging cannot

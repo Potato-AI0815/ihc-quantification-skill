@@ -1,9 +1,9 @@
 # Puncta / Foci Module Quantitative Benchmark Report
 
-**Version**: 2.3.0-alpha.1
-**Date**: 2026-08-18
-**Module Classification**: **VALIDATED_QUANTITATIVE**
-**Gate G7 Assessment**: **PASS**
+**Version**: 2.3.0-alpha.2
+**Date**: 2026-08-21
+**Module Classification**: **VALIDATED_FOR_SYNTHETIC_AGGREGATE_COUNTING**
+**Gate G7 Assessment**: **PASS_WITH_WARNINGS**
 
 ---
 
@@ -31,5 +31,5 @@
 
 ## 3. Methodological Governance & Limitations
 - When puncta are closely clustered or near the diffraction limit, DoG connected components may group adjoining peaks into single merged regions.
-- **Classification Status**: Assigned **VALIDATED_QUANTITATIVE**; Gate G7 evaluated as **PASS**.
+- **Classification Status**: Assigned **VALIDATED_FOR_SYNTHETIC_AGGREGATE_COUNTING**; Gate G7 evaluated as **PASS_WITH_WARNINGS**.
 - **Usage Recommendation**: Recommended for relative comparison across experimental conditions (dose-response, knock-down vs control); absolute single-molecule counts should be cross-validated with single-molecule localization microscopy or spot-intensity deconvolution if exact counting is required.

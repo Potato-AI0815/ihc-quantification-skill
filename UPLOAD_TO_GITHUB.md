@@ -34,7 +34,7 @@ python scripts/verify_package_manifest.py
 ```bash
 git init
 git add .
-git commit -m "Add IHC and IF Quantification Skill v2.3.0-alpha.1 CI candidate"
+git commit -m "Add IHC and IF Quantification Skill v2.3.0-alpha.2 CI candidate"
 git branch -M main
 git remote add origin <YOUR_REPOSITORY_URL>
 git push -u origin main
@@ -49,4 +49,4 @@ After the push, open the repository **Actions** tab. The workflow runs:
 5. synthetic R/EBImage analysis on Windows;
 6. output, plot, and path-contract verification.
 
-Do not create a release-candidate or stable tag until both operating-system jobs pass for the v2.3.0-alpha.1 commit.
+Do not create a release-candidate or stable tag until both operating-system jobs pass for the v2.3.0-alpha.2 commit.

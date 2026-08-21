@@ -1,6 +1,6 @@
 # DAB-IHC Backward Compatibility Audit Report
 
-**Comparison**: `v2.2.2 Baseline Output` vs `v2.3.0-alpha.1 Output`
+**Comparison**: `v2.2.2 Baseline Output` vs `v2.3.0-alpha.2 Output`
 **Evaluation Script**: `tests/verify_backward_compatibility.R`
 **Date**: 2026-08-17
 **Result**: **100% structural/character match; numeric values compatible within 1.0e-06 tolerance**

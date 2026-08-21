@@ -1,7 +1,7 @@
 # Colocalization Module Validation Report
 
-**Version**: 2.3.0-alpha.1
-**Date**: 2026-08-18
+**Version**: 2.3.0-alpha.2
+**Date**: 2026-08-21
 **Status**: **PASS**
 
 ---

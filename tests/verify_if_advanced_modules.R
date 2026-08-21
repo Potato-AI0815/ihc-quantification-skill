@@ -57,7 +57,7 @@ cat(sprintf("PASS: Colocalization contract validated (Pearson: %.3f >> %.3f, M1:
 # Generate COLOCALIZATION_VALIDATION_REPORT.md
 coloc_report <- sprintf("# Colocalization Module Validation Report
 
-**Version**: 2.3.0-alpha.1
+**Version**: 2.3.0-alpha.2
 **Date**: %s
 **Status**: **PASS**
 
@@ -125,9 +125,15 @@ rel_err_5 <- abs(count_5_det - count_5_gt) / count_5_gt
 rel_err_15 <- abs(count_15_det - count_15_gt) / count_15_gt
 mae_per_cell <- mean(c(abs(per_cell_5_det - per_cell_5_gt), abs(per_cell_15_det - per_cell_15_gt)))
 
-# Determine classification status based on exact ground-truth accuracy
-puncta_status <- if (rel_err_5 <= 0.15 && rel_err_15 <= 0.15) "VALIDATED_QUANTITATIVE" else "EXPERIMENTAL_DIRECTIONAL_ONLY"
-puncta_gate <- if (puncta_status == "VALIDATED_QUANTITATIVE") "PASS" else "PASS_WITH_WARNINGS"
+# The fixture validates aggregate count recovery only. It does not contain
+# coordinate-level false-positive/false-negative annotations, so it cannot
+# support a claim of full object-detector precision/recall/F1 validation.
+puncta_status <- if (rel_err_5 <= 0.15 && rel_err_15 <= 0.15) {
+  "VALIDATED_FOR_SYNTHETIC_AGGREGATE_COUNTING"
+} else {
+  "EXPERIMENTAL_DIRECTIONAL_ONLY"
+}
+puncta_gate <- "PASS_WITH_WARNINGS"
 
 cat(sprintf("Puncta Benchmark: GT5=%d, Det5=%d (Err: %.1f%%) | GT15=%d, Det15=%d (Err: %.1f%%) | Status: %s | Gate: %s\n",
             count_5_gt, count_5_det, rel_err_5 * 100, count_15_gt, count_15_det, rel_err_15 * 100, puncta_status, puncta_gate))
@@ -135,7 +141,7 @@ cat(sprintf("Puncta Benchmark: GT5=%d, Det5=%d (Err: %.1f%%) | GT15=%d, Det15=%d
 # Generate PUNCTA_VALIDATION_REPORT.md
 puncta_report <- sprintf("# Puncta / Foci Module Quantitative Benchmark Report
 
-**Version**: 2.3.0-alpha.1
+**Version**: 2.3.0-alpha.2
 **Date**: %s
 **Module Classification**: **%s**
 **Gate G7 Assessment**: **%s**
