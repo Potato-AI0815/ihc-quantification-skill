@@ -88,9 +88,10 @@ jobs:
       - name: Verify IF I/O bit-depth and projection contract
         shell: Rscript {0}
         run: |
-          local_lib <- file.path(Sys.getenv("GITHUB_WORKSPACE"), "Rlib")
+          repo_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+          local_lib <- file.path(repo_root, "Rlib")
           if (dir.exists(local_lib)) .libPaths(c(normalizePath(local_lib), .libPaths()))
-          source(file.path(Sys.getenv("GITHUB_WORKSPACE"), "scripts", "verify_if_io_bitdepth_contract.R"))
+          source(file.path(repo_root, "scripts", "verify_if_io_bitdepth_contract.R"))
 
       - name: Run synthetic smoke test on Linux
         if: runner.os == 'Linux'
