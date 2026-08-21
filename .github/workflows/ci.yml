@@ -87,6 +87,7 @@ jobs:
 
       - name: Verify IF I/O bit-depth and projection contract
         shell: Rscript {0}
+        working-directory: ${{ github.workspace }}
         run: |
           repo_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
           local_lib <- file.path(repo_root, "Rlib")
