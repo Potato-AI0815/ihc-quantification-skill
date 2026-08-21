@@ -1,7 +1,7 @@
 # Public Release Preflight Audit
 
 **Package**: `ihc-if-quantification`
-**Version**: `2.3.0-alpha.1`
+**Version**: `2.3.0-alpha.2`
 **Date**: 2026-08-17
 **Result**: **PASS**
 

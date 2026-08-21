@@ -1,7 +1,7 @@
 # IF Runtime Repair Report
 
 **Scope**: public ImageJ `FluorescentCells.tif` and `confocal-series.tif` runs
-**Version**: `2.3.0-alpha.1`
+**Version**: `2.3.0-alpha.2`
 **Status**: **CODE REPAIRED; PUBLIC RERUN PASS WITH WARNINGS**
 
 ## Why the previous figures are not valid evidence

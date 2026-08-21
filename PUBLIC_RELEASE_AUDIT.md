@@ -1,4 +1,4 @@
-# Public release audit — v2.3.0-alpha.1 CI candidate
+# Public release audit — v2.3.0-alpha.2 CI candidate
 
 ## Included
 

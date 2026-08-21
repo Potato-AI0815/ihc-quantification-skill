@@ -4,14 +4,14 @@ title: "IHC and Immunofluorescence Quantification Skill"
 type: software
 authors:
   - name: "IHC and IF Quantification Skill contributors"
-version: 2.3.0-alpha.1
-date-released: 2026-08-20
+version: 2.3.0-alpha.2
+date-released: 2026-08-21
 license: MIT
 abstract: >-
-  A reproducible and auditable R/EBImage workflow for DAB/hematoxylin
-  brightfield IHC quantification with global-first analysis, reviewed ROI
-  support, H-DAB quality control, four explicit measurement domains, and
-  biological-unit-level comparison figures.
+  A reproducible and auditable R/EBImage workflow for brightfield DAB-IHC and
+  multi-channel immunofluorescence quantification, with reviewed ROI support,
+  four explicit IF measurement domains, colocalization, puncta analysis,
+  quality control, and biological-unit-level comparison figures.
 keywords:
   - immunohistochemistry
   - DAB
@@ -19,3 +19,9 @@ keywords:
   - EBImage
   - H-score
   - reproducible research
+  - immunofluorescence
+  - fluorescence microscopy
+  - bioimage analysis
+  - colocalization
+  - cell segmentation
+  - puncta quantification

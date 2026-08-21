@@ -1,9 +1,14 @@
 # IF Input and Format Support Guide
 
-## Officially Supported Formats
+## Validated Formats
 The core IF pipeline natively supports standard multi-dimensional TIFF formats:
 - `.tif` / `.tiff` (Single-channel 8/16-bit, multi-channel composite, multi-plane Z-stack)
-- **OME-TIFF** (Standard Open Microscopy Environment multi-channel hyperstacks)
+- **ImageJ TIFF / hyperstack** with explicit C/Z/T metadata
+
+The following are experimental and not formally validated by the current I/O
+contract: OME-TIFF metadata-aware axis parsing and packed native-12-bit TIFF.
+Values from a 12-bit detector stored in a 16-bit TIFF container are covered by
+the validation fixture.
 
 ### Axis Ordering
 For ImageJ TIFFs the reader uses the embedded `ImageDescription` metadata (`channels`, `slices`, and `images`) and maps channel pages explicitly; it does not guess C/Z/T axes from an array dimension. The manifest must contain one unique `channel_index` for each declared channel.
@@ -35,6 +40,6 @@ When 3D Z-stacks are provided, the pipeline supports:
 ---
 
 ## Proprietary Microscope Formats (.czi, .lif, .nd2)
-Proprietary formats from Zeiss (.czi), Leica (.lif), and Nikon (.nd2) must be exported to standard OME-TIFF or multi-channel TIFF before core processing:
+Proprietary formats from Zeiss (.czi), Leica (.lif), and Nikon (.nd2) must be exported to ImageJ TIFF/hyperstack or standard multi-channel TIFF before core processing. OME-TIFF export may be used experimentally, but its OME-XML axes must be manually verified before quantification:
 - Use Fiji / ImageJ: `Plugins > Bio-Formats > Bio-Formats Exporter` -> save as `OME-TIFF`.
 - Or use automated python conversion: `aicsimageio` or `bioformats2raw`.

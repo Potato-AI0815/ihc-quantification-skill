@@ -1,6 +1,6 @@
 # if_colocalization.R
 # Colocalization Analysis (Pearson's r, Manders' M1/M2) for Dual-Target IF Modality.
-# Part of IHC/IF Quantification Skill v2.3.0-alpha.1
+# Part of IHC/IF Quantification Skill v2.3.0-alpha.2
 
 suppressPackageStartupMessages({
   library(data.table)

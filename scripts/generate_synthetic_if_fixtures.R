@@ -1,6 +1,6 @@
 # generate_synthetic_if_fixtures.R
 # Deterministic Generator for Synthetic IF Fixtures (Standard IF, Colocalization, Puncta).
-# Part of IHC/IF Quantification Skill v2.3.0-alpha.1
+# Part of IHC/IF Quantification Skill v2.3.0-alpha.2
 
 suppressPackageStartupMessages({
   library(EBImage)

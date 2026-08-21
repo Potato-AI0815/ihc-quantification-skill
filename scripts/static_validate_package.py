@@ -287,7 +287,7 @@ def main() -> int:
             findings.append(("ERROR", scope, f"version {found_version!r} does not match VERSION {package_version!r}"))
 
     # DESCRIPTION is consumed by R's package tooling, whose Version field
-    # rejects prerelease hyphens (e.g. 2.3.0-alpha.1). Keep a valid numeric
+    # rejects prerelease hyphens (e.g. 2.3.0-alpha.2). Keep a valid numeric
     # package version there while requiring an explicit public release label.
     description_version = extract_simple_version(ROOT / "DESCRIPTION", r'^Version:\s*([^\s]+)')
     description_release_version = extract_simple_version(ROOT / "DESCRIPTION", r'^X-Release-Version:\s*([^\s]+)')
@@ -313,7 +313,7 @@ def main() -> int:
             print(f"{level}\t{scope}\t{detail}")
         return 1 if any(level == "ERROR" for level, _, _ in findings) else 0
 
-    print("PASS\tpackage\tStatic structure, delimiters, schemas, GitHub files, portable-path contracts, v2.3.0-alpha.1 contracts, and dual-modality core checks passed")
+    print("PASS\tpackage\tStatic structure, delimiters, schemas, GitHub files, portable-path contracts, v2.3.0-alpha.2 contracts, and dual-modality core checks passed")
     if package_version:
         print(f"INFO\tversion\t{package_version}")
     print("INFO\tmodalities\tbrightfield_dab,immunofluorescence")

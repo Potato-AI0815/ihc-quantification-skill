@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 # run_quantification.R
-# Modality Router for IHC / IF Quantification Skill v2.3.0-alpha.1
+# Modality Router for IHC / IF Quantification Skill v2.3.0-alpha.2
 
 options(stringsAsFactors = FALSE, scipen = 999)
 

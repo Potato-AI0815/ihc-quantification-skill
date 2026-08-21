@@ -8,7 +8,7 @@
 - [x] `python scripts/preflight_public_release.py` passes.
 - [x] Synthetic smoke test passes on the intended R/EBImage environment.
 - [x] `tests/verify_plot_contract.R` passes.
-- [x] GitHub Actions passes on Windows and Linux for the v2.3.0-alpha.1 candidate ([run 32331513608](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32331513608)).
+- [ ] GitHub Actions passes on Windows and Linux for the v2.3.0-alpha.2 candidate (exact main-commit run pending).
 
 ## Figures
 
@@ -30,4 +30,4 @@
 
 - [x] `VERSION`, `SKILL.md`, `DESCRIPTION`, `CITATION.cff`, and `CHANGELOG.md` agree.
 - [x] `RELEASE_STATUS.md` reflects the exact runtime evidence for this build, including the completed GitHub CI run.
-- [x] The release archive SHA256 is published as a sidecar asset with the GitHub prerelease.
+- [ ] The release archive SHA256 is published as a sidecar asset with the GitHub prerelease.

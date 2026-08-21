@@ -12,8 +12,8 @@ jobs:
   static:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.x"
       - name: Static package validation
@@ -36,7 +36,7 @@ jobs:
       # exist, in which case R continues to use its normal site libraries.
       R_LIBS_USER: ${{ github.workspace }}/Rlib
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: r-lib/actions/setup-r@v2
         if: runner.os == 'Windows'
         with:
@@ -84,6 +84,9 @@ jobs:
           if (length(missing)) stop("Missing R packages: ", paste(missing, collapse = ", "))
           cat("PASS: required R packages are available\n")
           cat("Library paths:\n", paste(.libPaths(), collapse = "\n"), "\n")
+
+      - name: Verify IF I/O bit-depth and projection contract
+        run: Rscript scripts/verify_if_io_bitdepth_contract.R
 
       - name: Run synthetic smoke test on Linux
         if: runner.os == 'Linux'

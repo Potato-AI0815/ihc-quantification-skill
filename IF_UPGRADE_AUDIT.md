@@ -1,8 +1,8 @@
-# Immunofluorescence (IF) Upgrade Audit: v2.2.2 -> v2.3.0-alpha.1
+# Immunofluorescence (IF) Upgrade Audit: v2.2.2 -> v2.3.0-alpha.2
 
 **Date**: 2026-08-18
 **Skill**: `ihc-if-quantification`
-**Version**: `2.3.0-alpha.1`
+**Version**: `2.3.0-alpha.2`
 **Scope**: Major functional upgrade adding multi-channel Immunofluorescence (IF) quantification while strictly preserving DAB-IHC v2.2.2 behavior.
 
 ---
@@ -30,16 +30,16 @@ colocalization, puncta, and DAB compatibility results are kept for provenance
 and are not silently re-labelled as biological replication evidence.
 
 - **[G0] Baseline Recorded**: Baseline v2.2.2 execution and output tables recorded and hashed. (**PASS**)
-- **[G1] IF Input & Channel Parsing**: Metadata-aware ImageJ/OME-TIFF and Z-stack reader with explicit channel roles (`nucleus`, `target`, `cytoplasm_reference`, `structural_reference`). (**PASS public run**)
+- **[G1] IF Input & Channel Parsing**: Validated ImageJ TIFF/hyperstack and explicit C/Z mapping with channel roles (`nucleus`, `target`, `cytoplasm_reference`, `structural_reference`). OME-XML metadata-aware parsing remains experimental. (**PASS_WITH_WARNINGS**)
 - **[G2] IF Preprocessing**: Top-hat / Rolling Ball background correction, cross-channel translation registration, and automated saturation QC (`HIGH_SATURATION`). (**PASS**)
 - **[G3] IF Segmentation**: Native EBImage nuclear watershed and Voronoi cell propagation + conservative foreground proxy/external mask support. (**PASS_WITH_WARNINGS public run**)
 - **[G4] Four-Domain Quantification**: Calculation of linear MFI, median intensity, integrated intensity, positive area fraction, and N/C ratio; empty channels are non-evaluable. (**PASS public run**)
 - **[G5] QC & ROI Audit**: Standardized 8-panel diagnostic overview with blocking QC flags and reviewed artifact ROI support. (**PASS_WITH_WARNINGS public run**)
 - **[G6] Colocalization Module**: Dual-channel Pearson correlation coefficient ($r$) and Manders overlap coefficients ($M_1, M_2$) with spatial association disclaimer. (**PASS**)
-- **[G7] Puncta / Foci Module**: Difference of Gaussians (DoG) bandpass filter for subcellular foci quantification per cell and per compartment. (**PASS**)
+- **[G7] Puncta / Foci Module**: Difference of Gaussians (DoG) bandpass filter for subcellular foci quantification per cell and per compartment; current fixture validates aggregate count recovery, not coordinate-level detector precision/recall. (**PASS_WITH_WARNINGS**)
 - **[G8] Public Benchmark Documentation**: Documentation and manifest templates for BBBC006, BBBC039, HPA, and BioImage Archive. (**PASS_WITH_WARNINGS ImageJ execution**)
 - **[G9] DAB Backward Compatibility**: Exact numerical equality verified across all 11 baseline tables (Max difference: $0.000000\text{e}+00$). (**PASS**)
-- **[G10] CI & Packaging**: Workflow, clean package manifest, and SHA256 verification are ready; Ubuntu/Windows execution for this v2.3.0-alpha.1 candidate is **PENDING_GITHUB_CI** until push.
+- **[G10] CI & Packaging**: Workflow, clean package manifest, and SHA256 verification are ready; Ubuntu/Windows execution for this v2.3.0-alpha.2 candidate is **PENDING_GITHUB_CI** until push.
 
 ---
 

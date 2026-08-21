@@ -1,6 +1,6 @@
 # Immunofluorescence (IF) Validation Report
 
-**Version**: `2.3.0-alpha.1`
+**Version**: `2.3.0-alpha.2`
 **Execution Environment**: R 4.6.0, EBImage 4.54.0, data.table 1.18.4, ggplot2 4.0.3, ragg 1.5.2, svglite 2.2.2
 **Date**: 2026-08-19
 
@@ -45,7 +45,7 @@
 
 - **5 Foci/Cell Ground Truth (`PUNCTA_5`)**: Detected $43$ of $45$ total foci (4.4% relative error; 4.78 detected foci/cell).
 - **15 Foci/Cell Ground Truth (`PUNCTA_15`)**: Detected $134$ of $135$ total foci (0.7% relative error; 14.89 detected foci/cell).
-- **Validation**: Foci count dose-response ordering is preserved: $\text{Count}_{15} > \text{Count}_{5}$ ($134 > 43$) (**PASS**).
+- **Validation**: Synthetic aggregate foci-count dose-response ordering is preserved: $\text{Count}_{15} > \text{Count}_{5}$ ($134 > 43$) (**PASS_WITH_WARNINGS**). This fixture does not provide coordinate-level false-positive/false-negative annotations, so detector precision/recall/F1 are not claimed.
 
 ---
 

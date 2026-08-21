@@ -1,6 +1,6 @@
 # scripts/download_and_verify_public_images.R
 # Downloads public ImageJ datasets and runs IF pipeline validation (P1)
-# Part of IHC/IF Quantification Skill v2.3.0-alpha.1
+# Part of IHC/IF Quantification Skill v2.3.0-alpha.2
 
 script_arg <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
 root <- if (length(script_arg) == 1L) {
