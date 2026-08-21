@@ -86,7 +86,11 @@ jobs:
           cat("Library paths:\n", paste(.libPaths(), collapse = "\n"), "\n")
 
       - name: Verify IF I/O bit-depth and projection contract
-        run: Rscript scripts/verify_if_io_bitdepth_contract.R
+        shell: Rscript {0}
+        run: |
+          local_lib <- file.path(Sys.getenv("GITHUB_WORKSPACE"), "Rlib")
+          if (dir.exists(local_lib)) .libPaths(c(normalizePath(local_lib), .libPaths()))
+          source(file.path(Sys.getenv("GITHUB_WORKSPACE"), "scripts", "verify_if_io_bitdepth_contract.R"))
 
       - name: Run synthetic smoke test on Linux
         if: runner.os == 'Linux'
@@ -100,7 +104,7 @@ jobs:
 
       - name: Upload synthetic QC and figures on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: synthetic-output-${{ matrix.os }}
           path: tests/synthetic_output
