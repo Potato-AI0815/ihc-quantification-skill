@@ -62,6 +62,8 @@
 
 ## 5. Segmentation QC Repair — Panel F Cell/Cytoplasm Boundaries
 
+**Repair date**: 2026-08-22
+
 **Review trigger**: The previous Panel F overlay re-labelled the union of all
 propagated cell pixels with `bwlabel(cell_labels > 0)`. When adjacent cell
 territories touched, that display step collapsed them into one large polygon.
