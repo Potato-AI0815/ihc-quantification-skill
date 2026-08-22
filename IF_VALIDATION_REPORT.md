@@ -1,8 +1,8 @@
 # Immunofluorescence (IF) Validation Report
 
-**Version**: `2.3.0-alpha.2`
+**Version**: `2.3.0-rc1` — sections 1–3 were originally validated at `v2.3.0-alpha.2`; the section 5 segmentation QC repair was revalidated against the post-rc1 code state
 **Execution Environment**: R 4.6.0, EBImage 4.54.0, data.table 1.18.4, ggplot2 4.0.3, ragg 1.5.2, svglite 2.2.2
-**Date**: 2026-08-19
+**Date**: 2026-08-19 (last revised 2026-08-22)
 
 ---
 
@@ -57,3 +57,54 @@
 - `if_main_05_colocalization_pearson_r.png / .svg / .pdf`: Verified non-empty (when enabled).
 - `if_main_06_puncta_per_cell.png / .svg / .pdf`: Verified non-empty (when enabled).
 - Standard 8-panel QC montages generated for all synthetic images.
+
+---
+
+## 5. Segmentation QC Repair — Panel F Cell/Cytoplasm Boundaries
+
+**Repair date**: 2026-08-22
+
+**Review trigger**: The previous Panel F overlay re-labelled the union of all
+propagated cell pixels with `bwlabel(cell_labels > 0)`. When adjacent cell
+territories touched, that display step collapsed them into one large polygon.
+The propagation radius was also a single unconstrained value, which could let
+neighboring cytoplasm territories meet in dense fields.
+
+**Defensive changes**:
+
+- `max_cytoplasm_expansion_radius = 10` px is now a hard cap, in addition to
+  the legacy `cell_propagation_radius = 15` setting.
+- The distance-transform expansion threshold is dynamically capped by the
+  closest pair of nuclear boundaries, with `cytoplasm_boundary_gap_px = 1` px
+  retained between neighboring propagated labels.
+- Dense-field nuclear splitting uses
+  `nuc_watershed_tolerance = 1.0`, `nuc_watershed_ext = 1`, and
+  `refine_dense_nuclei = TRUE` by default.
+- Panel F now paints the original labelled cell image rather than a binary
+  re-labelling, so each nucleus retains its own cell boundary in the QC view.
+
+**Synthetic IF rerun**:
+
+```text
+IF images processed: 4
+Nuclei per image: 25
+QC status: PASS for all 4 images
+Panel F acceptance: PASS — individual cell-like boundaries, one nucleus per
+cell compartment, no large merged polygon regions
+```
+
+The change is a segmentation/QC defensive repair only. It does not change any
+biological interpretation claim, modality definition, or fluorescence metric
+semantics. The full synthetic smoke test, including
+`tests/verify_if_advanced_modules.R`, completed successfully after the repair.
+The runtime regression contract also reports `nuclei = 25`,
+`union_components = 25`, `effective_radius = 10`, and `gap = 1` for the
+reference synthetic IF image.
+
+**Dense public-image check**: the public CIL45501 IF image was rerun with the
+same defaults. It produced `799` watershed nuclei with
+`effective_cell_propagation_radius = 0` because neighboring nuclear
+boundaries leave no defensible cytoplasm expansion interval under the guarded
+gap rule. Panel F retains separate nucleus-labelled boundaries and does not
+draw a merged cell polygon; cytoplasmic measurements are consequently left
+non-evaluable for this dense field rather than being inferred by expansion.

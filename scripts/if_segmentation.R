@@ -19,11 +19,24 @@ segment_if_image <- function(
   nuc_min_area = 20,
   nuc_max_area = 5000,
   cell_propagation_radius = 15,
+  max_cytoplasm_expansion_radius = 10,
+  cytoplasm_boundary_gap_px = 1,
+  nuc_watershed_tolerance = 1.0,
+  nuc_watershed_ext = 1,
+  refine_dense_nuclei = TRUE,
   tissue_threshold_pct = 0.02
 ) {
   dims <- dim(nuclear_mat)
   nr <- dims[1L]
   nc <- dims[2L]
+  watershed_tolerance <- as.numeric(nuc_watershed_tolerance)
+  watershed_ext <- as.numeric(nuc_watershed_ext)
+  if (!is.finite(watershed_tolerance) || watershed_tolerance < 0) watershed_tolerance <- 0.5
+  if (!is.finite(watershed_ext) || watershed_ext < 1) watershed_ext <- 1
+  # Dense-field refinement uses a one-pixel local-maximum neighborhood while
+  # retaining the caller's intensity tolerance; this avoids turning texture
+  # noise into hundreds of artificial nuclei.
+  if (isTRUE(refine_dense_nuclei)) watershed_ext <- min(watershed_ext, 1)
 
   # Step 1: Check for external mask if requested
   if (segmentation_engine == "external_mask" && !is.null(external_mask_path) && file.exists(external_mask_path)) {
@@ -57,10 +70,16 @@ segment_if_image <- function(
     kern <- EBImage::makeBrush(3, shape = "disc")
     nuc_binary <- EBImage::opening(nuc_binary, kern)
 
-    # 4. Distance transform and watershed seeds
+    # 4. Distance transform and watershed seeds.  The one-pixel local-maximum
+    # neighborhood deliberately preserves touching-nucleus peaks in dense
+    # fields without lowering the intensity tolerance into image texture.
     dist_map <- EBImage::distmap(nuc_binary)
-    # Find local maxima as seeds
-    seeds <- EBImage::watershed(dist_map, tolerance = 1.0, ext = 2)
+    # Find local maxima as seeds and split touching nuclei before filtering.
+    seeds <- EBImage::watershed(
+      dist_map,
+      tolerance = watershed_tolerance,
+      ext = as.integer(round(watershed_ext))
+    )
     # Mask out non-nuclear background
     nuc_labels <- as.matrix(seeds) * as.matrix(nuc_binary)
 
@@ -79,15 +98,56 @@ segment_if_image <- function(
   }
 
   n_cells <- max(nuc_labels, na.rm = TRUE)
+  if (!is.finite(n_cells) || n_cells < 1) n_cells <- 0L
+  n_cells <- as.integer(round(n_cells))
 
   # Step 2: Cell and Cytoplasm Propagation
   nuc_mask <- nuc_labels > 0
 
+  # The legacy implementation used one unconstrained radius for every
+  # nucleus.  In dense fields that can make neighboring dilations overlap and
+  # produce a single report-like cell polygon.  The effective radius is now
+  # capped both globally and by the closest pair of nuclear boundaries.
+  configured_radius <- as.numeric(cell_propagation_radius)
+  max_radius <- as.numeric(max_cytoplasm_expansion_radius)
+  boundary_gap_px <- as.numeric(cytoplasm_boundary_gap_px)
+  if (!is.finite(configured_radius) || configured_radius < 0) configured_radius <- 15
+  if (!is.finite(max_radius) || max_radius < 0) max_radius <- 10
+  if (!is.finite(boundary_gap_px) || boundary_gap_px < 0) boundary_gap_px <- 1
+  configured_radius <- floor(configured_radius)
+  max_radius <- floor(max_radius)
+  boundary_gap_px <- floor(boundary_gap_px)
+  effective_radius <- min(configured_radius, max_radius)
+
+  if (n_cells >= 2L) {
+    centers <- do.call(rbind, lapply(seq_len(n_cells), function(id) {
+      ij <- which(nuc_labels == id, arr.ind = TRUE)
+      if (!nrow(ij)) return(c(NA_real_, NA_real_))
+      c(mean(ij[, 2]), mean(ij[, 1]))
+    }))
+    areas <- vapply(seq_len(n_cells), function(id) sum(nuc_labels == id), numeric(1L))
+    radii <- sqrt(pmax(areas, 1) / pi)
+    center_dist <- as.matrix(stats::dist(centers))
+    diag(center_dist) <- Inf
+    safe_pairs <- outer(radii, radii, "+")
+    safe_pairs <- (center_dist - safe_pairs - boundary_gap_px) / 2
+    safe_pairs <- safe_pairs[is.finite(safe_pairs)]
+    if (length(safe_pairs)) {
+      safe_radius <- floor(max(0, min(safe_pairs)))
+      effective_radius <- min(effective_radius, safe_radius)
+    }
+  }
+
   if (n_cells > 0) {
-    # Define cell boundary via constrained Voronoi propagation
-    # We create a distance mask from nuclei limited to cell_propagation_radius
-    dist_from_nuc <- EBImage::distmap(!nuc_mask)
-    cell_allowed <- (dist_from_nuc <= cell_propagation_radius)
+    # Define cell territory with the distance-transform threshold, now using
+    # the guarded effective radius.  The dynamic cap above prevents the
+    # distance shells of neighboring nuclei from reaching one another.
+    dist_from_nuc <- as.matrix(EBImage::distmap(!nuc_mask))
+    cell_allowed <- if (effective_radius > 0) {
+      dist_from_nuc <= effective_radius
+    } else {
+      nuc_mask
+    }
 
     if (!is.null(cyto_ref_mat)) {
       # If cytoplasm reference channel exists, intersect with positive cyto signal
@@ -103,7 +163,29 @@ segment_if_image <- function(
       seeds = EBImage::Image(nuc_labels, colormode = "Grayscale"),
       mask = EBImage::Image(cell_allowed, colormode = "Grayscale")
     )
-    cell_labels <- as.matrix(cell_labels)
+    cell_labels <- round(as.matrix(cell_labels))
+
+    # Remove a narrow neutral boundary wherever two propagated labels touch.
+    # Nuclei are protected, so this only trims cytoplasm and cannot erase a
+    # valid nuclear object.  The gap prevents adjacent cytoplasm masks from
+    # becoming one connected polygon in QC overlays or downstream masks.
+    if (boundary_gap_px > 0) {
+      contact <- matrix(FALSE, nrow = nr, ncol = nc)
+      if (nr > 1L) contact[2:nr, ] <- contact[2:nr, ] |
+        (cell_labels[2:nr, ] > 0 & cell_labels[1:(nr - 1L), ] > 0 &
+           cell_labels[2:nr, ] != cell_labels[1:(nr - 1L), ])
+      if (nc > 1L) contact[, 2:nc] <- contact[, 2:nc] |
+        (cell_labels[, 2:nc] > 0 & cell_labels[, 1:(nc - 1L)] > 0 &
+           cell_labels[, 2:nc] != cell_labels[, 1:(nc - 1L)])
+      if (boundary_gap_px > 1L) {
+        contact <- as.matrix(EBImage::dilate(
+          EBImage::Image(contact, colormode = "Grayscale"),
+          EBImage::makeBrush(2L * boundary_gap_px + 1L, shape = "disc")
+        )) > 0
+      }
+      contact[nuc_mask] <- FALSE
+      cell_labels[contact] <- 0L
+    }
   } else {
     cell_labels <- matrix(0L, nrow = nr, ncol = nc)
   }
@@ -169,6 +251,13 @@ segment_if_image <- function(
     engine_used = engine_used,
     metrics = data.table(
       n_cells = n_cells,
+      requested_cell_propagation_radius = configured_radius,
+      max_cytoplasm_expansion_radius = max_radius,
+      effective_cell_propagation_radius = effective_radius,
+      cytoplasm_boundary_gap_px = boundary_gap_px,
+      nuc_watershed_tolerance = watershed_tolerance,
+      nuc_watershed_ext = as.integer(round(watershed_ext)),
+      dense_nucleus_watershed_refinement = isTRUE(refine_dense_nuclei),
       nuclear_area_fraction = nuc_frac,
       cytoplasmic_area_fraction = cyto_frac,
       extracellular_area_fraction = extra_frac,

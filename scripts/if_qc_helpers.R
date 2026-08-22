@@ -107,11 +107,16 @@ render_if_8panel_qc <- function(
   pD[, , 3] <- 0
 
   # Panel E: Nuclear segmentation overlay
-  nuc_outline <- EBImage::bwlabel(seg_res$nuc_labels > 0)
+  # Preserve watershed labels so touching nuclei remain visibly distinct in
+  # the QC panel; re-labelling the binary union would hide the refinement.
+  nuc_outline <- seg_res$nuc_labels
   pE <- EBImage::paintObjects(nuc_outline, pB, col = c("#FF00FF", "#FF00FF"), opac = c(1, 0.2))
 
-  # Panel F: Cell propagation overlay
-  cell_outline <- EBImage::bwlabel(seg_res$cell_labels > 0)
+  # Panel F: Cell propagation overlay.  Keep the propagated label image
+  # intact instead of re-labelling the union mask: bwlabel(cell_labels > 0)
+  # collapses touching cytoplasm into one large polygon and hides whether each
+  # nucleus received its own cell compartment.
+  cell_outline <- seg_res$cell_labels
   pF <- EBImage::paintObjects(cell_outline, pA, col = c("#FFFF00", "#FFFF00"), opac = c(0.8, 0.1))
 
   # Panel G: Positive signal mask

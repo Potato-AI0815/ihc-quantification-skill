@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail when a public release contains likely private paths, identifiers, or non-synthetic images."""
+"""Fail when a public release contains likely private paths, identifiers, or unapproved image assets."""
 from __future__ import annotations
 
 import os
@@ -19,7 +19,10 @@ PUBLIC_IMAGE_PREFIXES = {
     Path("tests/synthetic_if_fixture/images"),
     Path("tests/synthetic_coloc_fixture/images"),
     Path("tests/synthetic_puncta_fixture/images"),
-    Path("docs/assets/synthetic")
+    Path("docs/assets/synthetic"),
+    # Small, derived PNGs from explicitly documented public teaching datasets.
+    # Raw microscopy files remain blocked everywhere else.
+    Path("docs/assets/public_validation")
 }
 PRIVATE_FILENAME_PATTERNS = [
     re.compile(r"^ASSET_MANIFEST", re.IGNORECASE),
@@ -78,7 +81,7 @@ def main() -> int:
 
         suffix = path.suffix.lower()
         if suffix in IMAGE_SUFFIXES and not under_prefix(rel, PUBLIC_IMAGE_PREFIXES):
-            findings.append(f"NON_SYNTHETIC_IMAGE\t{rel}\tpublic images must live under an approved synthetic directory")
+            findings.append(f"UNAPPROVED_IMAGE\t{rel}\tpublic images must live under an approved demo directory")
         if suffix in RAW_IMAGE_SUFFIXES and not under_prefix(rel, PUBLIC_IMAGE_PREFIXES):
             findings.append(f"RAW_IMAGE\t{rel}\traw microscopy/WSI file must not be public")
         if path.stat().st_size > 8_000_000 and not under_prefix(rel, PUBLIC_IMAGE_PREFIXES):
@@ -113,7 +116,7 @@ def main() -> int:
         for finding in sorted(set(findings)):
             print(finding)
         return 1
-    print("PASS\tpublic_release\tOnly approved synthetic images are present; no supplied private tokens or likely user-specific paths were found")
+    print("PASS\tpublic_release\tOnly approved synthetic/public-validation demo images are present; no supplied private tokens or likely user-specific paths were found")
     return 0
 
 

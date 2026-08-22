@@ -23,6 +23,9 @@ EXCLUDED = {
     Path(".DS_Store"),
 }
 GENERATED_DIRS = {
+    # Developer-local R package library; it is ignored by Git and must never
+    # be required in the distributable source manifest.
+    "Rlib",
     "work",
     "tests/synthetic_output",
     "tests/synthetic_if_output",

@@ -8,6 +8,11 @@ nuc_threshold_value,
 nuc_min_area,20
 nuc_max_area,5000
 cell_propagation_radius,15
+max_cytoplasm_expansion_radius,10
+cytoplasm_boundary_gap_px,1
+nuc_watershed_tolerance,1.0
+nuc_watershed_ext,1
+refine_dense_nuclei,TRUE
 pos_threshold_method,otsu
 pos_threshold_value,
 colocalization_enabled,FALSE
