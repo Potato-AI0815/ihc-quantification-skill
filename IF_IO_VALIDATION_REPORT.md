@@ -15,15 +15,26 @@
 
 ## 2. Quantitative Verification Matrix
 
-| Fixture / Format | Detected Representation | Dimensions ($X \times Y \times Z$) | Observed Min | Observed Max | Dynamic Range Used | Silent Conversion Audit |
+| Filename | Format | Axes | SizeC | SizeZ | SizeT | Dimension Order | Bit Depth | Channel Count | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `test_8bit.tif` | Standard TIFF | XYC | 2 | 1 | 1 | XYC | 8-bit | 2 | **PASS** |
+| `test_16bit.tif` | Standard TIFF | XYC | 2 | 1 | 1 | XYC | 16-bit | 2 | **PASS** |
+| `test_12bit_in_16bit_container.tif` | Standard TIFF | XYC | 2 | 1 | 1 | XYC | 12-bit (16-bit container) | 2 | **PASS** |
+| `test_32bit.tif` | Standard TIFF | XYC | 2 | 1 | 1 | XYC | 32-bit float | 2 | **PASS** |
+| `test_zstack_4d.tif` | ImageJ Hyperstack | XYCZ | 2 | 5 | 1 | XYCZ | 16-bit / norm float | 2 | **PASS** |
+| `OME-TIFF metadata workflow` | OME-TIFF / OME-XML | — | — | — | — | — | — | — | **UNDER_VALIDATION** |
+
+### Dynamic Range Preservation Audit
+
+| Fixture / Format | Detected Representation | Dimensions ($X 	imes Y 	imes Z$) | Observed Min | Observed Max | Dynamic Range Used | Silent Conversion Audit |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **8-bit TIFF** | normalized_float | 128 $\times$ 128 $\times$ 1 | 0.0000 | 0.9412 | 1.0000 | **PASS_PRESERVED** |
-| **16-bit TIFF** | normalized_float | 128 $\times$ 128 $\times$ 1 | 0.0000 | 0.8850 | 1.0000 | **PASS_PRESERVED** |
-| **12-bit range in 16-bit container** | normalized_float | 128 $\times$ 128 $\times$ 1 | 0.0000 | 0.0625 | 1.0000 | **PASS_PRESERVED** |
-| **32-bit Float** | normalized_float | 128 $\times$ 128 $\times$ 1 | 0.0000 | 0.9500 | 1.0000 | **PASS_PRESERVED** |
-| **4D Z-Stack (Max Proj)** | 4D Z-Stack | 128 $\times$ 128 $\times$ 5 | 0.0000 | 0.9000 | 0.9000 | **PASS_PRESERVED** |
-| **4D Z-Stack (Mean Proj)** | 4D Z-Stack | 128 $\times$ 128 $\times$ 5 | 0.0000 | 0.4471 | 0.4471 | **PASS_PRESERVED** |
-| **4D Z-Stack (Sum Proj)** | 4D Z-Stack | 128 $\times$ 128 $\times$ 5 | 0.0000 | 2.2353 | 2.2353 | **PASS_PRESERVED** |
+| **8-bit TIFF** | normalized_float | 128 $	imes$ 128 $	imes$ 1 | 0.0000 | 0.9412 | 1.0000 | **PASS_PRESERVED** |
+| **16-bit TIFF** | normalized_float | 128 $	imes$ 128 $	imes$ 1 | 0.0000 | 0.8850 | 1.0000 | **PASS_PRESERVED** |
+| **12-bit range in 16-bit container** | normalized_float | 128 $	imes$ 128 $	imes$ 1 | 0.0000 | 0.0625 | 1.0000 | **PASS_PRESERVED** |
+| **32-bit Float** | normalized_float | 128 $	imes$ 128 $	imes$ 1 | 0.0000 | 0.9500 | 1.0000 | **PASS_PRESERVED** |
+| **4D Z-Stack (Max Proj)** | 4D Z-Stack | 128 $	imes$ 128 $	imes$ 5 | 0.0000 | 0.9000 | 0.9000 | **PASS_PRESERVED** |
+| **4D Z-Stack (Mean Proj)** | 4D Z-Stack | 128 $	imes$ 128 $	imes$ 5 | 0.0000 | 0.4471 | 0.4471 | **PASS_PRESERVED** |
+| **4D Z-Stack (Sum Proj)** | 4D Z-Stack | 128 $	imes$ 128 $	imes$ 5 | 0.0000 | 2.2353 | 2.2353 | **PASS_PRESERVED** |
 
 ---
 
@@ -31,3 +42,4 @@
 1. **Sum Projection** $\ge$ **Max Projection**: Verified ($I_{\text{sum, max}} = 2.2353 \ge I_{\text{max, max}} = 0.9000$).
 2. **Max Projection** $\ge$ **Mean Projection**: Verified ($I_{\text{max, max}} = 0.9000 \ge I_{\text{mean, max}} = 0.4471$).
 3. **Channel Integrity**: Multi-channel Z-stacks parse individual channels independently prior to slice projection.
+

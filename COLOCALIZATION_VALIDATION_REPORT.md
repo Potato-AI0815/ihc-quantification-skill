@@ -1,7 +1,7 @@
 # Colocalization Module Validation Report
 
 **Version**: 2.3.0-alpha.2
-**Date**: 2026-08-21
+**Date**: 2026-08-22
 **Status**: **PASS**
 
 ---
@@ -23,4 +23,5 @@
 ---
 
 ## 3. Scientific Governance
-The colocalization pipeline reports spatial pixel intensity associations within the optical resolution limits of the microscope. High colocalization scores do **not** directly demonstrate physical molecular binding or complex formation without complementary biophysical assays (e.g. FRET, PLA, Co-IP).
+The colocalization pipeline reports spatial pixel intensity associations within the optical resolution limits of the microscope; colocalization does not establish molecular binding or physical complex formation without complementary biophysical assays (e.g. FRET, PLA, Co-IP).
+

@@ -39,8 +39,8 @@ The one-click runner (`run_one_click.sh`, `run_one_click.ps1`, `run_one_click.cm
 2. **Biological Replicates as Inferential Unit**: Always aggregate to `biological_unit_id` ($n$). Cells, ROIs, and pixels are nested measurements, not independent sample size.
 3. **Strict Modality Isolation**:
    - **DAB**: Optical density (absorbance), H-DAB color deconvolution, H-score (0–300), DAB-positive area fraction.
-   - **IF**: Linear fluorescence intensity (MFI), integrated fluorescence intensity, positivity area fraction, nuclear-to-cytoplasmic (N/C) ratio, colocalization ($r, M_1, M_2$), puncta count.
-   - **Prohibition**: Never write fluorescence intensity as "OD" or "optical density"; never call IF integrated intensity "IOD"; never call automated extracellular space "stroma" without validated pathology annotation.
+   - **IF**: Linear fluorescence intensity (MFI), integrated fluorescence intensity, positivity area fraction, nuclear-to-cytoplasmic (N/C) ratio, colocalization ($r, M_1, M_2$; colocalization does not establish molecular binding), validated synthetic puncta counting workflow.
+   - **Prohibition**: Never write fluorescence intensity as "OD" or "optical density"; never call IF integrated intensity "IOD"; never call automated extracellular space "stroma" without validated pathology annotation. Colocalization measures spatial pixel intensity correlation and does not establish physical molecular binding.
 4. **Four-Compartment Quantification**:
    - `global`: Whole analyzed tissue / valid field of view.
    - `nucleus`: Nuclear counterstain mask (Hematoxylin or DAPI).
@@ -120,7 +120,7 @@ results/
             └── if_main_figure_manifest.csv
 ```
 
-ImageJ TIFF and hyperstack files are parsed from their ImageDescription axes (C/Z/T) rather than inferred from an array dimension. Each image must declare unique `channel_index` values `1..N`; duplicate or ambiguous mappings are rejected. The optional `tiff` R package is installed by `scripts/install_dependencies.R` for compressed TIFFs; the built-in reader covers uncompressed 8/16/32-bit single-sample pages. The validated bit-depth contract includes 12-bit detector-range values stored in a 16-bit container; packed native-12-bit TIFF and OME-XML metadata-aware axis parsing remain experimental.
+ImageJ TIFF and hyperstack files are parsed from their ImageDescription axes (C/Z/T) rather than inferred from an array dimension. Each image must declare unique `channel_index` values `1..N`; duplicate or ambiguous mappings are rejected. The optional `tiff` R package is installed by `scripts/install_dependencies.R` for compressed TIFFs; the built-in reader covers uncompressed 8/16/32-bit single-sample pages. Supports TIFF and ImageJ-compatible hyperstacks; OME-TIFF metadata workflows remain under validation. Values from a 12-bit detector stored in a 16-bit TIFF container are covered by the validation fixture. Native packed-12-bit TIFF encodings are not formally validated.
 
 An empty required target channel is `NOT_EVALUABLE`, not zero-threshold positive. The pipeline never treats the full camera canvas as tissue by default; global/extracellular masks are conservative foreground proxies unless a reviewed mask is supplied.
 

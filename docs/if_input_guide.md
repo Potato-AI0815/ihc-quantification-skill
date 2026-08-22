@@ -5,10 +5,7 @@ The core IF pipeline natively supports standard multi-dimensional TIFF formats:
 - `.tif` / `.tiff` (Single-channel 8/16-bit, multi-channel composite, multi-plane Z-stack)
 - **ImageJ TIFF / hyperstack** with explicit C/Z/T metadata
 
-The following are experimental and not formally validated by the current I/O
-contract: OME-TIFF metadata-aware axis parsing and packed native-12-bit TIFF.
-Values from a 12-bit detector stored in a 16-bit TIFF container are covered by
-the validation fixture.
+Supports TIFF and ImageJ-compatible hyperstacks; OME-TIFF metadata workflows remain under validation. Values from a 12-bit detector stored in a 16-bit TIFF container are covered by the validation fixture. Native packed-12-bit TIFF encodings are not formally validated.
 
 ### Axis Ordering
 For ImageJ TIFFs the reader uses the embedded `ImageDescription` metadata (`channels`, `slices`, and `images`) and maps channel pages explicitly; it does not guess C/Z/T axes from an array dimension. The manifest must contain one unique `channel_index` for each declared channel.

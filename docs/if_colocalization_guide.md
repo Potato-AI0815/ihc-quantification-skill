@@ -18,4 +18,4 @@ $$M_1 = \frac{\sum_{i, B_i \ge T_B} A_i}{\sum_i A_i}, \quad M_2 = \frac{\sum_{i,
 ## Quality Control Rules
 - Colocalization is invalid if pixel count in ROI $< 30$ or dynamic range $< 0.05$.
 - Automated QC verifies channel registration shift $< 5\text{ px}$ before computing colocalization.
-- **Scientific Notice**: High colocalization scores signify spatial co-occurrence, **not** physical biochemical protein-protein interaction (which requires FRET / PLA / co-IP).
+- **Scientific Notice**: High colocalization scores signify spatial co-occurrence; colocalization does not establish molecular binding (which requires complementary biophysical assays such as FRET, PLA, or Co-IP).

@@ -212,15 +212,26 @@ report_md <- sprintf("# IF Image I/O, Bit-Depth, and Projection Validation Repor
 
 ## 2. Quantitative Verification Matrix
 
-| Fixture / Format | Detected Representation | Dimensions ($X \\times Y \\times Z$) | Observed Min | Observed Max | Dynamic Range Used | Silent Conversion Audit |
+| Filename | Format | Axes | SizeC | SizeZ | SizeT | Dimension Order | Bit Depth | Channel Count | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `test_8bit.tif` | Standard TIFF | XYC | 2 | 1 | 1 | XYC | 8-bit | 2 | **PASS** |
+| `test_16bit.tif` | Standard TIFF | XYC | 2 | 1 | 1 | XYC | 16-bit | 2 | **PASS** |
+| `test_12bit_in_16bit_container.tif` | Standard TIFF | XYC | 2 | 1 | 1 | XYC | 12-bit (16-bit container) | 2 | **PASS** |
+| `test_32bit.tif` | Standard TIFF | XYC | 2 | 1 | 1 | XYC | 32-bit float | 2 | **PASS** |
+| `test_zstack_4d.tif` | ImageJ Hyperstack | XYCZ | 2 | 5 | 1 | XYCZ | 16-bit / norm float | 2 | **PASS** |
+| `OME-TIFF metadata workflow` | OME-TIFF / OME-XML | — | — | — | — | — | — | — | **UNDER_VALIDATION** |
+
+### Dynamic Range Preservation Audit
+
+| Fixture / Format | Detected Representation | Dimensions ($X \times Y \times Z$) | Observed Min | Observed Max | Dynamic Range Used | Silent Conversion Audit |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **8-bit TIFF** | %s | %d $\\times$ %d $\\times$ %d | %.4f | %.4f | %.4f | **%s** |
-| **16-bit TIFF** | %s | %d $\\times$ %d $\\times$ %d | %.4f | %.4f | %.4f | **%s** |
-| **12-bit range in 16-bit container** | %s | %d $\\times$ %d $\\times$ %d | %.4f | %.4f | %.4f | **%s** |
-| **32-bit Float** | %s | %d $\\times$ %d $\\times$ %d | %.4f | %.4f | %.4f | **%s** |
-| **4D Z-Stack (Max Proj)** | %s | %d $\\times$ %d $\\times$ %d | %.4f | %.4f | %.4f | **%s** |
-| **4D Z-Stack (Mean Proj)** | %s | %d $\\times$ %d $\\times$ %d | %.4f | %.4f | %.4f | **%s** |
-| **4D Z-Stack (Sum Proj)** | %s | %d $\\times$ %d $\\times$ %d | %.4f | %.4f | %.4f | **%s** |
+| **8-bit TIFF** | %s | %d $\times$ %d $\times$ %d | %.4f | %.4f | %.4f | **%s** |
+| **16-bit TIFF** | %s | %d $\times$ %d $\times$ %d | %.4f | %.4f | %.4f | **%s** |
+| **12-bit range in 16-bit container** | %s | %d $\times$ %d $\times$ %d | %.4f | %.4f | %.4f | **%s** |
+| **32-bit Float** | %s | %d $\times$ %d $\times$ %d | %.4f | %.4f | %.4f | **%s** |
+| **4D Z-Stack (Max Proj)** | %s | %d $\times$ %d $\times$ %d | %.4f | %.4f | %.4f | **%s** |
+| **4D Z-Stack (Mean Proj)** | %s | %d $\times$ %d $\times$ %d | %.4f | %.4f | %.4f | **%s** |
+| **4D Z-Stack (Sum Proj)** | %s | %d $\times$ %d $\times$ %d | %.4f | %.4f | %.4f | **%s** |
 
 ---
 

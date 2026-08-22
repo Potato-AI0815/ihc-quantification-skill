@@ -91,6 +91,8 @@ REQUIRED = [
     "scripts/download_and_verify_public_images.R",
     "scripts/verify_if_io_bitdepth_contract.R",
     "scripts/benchmark_bbbc039_segmentation.R",
+    "RC1_BASELINE_REPORT.md",
+    "CI_PROVENANCE_REPORT.md",
 ]
 
 CSV_SCHEMAS = {

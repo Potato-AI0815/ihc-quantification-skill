@@ -147,6 +147,8 @@ for (img_path in val_imgs) {
 
   benchmark_results[[length(benchmark_results) + 1L]] <- data.table(
     image_id = vname,
+    gt_count = n_gt,
+    pred_count = n_pred,
     gt_objects = n_gt,
     pred_objects = n_pred,
     TP = tp,

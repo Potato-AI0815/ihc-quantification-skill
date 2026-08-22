@@ -48,13 +48,13 @@ A reproducible, QC-first, auditable R/EBImage workflow for **brightfield DAB-IHC
 - 自动输出四张独立主图（0–100% 阳性率或 0–300 H-score）。
 
 ### 2. 免疫荧光 IF 模态 (v2.3.0-alpha.2)
-- 已验证支持单通道、多通道复合图与 Z-stack TIFF / ImageJ hyperstack；OME-TIFF 元数据感知导入目前为实验性支持；
+- Supports TIFF and ImageJ-compatible hyperstacks; OME-TIFF metadata workflows remain under validation;
 - 已验证 8-bit、16-bit、32-bit 浮点及“12-bit 探测范围存于 16-bit 容器”的线性动态范围与饱和度 QC；原生打包 12-bit TIFF 尚未正式验证；
 - 自动执行背景扣除（Rolling Ball / Top-hat）、通道配准与光照校正；
 - 四域荧光定量：`GLOBAL`、`NUCLEUS`、`CYTOPLASM`、`EXTRACELLULAR`（严禁将自动细胞外区域标记为 stroma）；
 - 单细胞 MFI、中位数强度、积分荧光强度（严格禁止称为 IOD）与核质比（N/C ratio）；
-- 可选双标共定位模块（Pearson 相关系数 $r$、Manders $M_1/M_2$）；
-- 可选亚细胞斑点/焦点计数模块（$\gamma\text{H2AX}$、LC3、RNA-FISH）；
+- 可选双标共定位模块（Pearson 相关系数 $r$、Manders $M_1/M_2$；colocalization does not establish molecular binding）；
+- 可选亚细胞斑点/焦点计数（validated synthetic puncta counting workflow；$\gamma\text{H2AX}$、LC3、RNA-FISH）；
 - 每张图自动生成标准化 8-Panel IF QC Overview。
 - 可选的人工 IF 多边形 ROI：include 限定分析区域，exclude 排除烧录文字/伪影；原始图像不改写，并输出 ROI 像素审计表。
 

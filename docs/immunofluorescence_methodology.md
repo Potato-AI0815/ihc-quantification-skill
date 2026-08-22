@@ -37,7 +37,7 @@ The IF pipeline operates independently from the brightfield DAB-IHC pipeline:
 
 ## Colocalization Governance
 - Pearson correlation coefficient ($r$) and Manders overlap coefficients ($M_1, M_2$) quantify spatial intensity association.
-- **Scientific disclaimer**: High colocalization scores demonstrate correlated pixel distribution within optical resolution limits, **not** direct physical molecular interaction.
+- **Scientific disclaimer**: High colocalization scores demonstrate correlated pixel distribution within optical resolution limits; colocalization does not establish molecular binding without complementary biophysical assays (e.g. FRET, PLA, Co-IP).
 
 ---
 
