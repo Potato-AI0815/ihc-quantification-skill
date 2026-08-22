@@ -70,9 +70,9 @@ In accordance with the validation closeout directive, all new feature expansion 
 - **Dataset**: Broad Bioimage Benchmark Collection ([BBBC039](https://data.broadinstitute.org/bbbc/BBBC039/)) U2OS nuclei ground-truth masks.
 - **Benchmark Performance (Default EBImage Watershed; 50 official validation images)**:
   - **Pixel Dice**: **0.8953** (IoU = 0.8390)
-  - **Object F1 Score**: **0.8415** (Precision = 0.8867, Recall = 0.7950 at IoU $\ge 0.5$)
+  - **Object F1 Score**: **0.8919** (Precision = 0.9106, Recall = 0.8254 at IoU $\ge 0.5$)
   - **Cell Count Relative Error**: **13.0%** (one image had no decoded GT objects and was excluded from this aggregate)
-- **Report & CSV**: [`SEGMENTATION_BENCHMARK_REPORT.md`](SEGMENTATION_BENCHMARK_REPORT.md) and [`segmentation_benchmark.csv`](segmentation_benchmark.csv).
+- **Reports & tables**: [`BBBC039_SEGMENTATION_BENCHMARK_FINAL.md`](BBBC039_SEGMENTATION_BENCHMARK_FINAL.md), [`benchmark_bbbc039_results.csv`](benchmark_bbbc039_results.csv), [`SEGMENTATION_BENCHMARK_REPORT.md`](SEGMENTATION_BENCHMARK_REPORT.md), and [`tests/verify_bbbc039_benchmark.R`](tests/verify_bbbc039_benchmark.R).
 
 ### P4 — Repaired Colocalization Validation
 - **High Colocalization (`COLOC_HIGH`)**:
