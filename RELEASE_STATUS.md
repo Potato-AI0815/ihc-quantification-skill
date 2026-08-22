@@ -25,7 +25,7 @@ before any release-candidate or manuscript claim.
 | **G7** | Puncta / Subcellular Foci | IF | **PASS_WITH_WARNINGS** | Synthetic aggregate count recovery: GT5=45->Det=43; GT15=135->Det=134; coordinate-level detector precision/recall not validated |
 | **G8** | Public Benchmark Validation | Both | **PASS_WITH_WARNINGS** | BBBC039 official split: Dice=0.8953, IoU=0.8390, precision=0.9106, recall=0.8254, F1=0.8919; one zero-GT image non-evaluable; ImageJ teaching image remains non-biological |
 | **G9** | 100% DAB Backward Compatibility| Brightfield DAB | **PASS** | Clean v2.2.2 checkout comparison ($\Delta = 0.000000\text{e}+00$) |
-| **G10**| Cross-Platform CI Matrix | Both | **PASS** | Exact `main@748016a` static, Ubuntu, Windows, and IF I/O contract jobs passed in [Actions run 32452752381](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32452752381) |
+| **G10**| Cross-Platform CI Matrix | Both | **PASS** | Exact `main@ec0902d` static, Ubuntu, Windows, and IF I/O contract jobs passed in [Actions run 32555682952](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32555682952) |
 
 ---
 

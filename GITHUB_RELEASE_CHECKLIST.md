@@ -8,7 +8,7 @@
 - [x] `python scripts/preflight_public_release.py` passes.
 - [x] Synthetic smoke test passes on the intended R/EBImage environment.
 - [x] `tests/verify_plot_contract.R` passes.
-- [x] GitHub Actions passes on Windows and Linux for the v2.3.0-alpha.2 candidate ([exact main run 32452752381](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32452752381)).
+- [x] GitHub Actions passes on Windows and Linux for the v2.3.0-alpha.2 candidate ([exact main run 32555682952](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32555682952)).
 
 ## Figures
 
