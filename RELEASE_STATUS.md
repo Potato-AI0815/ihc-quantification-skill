@@ -1,7 +1,7 @@
 # Release Status — IHC & Immunofluorescence Quantification Skill
 
 **Current Version**: `2.3.0-alpha.2` (IF public runtime revalidated with warnings)
-**Validation Decision**: `ALPHA_VALIDATED_WITH_WARNINGS (validation hotfix; exact-main GitHub CI pending; prerelease only)`
+**Validation Decision**: `ALPHA_VALIDATED_WITH_WARNINGS (exact-main GitHub Ubuntu/Windows CI passed; prerelease only)`
 
 The previous public-image outputs are historical artifacts only. The current
 public outputs were regenerated after the ImageJ axis/channel mapping,
@@ -25,7 +25,7 @@ before any release-candidate or manuscript claim.
 | **G7** | Puncta / Subcellular Foci | IF | **PASS_WITH_WARNINGS** | Synthetic aggregate count recovery: GT5=45->Det=43; GT15=135->Det=134; coordinate-level detector precision/recall not validated |
 | **G8** | Public Benchmark Validation | Both | **PASS_WITH_WARNINGS** | ImageJ teaching images and BBBC039 official validation split rerun passed with documented non-evaluable/teaching-image warnings |
 | **G9** | 100% DAB Backward Compatibility| Brightfield DAB | **PASS** | Clean v2.2.2 checkout comparison ($\Delta = 0.000000\text{e}+00$) |
-| **G10**| Cross-Platform CI Matrix | Both | **PENDING_GITHUB_CI** | Workflow updated to include IF I/O contract; exact alpha.2 main-commit run pending |
+| **G10**| Cross-Platform CI Matrix | Both | **PASS** | Exact `main@748016a` static, Ubuntu, Windows, and IF I/O contract jobs passed in [Actions run 32452752381](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32452752381) |
 
 ---
 

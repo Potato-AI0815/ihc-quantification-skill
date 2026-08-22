@@ -11,6 +11,8 @@
 - Added the IF bit-depth/projection contract to the cross-platform CI matrix.
 - Reclassified puncta validation as synthetic aggregate-count validation, not
   full object-detector validation.
+- Exact `main@748016a` Ubuntu/Windows CI, including the IF I/O contract, passed
+  in Actions run `32452752381`.
 
 ## 2.3.0-alpha.1 release closeout — 2026-08-20
 

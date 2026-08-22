@@ -17,6 +17,6 @@ Only aggregate software-validation facts are retained here. The original images,
 
 ## v2.3.0-alpha.2 CI candidate
 
-v2.3.0-alpha.2 adds the IF modality while retaining the v2.2.2 DAB baseline, portable path handling, private-release scanning, and the wrapped-caption plot-contract test. The local macOS R 4.6.0 dual-modality smoke test passes; GitHub Actions on Windows and Linux remains pending until this candidate is pushed. Do not assign a release-candidate or stable tag before that matrix passes.
+v2.3.0-alpha.2 adds the IF modality while retaining the v2.2.2 DAB baseline, portable path handling, private-release scanning, and the wrapped-caption plot-contract test. The local macOS R 4.6.0 dual-modality smoke test and exact `main@748016a` GitHub Actions matrix pass on Windows and Linux. This remains an Alpha prerelease; do not assign an RC or stable claim without the additional biological and format-specific validation described in the gate reports.
 
 Runtime success validates software execution, not universal validity across markers, tissues, scanners, magnifications, or staining batches.

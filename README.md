@@ -6,7 +6,7 @@ A reproducible, QC-first, auditable R/EBImage workflow for **brightfield DAB-IHC
 > - **Brightfield DAB Workflow**: **Stable** (Full v2.2.2 backward compatibility maintained).
 > - **Immunofluorescence (IF) Workflow**: **v2.3.0-alpha.2** (Multi-channel TIFF, 4-compartment MFI, Colocalization, Puncta detection, 8-panel QC).
 > - **IF public-image runtime status**: **Repaired public smoke test PASS_WITH_WARNINGS**; FluorescentCells uses a reviewed artifact-exclusion ROI and remains a teaching image rather than a biological replication benchmark.
-> - **Current release gate**: Local validation hotfix rerun passes; exact `v2.3.0-alpha.2` main-commit Ubuntu/Windows CI is pending. This remains an alpha prerelease with the warnings documented below.
+> - **Current release gate**: Local validation hotfix and exact `v2.3.0-alpha.2` main-commit Ubuntu/Windows CI pass ([Actions run 32452752381](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32452752381)); this remains an alpha prerelease with the warnings documented below.
 > - **Research Use Only (RUO)**: This tool is designed strictly for reproducible scientific image quantification and methodological auditing, not for clinical diagnosis, diagnostic screening, or treatment decision-making.
 
 [English summary](README_EN.md) · [完整分析合同与规范 (SKILL.md)](SKILL.md) · [方法学与科学边界](docs/immunofluorescence_methodology.md) · [发布状态](RELEASE_STATUS.md)

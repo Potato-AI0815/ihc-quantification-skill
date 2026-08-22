@@ -39,7 +39,7 @@ and are not silently re-labelled as biological replication evidence.
 - **[G7] Puncta / Foci Module**: Difference of Gaussians (DoG) bandpass filter for subcellular foci quantification per cell and per compartment; current fixture validates aggregate count recovery, not coordinate-level detector precision/recall. (**PASS_WITH_WARNINGS**)
 - **[G8] Public Benchmark Documentation**: Documentation and manifest templates for BBBC006, BBBC039, HPA, and BioImage Archive. (**PASS_WITH_WARNINGS ImageJ execution**)
 - **[G9] DAB Backward Compatibility**: Exact numerical equality verified across all 11 baseline tables (Max difference: $0.000000\text{e}+00$). (**PASS**)
-- **[G10] CI & Packaging**: Workflow, clean package manifest, and SHA256 verification are ready; Ubuntu/Windows execution for this v2.3.0-alpha.2 candidate is **PENDING_GITHUB_CI** until push.
+- **[G10] CI & Packaging**: Workflow, clean package manifest, and SHA256 verification are ready; exact `main@748016a` Ubuntu/Windows execution and IF I/O contract passed in [Actions run 32452752381](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32452752381). (**PASS**)
 
 ---
 
