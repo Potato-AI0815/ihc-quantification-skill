@@ -1,0 +1,12 @@
+Gate,Status,Evidence,Notes
+G0,PASS,"tests/verify_synthetic_output.R: 100% table & QC schema integrity verified","DAB baseline established from clean v2.2.2 checkout"
+G1,PASS_WITH_WARNINGS,"scripts/verify_if_io_bitdepth_contract.R: TIFF/ImageJ hyperstack 8/16/32-bit & 12-in-16 container verified","Known limitation: OME-TIFF metadata workflows remain under validation"
+G2,PASS,"scripts/if_preprocessing.R: Top-hat/Rolling Ball background correction & saturation QC verified","HIGH_SATURATION flag automated alert"
+G3,PASS,"scripts/if_segmentation.R: Classical morphological distance-watershed pipeline & 4-compartment masks verified","Reviewed include/exclude polygon ROI support functional"
+G4,PASS,"scripts/run_if_quantification.R: 4-domain linear MFI, median, integrated intensity & N/C ratio verified","Empty-channel guard triggers NOT_EVALUABLE defense"
+G5,PASS,"scripts/if_qc_helpers.R: Standardized 8-panel IF QC overview & publication figures 1-6 verified","Diagnostic QC montage rendered per image"
+G6,PASS,"tests/verify_if_advanced_modules.R: Pearson r (0.852 vs -0.988) & Manders M1/M2 (1.000 vs 0.023/0.025) verified","Documentation includes colocalization does not establish molecular binding disclaimer"
+G7,PASS,"tests/verify_if_advanced_modules.R: Validated synthetic puncta counting workflow (GT5=45->Det=43, GT15=135->Det=134)","Aggregate count relative error 4.4% & 0.7%; per-cell MAE = 0.17"
+G8,PASS,"scripts/benchmark_bbbc039_segmentation.R: BBBC039 official 50-image validation split (Dice=0.8953, IoU=0.8390, F1=0.8919, Count Err=13.0%)","RGB instance decoding & deterministic 1-to-1 greedy IoU matching"
+G9,PASS,"tests/verify_backward_compatibility.R: Max absolute numerical delta <= 1.0e-06 across all 11 tables","100% numerical and structural compatibility against v2.2.2 baseline confirmed"
+G10,PASS,".github/workflows/ci.yml: Exact main commit static, Ubuntu, Windows, and IF I/O contract jobs passed","Dual-platform CI matrix confirmed on ubuntu-latest and windows-latest"

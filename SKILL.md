@@ -1,16 +1,16 @@
 ---
 name: ihc-if-quantification
-version: 2.3.0-alpha.2
+version: 2.3.0-rc1
 description: Reproducible, auditable quantification of brightfield DAB/hematoxylin IHC and multi-channel immunofluorescence (IF) images. Automatically routes between brightfield DAB-IHC (v2.2.2 backward-compatible) and multi-channel IF pipelines. Supports four measurement domains (global tissue, nucleus, cytoplasm, extracellular), single-cell scoring, H-DAB reconstruction, 8-panel IF QC overviews, colocalization (Pearson/Manders), puncta/foci detection, and publication-ready biological-unit aggregation figures.
 ---
 
-# IHC & Immunofluorescence (IF) Quantification Skill v2.3.0-alpha.2
+# IHC & Immunofluorescence (IF) Quantification Skill v2.3.0-rc1
 
 ## Purpose
 
 Use this skill to perform auditable, QC-first quantification of:
 1. **Brightfield Chromogenic DAB/Hematoxylin IHC**: Exported as RGB TIFF, PNG, or JPEG fields. (Stable v2.2.2 workflow; OME-TIFF metadata is not required for DAB routing.)
-2. **Multi-channel Fluorescence Microscopy (IF)**: Validated for single-channel, multi-channel composite, and ImageJ hyperstack/Z-stack TIFF inputs. OME-TIFF metadata-aware ingestion is experimental in v2.3.0-alpha.2 and must not be treated as a validated interchange contract.
+2. **Multi-channel Fluorescence Microscopy (IF)**: Validated for single-channel, multi-channel composite, and ImageJ hyperstack/Z-stack TIFF inputs. Supports TIFF and ImageJ-compatible hyperstacks; OME-TIFF metadata workflows remain under validation.
 
 ---
 

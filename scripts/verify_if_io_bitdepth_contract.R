@@ -197,7 +197,7 @@ print(dt_report)
 # ==============================================================================
 report_md <- sprintf("# IF Image I/O, Bit-Depth, and Projection Validation Report
 
-**Version**: 2.3.0-alpha.2
+**Version**: 2.3.0-rc1
 **Date**: %s
 **Status**: **PASS_WITH_WARNINGS (validated scope only)**
 

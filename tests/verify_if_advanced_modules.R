@@ -57,7 +57,7 @@ cat(sprintf("PASS: Colocalization contract validated (Pearson: %.3f >> %.3f, M1:
 # Generate COLOCALIZATION_VALIDATION_REPORT.md
 coloc_report <- sprintf("# Colocalization Module Validation Report
 
-**Version**: 2.3.0-alpha.2
+**Version**: 2.3.0-rc1
 **Date**: %s
 **Status**: **PASS**
 
@@ -80,7 +80,7 @@ coloc_report <- sprintf("# Colocalization Module Validation Report
 ---
 
 ## 3. Scientific Governance
-The colocalization pipeline reports spatial pixel intensity associations within the optical resolution limits of the microscope. High colocalization scores do **not** directly demonstrate physical molecular binding or complex formation without complementary biophysical assays (e.g. FRET, PLA, Co-IP).
+The colocalization pipeline reports spatial pixel intensity associations within the optical resolution limits of the microscope; colocalization does not establish molecular binding or physical complex formation without complementary biophysical assays (e.g. FRET, PLA, Co-IP).
 ", Sys.Date(), r_high, r_low, m1_high, m1_low, m2_high, m2_low)
 
 writeLines(coloc_report, file.path(root, "COLOCALIZATION_VALIDATION_REPORT.md"))
@@ -141,7 +141,7 @@ cat(sprintf("Puncta Benchmark: GT5=%d, Det5=%d (Err: %.1f%%) | GT15=%d, Det15=%d
 # Generate PUNCTA_VALIDATION_REPORT.md
 puncta_report <- sprintf("# Puncta / Foci Module Quantitative Benchmark Report
 
-**Version**: 2.3.0-alpha.2
+**Version**: 2.3.0-rc1
 **Date**: %s
 **Module Classification**: **%s**
 **Gate G7 Assessment**: **%s**

@@ -4,8 +4,8 @@ title: "IHC and Immunofluorescence Quantification Skill"
 type: software
 authors:
   - name: "IHC and IF Quantification Skill contributors"
-version: 2.3.0-alpha.2
-date-released: 2026-08-21
+version: 2.3.0-rc1
+date-released: 2026-08-22
 license: MIT
 abstract: >-
   A reproducible and auditable R/EBImage workflow for brightfield DAB-IHC and

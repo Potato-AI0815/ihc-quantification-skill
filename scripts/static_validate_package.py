@@ -87,12 +87,14 @@ REQUIRED = [
     "PUNCTA_VALIDATION_REPORT.md",
     "BACKWARD_COMPATIBILITY_REPORT_FINAL.md",
     "GATE_MATRIX_FINAL.csv",
+    "GATE_MATRIX_RC1_FINAL.csv",
     "segmentation_benchmark.csv",
     "scripts/download_and_verify_public_images.R",
     "scripts/verify_if_io_bitdepth_contract.R",
     "scripts/benchmark_bbbc039_segmentation.R",
     "RC1_BASELINE_REPORT.md",
     "CI_PROVENANCE_REPORT.md",
+    "FINAL_RELEASE_DECISION.md",
 ]
 
 CSV_SCHEMAS = {
@@ -293,7 +295,7 @@ def main() -> int:
     # package version there while requiring an explicit public release label.
     description_version = extract_simple_version(ROOT / "DESCRIPTION", r'^Version:\s*([^\s]+)')
     description_release_version = extract_simple_version(ROOT / "DESCRIPTION", r'^X-Release-Version:\s*([^\s]+)')
-    r_compatible_version = re.sub(r"-(?:alpha|beta|rc)\.", ".", package_version)
+    r_compatible_version = re.sub(r"-(?:alpha|beta|rc)\.?", ".", package_version)
     if description_release_version != package_version:
         findings.append(("ERROR", "DESCRIPTION", f"X-Release-Version {description_release_version!r} does not match VERSION {package_version!r}"))
     if description_version not in {package_version, r_compatible_version}:

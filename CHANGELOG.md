@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.3.0-rc1 release candidate — 2026-08-22
+
+- Promoted dual-modality workflow to Release Candidate (v2.3.0-rc1).
+- Formally calibrated BBBC039 instance segmentation benchmark with instance RGB color decoding, deterministic greedy 1-to-1 IoU matching at IoU >= 0.5, and standard 12-column result schema.
+- Standardized OME-TIFF metadata workflow support statement and documented known experimental status without blocking core TIFF/ImageJ hyperstack execution.
+- Standardized colocalization disclaimer ("colocalization does not establish molecular binding") and puncta counting workflow ("validated synthetic puncta counting workflow").
+- Validated cross-platform CI matrix on Ubuntu and Windows with 100% DAB backward compatibility confirmed against clean v2.2.2 baseline.
+
 ## 2.3.0-alpha.2 validation hotfix — 2026-08-21
 
 - Recomputed the BBBC039 segmentation benchmark on the official validation

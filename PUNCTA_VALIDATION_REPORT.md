@@ -1,6 +1,6 @@
 # Puncta / Foci Module Quantitative Benchmark Report
 
-**Version**: 2.3.0-alpha.2
+**Version**: 2.3.0-rc1
 **Date**: 2026-08-22
 **Module Classification**: **VALIDATED_FOR_SYNTHETIC_AGGREGATE_COUNTING**
 **Gate G7 Assessment**: **PASS_WITH_WARNINGS**

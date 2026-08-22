@@ -1,12 +1,12 @@
-# IHC & Immunofluorescence (IF) Quantification Skill v2.3.0-alpha.2
+# IHC & Immunofluorescence (IF) Quantification Skill v2.3.0-rc1
 
 A reproducible, QC-first, auditable R/EBImage workflow for **brightfield DAB-IHC** and **multi-channel immunofluorescence (IF)** quantification.
 
 > [!IMPORTANT]
 > - **Brightfield DAB Workflow**: **Stable** (Full v2.2.2 backward compatibility maintained).
-> - **Immunofluorescence (IF) Workflow**: **v2.3.0-alpha.2** (Multi-channel TIFF, 4-compartment MFI, Colocalization, Puncta detection, 8-panel QC).
-> - **IF public-image runtime status**: **Repaired public smoke test PASS_WITH_WARNINGS**; FluorescentCells uses a reviewed artifact-exclusion ROI and remains a teaching image rather than a biological replication benchmark.
-> - **Current release gate**: Local validation hotfix and exact `v2.3.0-alpha.2` main-commit Ubuntu/Windows CI pass ([Actions run 32555682952](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32555682952)); this remains an alpha prerelease with the warnings documented below.
+> - **Immunofluorescence (IF) Workflow**: **v2.3.0-rc1** (Multi-channel TIFF, 4-compartment MFI, Colocalization, Puncta detection, 8-panel QC).
+> - **IF public-image runtime status**: **PASS_WITH_WARNINGS**; FluorescentCells uses a reviewed artifact-exclusion ROI and remains a teaching image rather than a biological replication benchmark.
+> - **Current release gate**: **v2.3.0-rc1 READY**; exact main-commit Ubuntu/Windows CI pass ([Actions run 32555682952](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32555682952)). Known limitation: OME-TIFF metadata workflows are not yet formally validated.
 > - **Research Use Only (RUO)**: This tool is designed strictly for reproducible scientific image quantification and methodological auditing, not for clinical diagnosis, diagnostic screening, or treatment decision-making.
 
 [English summary](README_EN.md) · [完整分析合同与规范 (SKILL.md)](SKILL.md) · [方法学与科学边界](docs/immunofluorescence_methodology.md) · [发布状态](RELEASE_STATUS.md)
@@ -47,7 +47,7 @@ A reproducible, QC-first, auditable R/EBImage workflow for **brightfield DAB-IHC
 - 自动生成 H-DAB 重建、八面板 QC、DAB OD 标尺、DAB 阳性阈值 mask、固定颜色域叠加和 ROI 证据切片；
 - 自动输出四张独立主图（0–100% 阳性率或 0–300 H-score）。
 
-### 2. 免疫荧光 IF 模态 (v2.3.0-alpha.2)
+### 2. 免疫荧光 IF 模态 (v2.3.0-rc1)
 - Supports TIFF and ImageJ-compatible hyperstacks; OME-TIFF metadata workflows remain under validation;
 - 已验证 8-bit、16-bit、32-bit 浮点及“12-bit 探测范围存于 16-bit 容器”的线性动态范围与饱和度 QC；原生打包 12-bit TIFF 尚未正式验证；
 - 自动执行背景扣除（Rolling Ball / Top-hat）、通道配准与光照校正；
