@@ -1,7 +1,7 @@
 # RC1 Readiness Report
 
 **Current version**: `v2.3.0-alpha.2`
-**Baseline/main commit audited**: `0948b0e4f9574df6a78325be151804a6e700bce3`
+**Baseline/main commit audited**: `ec0902dc0458b83118edf967545857a5517e7b1d`
 **Decision date**: 2026-08-22
 
 ## Gate decision
@@ -28,7 +28,7 @@ experimental.
 | IF I/O contract | PASS_WITH_WARNINGS | TIFF/ImageJ, 8/16/32-bit, 12-bit-in-16-bit-container; OME/packed 12-bit experimental |
 | Puncta | PASS_WITH_WARNINGS | Synthetic aggregate count recovery; no coordinate-level detector F1 claim |
 | Colocalization | PASS | Pearson and Manders M1/M2 regression fixtures |
-| Exact main CI | PASS | Ubuntu + Windows + static + I/O contract in Actions run 32553865914 |
+| Exact main CI | PASS | Ubuntu + Windows + static + independent I/O jobs in Actions run 32555682952 |
 
 ## RC1 promotion requirements
 

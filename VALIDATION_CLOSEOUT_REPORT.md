@@ -97,5 +97,5 @@ In accordance with the validation closeout directive, all new feature expansion 
 - **Report**: [`BACKWARD_COMPATIBILITY_REPORT_FINAL.md`](BACKWARD_COMPATIBILITY_REPORT_FINAL.md)
 
 ### P7 & P8 — Cross-Platform CI & Release Readiness
-- **CI Workflow**: `.github/workflows/ci.yml` includes the IF I/O bit-depth/projection contract in addition to static validation, dual-modality synthetic execution, plot-contract checks, and backward compatibility. Exact `main@748016a` passed in [Actions run 32452752381](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32452752381).
+- **CI Workflow**: `.github/workflows/ci.yml` includes the IF I/O bit-depth/projection contract in addition to static validation, dual-modality synthetic execution, plot-contract checks, and backward compatibility. Exact `main@ec0902d` passed in [Actions run 32555682952](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32555682952).
 - **Release Package**: `ihc-quantification-skill_v2.3.0-alpha.2.zip`, to be distributed with a matching SHA-256 sidecar as a GitHub prerelease asset.
