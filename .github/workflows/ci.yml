@@ -107,3 +107,51 @@ jobs:
           name: synthetic-output-${{ matrix.os }}
           path: tests/synthetic_output
           if-no-files-found: ignore
+
+  if-io-validation:
+    name: IF I/O validation (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      R_LIBS_USER: ${{ github.workspace }}/Rlib
+    steps:
+      - uses: actions/checkout@v5
+      - uses: r-lib/actions/setup-r@v2
+        if: runner.os == 'Windows'
+        with:
+          r-version: "4.5.3"
+          use-public-rspm: true
+
+      - name: Ensure R runtime on Linux
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          if ! command -v Rscript >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y r-base r-base-dev
+          fi
+          Rscript --version
+
+      - name: Linux system libraries
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential pkg-config pandoc \
+            libcurl4-openssl-dev libssl-dev libxml2-dev \
+            libfontconfig1-dev libfreetype6-dev libharfbuzz-dev libfribidi-dev \
+            libpng-dev libtiff-dev libjpeg-dev libwebp-dev \
+            libfftw3-dev libuv1-dev libicu-dev
+
+      - name: Install R dependencies
+        if: runner.os == 'Linux' || runner.os == 'Windows'
+        shell: bash
+        run: Rscript scripts/install_dependencies.R --lib=Rlib
+
+      - name: Verify IF I/O and BBBC039 contracts
+        shell: bash
+        run: |
+          Rscript -e 'repo_root <- normalizePath(getwd(), winslash = "/", mustWork = TRUE); local_lib <- file.path(repo_root, "Rlib"); if (dir.exists(local_lib)) .libPaths(c(normalizePath(local_lib), .libPaths())); source(file.path(repo_root, "scripts", "verify_if_io_bitdepth_contract.R")); source(file.path(repo_root, "tests", "verify_bbbc039_benchmark.R"))'

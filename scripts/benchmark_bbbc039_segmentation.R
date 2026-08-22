@@ -17,12 +17,16 @@ root <- if (length(script_arg) == 1L) {
 
 source(file.path(root, "scripts", "if_segmentation.R"))
 source(file.path(root, "scripts", "path_utils.R"))
+source(file.path(root, "scripts", "bbbc039_benchmark_helpers.R"))
 
 cache_dir <- file.path(root, "work", "bbbc039_cache")
 dir.create(cache_dir, recursive = TRUE, showWarnings = FALSE)
 
 overlay_dir <- file.path(root, "work", "segmentation_benchmark_overlays")
 dir.create(overlay_dir, recursive = TRUE, showWarnings = FALSE)
+
+gt_label_dir <- file.path(root, "work", "bbbc039_gt_instance_labels")
+dir.create(gt_label_dir, recursive = TRUE, showWarnings = FALSE)
 
 # 1. Download BBBC039 Masks and Images if needed
 masks_zip <- file.path(cache_dir, "masks.zip")
@@ -72,80 +76,6 @@ val_imgs <- val_imgs[!is.na(val_imgs)]
 if (!length(val_imgs)) stop("No BBBC039 images matched the official validation split metadata.")
 cat(sprintf("Using %d images from the official BBBC039 validation split.\n", length(val_imgs)))
 
-# BBBC039 PNG masks use colors to encode touching nuclei as separate
-# instances.  Decode each non-background color into connected components
-# instead of collapsing the RGB mask to a binary foreground mask.
-decode_bbbc039_mask <- function(gt_img) {
-  gt_arr <- as.array(gt_img)
-  if (length(dim(gt_arr)) < 3L) {
-    gt_mask <- as.matrix(gt_img > 0)
-    return(as.matrix(EBImage::bwlabel(EBImage::Image(gt_mask, colormode = "Grayscale"))))
-  }
-
-  n_channels <- dim(gt_arr)[3L]
-  n_use <- min(3L, n_channels)
-  rgb <- gt_arr[, , seq_len(n_use), drop = FALSE]
-  # EBImage stores PNG channels in [0, 1]; quantising before coding avoids
-  # tiny floating-point differences creating multiple labels for one color.
-  rgb8 <- array(as.integer(round(pmin(1, pmax(0, rgb)) * 255)), dim = dim(rgb))
-  code <- rgb8[, , 1L]
-  if (n_use >= 2L) code <- code + 256 * rgb8[, , 2L]
-  if (n_use >= 3L) code <- code + 65536 * rgb8[, , 3L]
-
-  # The most frequent color is the background in the distributed BBBC039
-  # masks.  Treat every other color as an instance-color candidate.
-  code_vec <- as.vector(code)
-  background_code <- as.numeric(names(which.max(table(code_vec))))
-  object_codes <- sort(unique(code_vec[code_vec != background_code]))
-  labels <- matrix(0L, nrow = dim(code)[1L], ncol = dim(code)[2L])
-  next_id <- 0L
-  for (object_code in object_codes) {
-    color_mask <- code == object_code
-    components <- as.matrix(EBImage::bwlabel(EBImage::Image(color_mask, colormode = "Grayscale")))
-    n_components <- if (length(components) && max(components) > 0) max(components) else 0L
-    if (n_components > 0L) {
-      components[components > 0] <- components[components > 0] + next_id
-      labels[color_mask] <- components[color_mask]
-      next_id <- next_id + n_components
-    }
-  }
-  labels
-}
-
-one_to_one_iou_matching <- function(pred_labels, gt_labels, iou_threshold = 0.5) {
-  n_pred <- if (length(pred_labels) && max(pred_labels) > 0) max(pred_labels) else 0L
-  n_gt <- if (length(gt_labels) && max(gt_labels) > 0) max(gt_labels) else 0L
-  if (n_pred == 0L || n_gt == 0L) return(list(tp = 0L, iou = matrix(numeric(), nrow = n_pred, ncol = n_gt)))
-
-  pred_size <- tabulate(as.integer(pred_labels), nbins = n_pred + 1L)[-1L]
-  gt_size <- tabulate(as.integer(gt_labels), nbins = n_gt + 1L)[-1L]
-  iou <- matrix(0, nrow = n_pred, ncol = n_gt)
-  for (p_id in seq_len(n_pred)) {
-    overlap_counts <- tabulate(as.integer(gt_labels[pred_labels == p_id]), nbins = n_gt + 1L)[-1L]
-    gt_ids <- which(overlap_counts > 0)
-    if (!length(gt_ids)) next
-    intersections <- overlap_counts[gt_ids]
-    unions <- pred_size[p_id] + gt_size[gt_ids] - intersections
-    iou[p_id, gt_ids] <- intersections / unions
-  }
-
-  candidate <- which(iou >= iou_threshold, arr.ind = TRUE)
-  if (!nrow(candidate)) return(list(tp = 0L, iou = iou))
-  candidate <- candidate[order(iou[cbind(candidate[, 1L], candidate[, 2L])], decreasing = TRUE), , drop = FALSE]
-  used_pred <- rep(FALSE, n_pred)
-  used_gt <- rep(FALSE, n_gt)
-  tp <- 0L
-  for (i in seq_len(nrow(candidate))) {
-    p_id <- candidate[i, 1L]
-    g_id <- candidate[i, 2L]
-    if (used_pred[p_id] || used_gt[g_id]) next
-    used_pred[p_id] <- TRUE
-    used_gt[g_id] <- TRUE
-    tp <- tp + 1L
-  }
-  list(tp = tp, iou = iou)
-}
-
 benchmark_results <- list()
 
 for (img_path in val_imgs) {
@@ -166,6 +96,8 @@ for (img_path in val_imgs) {
   # Decode the color-coded instance mask before deriving its binary union.
   gt_labels <- decode_bbbc039_mask(gt_img)
   gt_mask <- gt_labels > 0
+  gt_label_path <- file.path(gt_label_dir, paste0(vname, "_gt_instance_label.tif"))
+  EBImage::writeImage(EBImage::Image(gt_labels, colormode = "Grayscale"), gt_label_path, bits.per.sample = 16L)
 
   # Segment using default EBImage pipeline
   seg <- segment_if_image(
@@ -190,6 +122,7 @@ for (img_path in val_imgs) {
   n_gt <- if (length(gt_labels) > 0 && max(gt_labels) > 0) max(gt_labels) else 0L
   matching <- one_to_one_iou_matching(pred_labels, gt_labels, iou_threshold = 0.5)
   tp <- matching$tp
+  mean_iou_matched <- if (length(matching$matches)) mean(matching$matches) else NA_real_
 
   fp <- max(0L, n_pred - tp)
   fn <- max(0L, n_gt - tp)
@@ -213,6 +146,19 @@ for (img_path in val_imgs) {
   EBImage::writeImage(EBImage::Image(ov_rgb, colormode = "Color"), ov_path)
 
   benchmark_results[[length(benchmark_results) + 1L]] <- data.table(
+    image_id = vname,
+    gt_objects = n_gt,
+    pred_objects = n_pred,
+    TP = tp,
+    FP = fp,
+    FN = fn,
+    precision = obj_prec,
+    recall = obj_rec,
+    F1 = obj_f1,
+    mean_IoU = mean_iou_matched,
+    Dice = dice,
+    IoU = iou,
+    count_error = count_rel_err,
     image_name = vname,
     n_gt_cells = n_gt,
     n_pred_cells = n_pred,
@@ -228,6 +174,8 @@ for (img_path in val_imgs) {
 dt_benchmark <- rbindlist(benchmark_results)
 fwrite(dt_benchmark, file.path(root, "work", "segmentation_benchmark.csv"))
 fwrite(dt_benchmark, file.path(root, "segmentation_benchmark.csv"))
+fwrite(dt_benchmark, file.path(root, "work", "benchmark_bbbc039_results.csv"))
+fwrite(dt_benchmark, file.path(root, "benchmark_bbbc039_results.csv"))
 
 mean_dice <- mean(dt_benchmark$dice)
 mean_iou <- mean(dt_benchmark$iou)
@@ -300,4 +248,5 @@ Predicted-vs-Ground-Truth overlay montages have been exported to:
    mean_dice, mean_iou, mean_prec, mean_rec, mean_f1, mean_count_err * 100)
 
 writeLines(report_md, file.path(root, "SEGMENTATION_BENCHMARK_REPORT.md"))
-cat("SEGMENTATION_BENCHMARK_REPORT.md and segmentation_benchmark.csv written successfully.\n")
+writeLines(report_md, file.path(root, "BBBC039_SEGMENTATION_BENCHMARK_FINAL.md"))
+cat("BBBC039 benchmark report, instance labels, and result tables written successfully.\n")

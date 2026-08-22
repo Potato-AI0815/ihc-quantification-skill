@@ -239,4 +239,5 @@ report_md <- sprintf("# IF Image I/O, Bit-Depth, and Projection Validation Repor
    val_sum, val_max, val_max, val_mean)
 
 writeLines(report_md, file.path(root, "IF_IO_VALIDATION_REPORT.md"))
+writeLines(report_md, file.path(root, "IF_IO_VALIDATION_FINAL.md"))
 cat("IF_IO_VALIDATION_REPORT.md written successfully.\n")
