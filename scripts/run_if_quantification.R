@@ -81,6 +81,11 @@ if_default_config <- function() {
     nuc_min_area = 20,
     nuc_max_area = 5000,
     cell_propagation_radius = 15,
+    max_cytoplasm_expansion_radius = 10,
+    cytoplasm_boundary_gap_px = 1,
+    nuc_watershed_tolerance = 1.0,
+    nuc_watershed_ext = 1,
+    refine_dense_nuclei = TRUE,
     pos_threshold_method = "otsu",
     pos_threshold_value = NULL,
     colocalization_enabled = FALSE,
@@ -228,7 +233,12 @@ for (idx in seq_along(image_ids)) {
     nuc_threshold_value = cfg$nuc_threshold_value,
     nuc_min_area = cfg$nuc_min_area,
     nuc_max_area = cfg$nuc_max_area,
-    cell_propagation_radius = cfg$cell_propagation_radius
+    cell_propagation_radius = cfg$cell_propagation_radius,
+    max_cytoplasm_expansion_radius = cfg$max_cytoplasm_expansion_radius,
+    cytoplasm_boundary_gap_px = cfg$cytoplasm_boundary_gap_px,
+    nuc_watershed_tolerance = cfg$nuc_watershed_tolerance,
+    nuc_watershed_ext = cfg$nuc_watershed_ext,
+    refine_dense_nuclei = cfg$refine_dense_nuclei
   )
 
   # Process each target channel
@@ -392,6 +402,13 @@ for (idx in seq_along(image_ids)) {
     biological_unit_id = img_rows$biological_unit_id[1L],
     condition = img_rows$condition[1L],
     n_cells = seg_res$n_cells,
+    requested_cell_propagation_radius = seg_res$metrics$requested_cell_propagation_radius,
+    max_cytoplasm_expansion_radius = seg_res$metrics$max_cytoplasm_expansion_radius,
+    effective_cell_propagation_radius = seg_res$metrics$effective_cell_propagation_radius,
+    cytoplasm_boundary_gap_px = seg_res$metrics$cytoplasm_boundary_gap_px,
+    nuc_watershed_tolerance = seg_res$metrics$nuc_watershed_tolerance,
+    nuc_watershed_ext = seg_res$metrics$nuc_watershed_ext,
+    dense_nucleus_watershed_refinement = seg_res$metrics$dense_nucleus_watershed_refinement,
     nuclear_area_fraction = seg_res$metrics$nuclear_area_fraction,
     cytoplasmic_area_fraction = seg_res$metrics$cytoplasmic_area_fraction,
     extracellular_area_fraction = seg_res$metrics$extracellular_area_fraction,
