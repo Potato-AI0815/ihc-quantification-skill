@@ -1,74 +1,118 @@
-# IHC & Immunofluorescence (IF) Quantification Skill v2.3.0-rc1
+# IHC & Immunofluorescence Quantification Skill
 
-A reproducible, QC-first, auditable R/EBImage workflow for **brightfield DAB-IHC** and **multi-channel immunofluorescence (IF)** quantification.
+> A QC-first, reproducible workflow for quantitative DAB-IHC and multi-channel immunofluorescence image analysis.
+
+[![Release](https://img.shields.io/badge/release-v2.3.0--rc1-blue.svg)](https://github.com/Potato-AI0815/ihc-quantification-skill/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![CI](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/Potato-AI0815/ihc-quantification-skill/actions)
+
+---
+
+## Why This Project?
+
+Quantitative microscopy analysis in biomedical research often suffers from:
+- **Inconsistent manual scoring**: Subjective visual assessment introduces substantial inter-observer and intra-observer variability.
+- **Unclear QC procedures**: Optical artifacts, out-of-focus tiles, burned-in annotations, and saturated detector channels frequently distort downstream statistical conclusions without explicit warnings.
+- **Poor reproducibility**: Ad-hoc scripts lack standardized input contracts, version freezing, and auditable parameter tracking.
+- **Statistical overinterpretation**: Spatial co-occurrence is often incorrectly reported as physical molecular binding, or individual cells are treated as independent replicates ($n$), creating pseudo-replication.
+
+This project provides an auditable, script-based R/EBImage workflow that converts raw microscopy images into publication-ready quantitative figures and source data tables with strict quality control and biological replicate governance.
+
+---
+
+## Supported Analysis
+
+| Modality / Module | Capability | Measurement Outputs |
+| :--- | :--- | :--- |
+| **DAB-IHC** | Whole-tissue global burden, 4-compartment scoring, H-DAB color deconvolution | DAB optical density (OD), nuclear/cytoplasm H-score (0–300), positive area % |
+| **Immunofluorescence (IF)** | Multi-channel composite & Z-stack slice/projection processing | Linear fluorescence MFI, integrated intensity, positivity fraction, N/C ratio |
+| **Segmentation** | Classical morphological distance-watershed pipeline | Discrete nuclear, cytoplasmic, and cellular object masks |
+| **Compartments** | 4-compartment spatial decomposition | `GLOBAL`, `NUCLEUS`, `CYTOPLASM`, `EXTRACELLULAR` |
+| **Colocalization** | Dual-channel spatial intensity correlation | Pearson correlation coefficient ($r$), Manders overlap coefficients ($M_1, M_2$) |
+| **Puncta / Foci** | Validated synthetic counting workflow (Difference of Gaussians bandpass) | Foci count, per-cell density, puncta mean and integrated intensity |
+
+---
+
+## Workflow Overview
+
+```text
+Image Input (DAB / Multi-channel IF / Hyperstack)
+  │
+  ▼
+Input Routing & Quality Control (Saturation, Dynamic Range, Registration)
+  │
+  ▼
+Preprocessing & Background Correction (Rolling Ball / Top-hat)
+  │
+  ▼
+Segmentation & Compartment Partitioning (Global, Nucleus, Cytoplasm, Extracellular)
+  │
+  ▼
+Single-Cell & Compartment-Level Quantification (MFI, H-score, Colocalization, Puncta)
+  │
+  ▼
+QC Visualization (8-Panel Diagnostic Montage, Overlays, Excluded ROI Masks)
+  │
+  ▼
+Publication-Ready Biological Aggregation Figures & Auditable Source Data
+```
+
+---
+
+## Validation
+
+The workflow has been verified across 11 comprehensive validation gates (`G0`–`G10`):
+
+- **BBBC039 Instance Segmentation Benchmark (`G8`)**: Evaluated on the official 50-image validation partition with per-color instance decoding and greedy 1-to-1 IoU matching at $\text{IoU} \ge 0.5$ (Dice: `0.8953`, IoU: `0.8390`, Object F1: `0.8919`, Count Error: `13.0%`).
+- **DAB Backward Compatibility (`G0`, `G9`)**: 100% numerical identity maintained against the clean v2.2.2 baseline ($\Delta \le 1.0\times 10^{-6}$ across all 11 tables).
+- **Cross-Platform Continuous Integration (`G10`)**: Automated GitHub Actions matrix verified on `ubuntu-latest` and `windows-latest`.
+
+See [`RELEASE_STATUS.md`](RELEASE_STATUS.md) and [`GATE_MATRIX_RC1_FINAL.csv`](GATE_MATRIX_RC1_FINAL.csv) for detailed gate metrics.
+
+---
+
+## Example Outputs
+
+Each execution automatically generates an auditable, structured output directory:
+- **Quantitative Tables (`source_data/`)**: Per-cell measurements (`if_cell_summary.csv.gz`), 4-compartment summaries, biological unit aggregations, and metric dictionaries.
+- **QC Reports & Diagnostics (`qc/`)**: Standardized 8-panel IF overview montage (`*_if_8panel_qc.png`), H-DAB deconvolution overlays, and reviewed ROI exclusion audits.
+- **Publication Figures (`figures/main/`)**: Vector and raster comparison plots (Figures 1–6 in SVG, PDF, PNG) aggregated by `biological_unit_id` ($n$).
+- **Audit-Friendly Metadata**: Input validation logs, channel metadata, and parameter manifests for reproducible manuscript reporting.
+
+---
+
+## Scientific Interpretation Boundaries
 
 > [!IMPORTANT]
-> - **Brightfield DAB Workflow**: **Stable** (Full v2.2.2 backward compatibility maintained).
-> - **Immunofluorescence (IF) Workflow**: **v2.3.0-rc1** (Multi-channel TIFF, 4-compartment MFI, Colocalization, Puncta detection, 8-panel QC).
-> - **IF public-image runtime status**: **PASS_WITH_WARNINGS**; FluorescentCells uses a reviewed artifact-exclusion ROI and remains a teaching image rather than a biological replication benchmark.
-> - **Current release gate**: **v2.3.0-rc1 READY**; exact main-commit Ubuntu/Windows CI pass ([Actions run 32555682952](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32555682952)). Known limitation: OME-TIFF metadata workflows are not yet formally validated.
-> - **Research Use Only (RUO)**: This tool is designed strictly for reproducible scientific image quantification and methodological auditing, not for clinical diagnosis, diagnostic screening, or treatment decision-making.
-
-[English summary](README_EN.md) · [完整分析合同与规范 (SKILL.md)](SKILL.md) · [方法学与科学边界](docs/immunofluorescence_methodology.md) · [发布状态](RELEASE_STATUS.md)
+> ### 1. Colocalization
+> High colocalization scores ($r, M_1, M_2$) demonstrate spatial pixel intensity correlation within optical resolution limits; **colocalization does not establish molecular binding or physical complex formation** without complementary biophysical assays (e.g. FRET, PLA, Co-IP).
+>
+> ### 2. Puncta / Subcellular Foci
+> The puncta module is validated for synthetic aggregate count recovery and dose-response ranking. It does not represent universal diffraction-limited single-molecule localization.
+>
+> ### 3. OME-TIFF & Formats
+> Supports standard TIFF and ImageJ-compatible hyperstacks ($X \times Y \times C \times Z$). Native Bio-Formats OME-XML metadata-aware ingestion workflows remain under validation.
+>
+> ### 4. Research Use Only (RUO)
+> This software is strictly for reproducible academic and industrial research quantification. It is **not** a clinical diagnostic tool or medical device.
 
 ---
 
-## 核心特性与架构
+## Installation & Quick Start
 
-```
-                     ┌──────────────────────────────────────────────┐
-                     │          manifest.csv (Input Router)         │
-                     └──────────────────────┬───────────────────────┘
-                                            │
-                      ┌─────────────────────┴─────────────────────┐
-                      ▼                                           ▼
-         [modality: brightfield_dab]                 [modality: immunofluorescence]
-                      │                                           │
-                      ▼                                           ▼
-           run_ihc_quantification.R                    run_if_quantification.R
-       ┌───────────────────────────────┐           ┌────────────────────────────────┐
-       │ • H-DAB Color Deconvolution   │           │ • Multi-channel TIFF & Z-stack │
-       │ • DAB Optical Density (OD)    │           │ • Linear Fluorescence MFI/Int  │
-       │ • Nuclear/Cyto H-scores (0-300│           │ • 4-Compartment Quantification │
-       │ • Whole-tissue Burden %       │           │ • Colocalization (Pearson/M1/M2│
-       │ • 4 Main Biological Figures   │           │ • Puncta / Foci Detection (DoG)│
-       └───────────────────────────────┘           │ • 8-Panel IF QC Overviews      │
-                                                   │ • 6 Main Publication Figures   │
-                                                   └────────────────────────────────┘
+### 1. Clone Repository
+```bash
+git clone https://github.com/Potato-AI0815/ihc-quantification-skill.git
+cd ihc-quantification-skill
 ```
 
----
+### 2. Environment Setup (R & Python)
+```bash
+# Install required R packages (EBImage, data.table, ggplot2, ragg, svglite, tiff)
+Rscript scripts/install_dependencies.R --lib=Rlib
+```
 
-## 核心能力
-
-### 1. 明场 DAB-IHC 模态 (Stable v2.2.2)
-- 默认执行排除已记录伪影后的 `GLOBAL` 全组织定量；
-- 同时输出全局组织、细胞核、胞质和细胞外组织四个测量域；
-- 自动生成 H-DAB 重建、八面板 QC、DAB OD 标尺、DAB 阳性阈值 mask、固定颜色域叠加和 ROI 证据切片；
-- 自动输出四张独立主图（0–100% 阳性率或 0–300 H-score）。
-
-### 2. 免疫荧光 IF 模态 (v2.3.0-rc1)
-- Supports TIFF and ImageJ-compatible hyperstacks; OME-TIFF metadata workflows remain under validation;
-- 已验证 8-bit、16-bit、32-bit 浮点及“12-bit 探测范围存于 16-bit 容器”的线性动态范围与饱和度 QC；原生打包 12-bit TIFF 尚未正式验证；
-- 自动执行背景扣除（Rolling Ball / Top-hat）、通道配准与光照校正；
-- 四域荧光定量：`GLOBAL`、`NUCLEUS`、`CYTOPLASM`、`EXTRACELLULAR`（严禁将自动细胞外区域标记为 stroma）；
-- 单细胞 MFI、中位数强度、积分荧光强度（严格禁止称为 IOD）与核质比（N/C ratio）；
-- 可选双标共定位模块（Pearson 相关系数 $r$、Manders $M_1/M_2$；colocalization does not establish molecular binding）；
-- 可选亚细胞斑点/焦点计数（validated synthetic puncta counting workflow；$\gamma\text{H2AX}$、LC3、RNA-FISH）；
-- 每张图自动生成标准化 8-Panel IF QC Overview。
-- 可选的人工 IF 多边形 ROI：include 限定分析区域，exclude 排除烧录文字/伪影；原始图像不改写，并输出 ROI 像素审计表。
-
----
-
-## 统计治理：生物学独立重复原则
-- **生物学单位即统计单位**：所有主图与统计推断均以 `biological_unit_id`（患者、动物、独立样本）为单位（$n$），严禁将单细胞、视野或切片数目作为伪重复。
-- 配对设计展示原始点与配对连线；样本量不足（$n < 2$）时自动标记 `NOT_EVALUABLE_N_LT_2`，拒绝伪显著性。
-
----
-
-## 快速运行
-
-### 运行合成集成测试 (DAB + IF + 共定位 + 焦点)
+### 3. Run Synthetic Smoke Test
 ```bash
 # Linux / macOS
 bash tests/run_synthetic_smoke_test.sh
@@ -77,13 +121,13 @@ bash tests/run_synthetic_smoke_test.sh
 powershell -ExecutionPolicy Bypass -File .\tests\run_synthetic_smoke_test.ps1
 ```
 
-### 一键运行真实数据
+### 4. Run Analysis on Your Data
 ```bash
-# 自动根据 manifest.csv 中的 modality 列路由
+# Automatically routes between DAB-IHC and Multi-channel IF based on manifest.csv
 bash run_one_click.sh \
-  "input/manifest.csv" \
+  "path/to/manifest.csv" \
   "results/my_analysis_run" \
-  "input/roi_annotations.csv" \
+  "" \
   "config/if_analysis_parameters_template.csv" \
   "Rlib" \
   "control,treatment"
@@ -91,12 +135,35 @@ bash run_one_click.sh \
 
 ---
 
-## 详细文档指南
-- [IF 方法学与科学边界](docs/immunofluorescence_methodology.md)
-- [IF 图像输入与格式支持](docs/if_input_guide.md)
-- [IF 通道映射与 Manifest 规范](docs/if_channel_mapping.md)
-- [IF 分割与四域定义指南](docs/if_segmentation_guide.md)
-- [IF 共定位分析指南](docs/if_colocalization_guide.md)
-- [IF 斑点/焦点检测指南](docs/if_puncta_guide.md)
-- [IF 质控与自动化 Flag 体系](docs/if_qc_guide.md)
-- [公开 Benchmark 评测数据说明](docs/if_validation_datasets.md)
+## Documentation
+
+- [Full Analysis Contract & Specification (SKILL.md)](SKILL.md)
+- [Methodology & Scientific Governance](docs/immunofluorescence_methodology.md)
+- [Input Formats & Axis Ordering Guide](docs/if_input_guide.md)
+- [Channel Mapping Guide](docs/if_channel_mapping.md)
+- [Segmentation & 4-Compartment Guide](docs/if_segmentation_guide.md)
+- [Colocalization Analysis Guide](docs/if_colocalization_guide.md)
+- [Puncta Detection Guide](docs/if_puncta_guide.md)
+- [Quality Control & Flagging Guide](docs/if_qc_guide.md)
+- [Public Benchmark Dataset Guide](docs/if_validation_datasets.md)
+
+---
+
+## Citation
+
+If you use this workflow in your research, please cite according to [`CITATION.cff`](CITATION.cff).
+
+---
+
+## Contributing
+
+We welcome community contributions, bug reports, and benchmark datasets!
+- **Issues**: Report bugs or unexpected image behaviors via [GitHub Issues](https://github.com/Potato-AI0815/ihc-quantification-skill/issues).
+- **Feature Requests & Feedback**: Submit suggestions for new microscopy modalities or preprocessing filters.
+- **Benchmark Contributions**: Submit annotated ground-truth datasets to expand public validation coverage.
+
+---
+
+## License
+
+This project is licensed under the MIT License — see [`LICENSE`](LICENSE) for details.
