@@ -73,6 +73,20 @@ See [`RELEASE_STATUS.md`](RELEASE_STATUS.md) and [`GATE_MATRIX_RC1_FINAL.csv`](G
 
 ## Example Outputs
 
+### Visual demo (bundled synthetic fixtures)
+
+These images are deterministic outputs from the bundled synthetic fixtures.
+They demonstrate the output contract and figure types; they are not biological
+benchmark results or representative patient data.
+
+| DAB-IHC global burden | IF 8-panel QC |
+| :---: | :---: |
+| <img src="docs/assets/synthetic/dab_global_burden_demo.png" alt="DAB-IHC global burden demo" width="430"> | <img src="docs/assets/synthetic/if_qc_overview_demo.png" alt="IF eight-panel QC demo" width="430"> |
+
+| IF colocalization | IF puncta/foci |
+| :---: | :---: |
+| <img src="docs/assets/synthetic/if_colocalization_demo.png" alt="IF colocalization demo" width="430"> | <img src="docs/assets/synthetic/if_puncta_demo.png" alt="IF puncta quantification demo" width="430"> |
+
 Each execution automatically generates an auditable, structured output directory:
 - **Quantitative Tables (`source_data/`)**: Per-cell measurements (`if_cell_summary.csv.gz`), 4-compartment summaries, biological unit aggregations, and metric dictionaries.
 - **QC Reports & Diagnostics (`qc/`)**: Standardized 8-panel IF overview montage (`*_if_8panel_qc.png`), H-DAB deconvolution overlays, and reviewed ROI exclusion audits.
