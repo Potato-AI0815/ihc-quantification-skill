@@ -1,8 +1,8 @@
 # Immunofluorescence (IF) Validation Report
 
-**Version**: `2.3.0-alpha.2`
+**Version**: `2.3.0-rc1` — sections 1–3 were originally validated at `v2.3.0-alpha.2`; the section 5 segmentation QC repair was revalidated against the post-rc1 code state
 **Execution Environment**: R 4.6.0, EBImage 4.54.0, data.table 1.18.4, ggplot2 4.0.3, ragg 1.5.2, svglite 2.2.2
-**Date**: 2026-08-19
+**Date**: 2026-08-19 (last revised 2026-08-22)
 
 ---
 
