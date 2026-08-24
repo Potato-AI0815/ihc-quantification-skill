@@ -4,7 +4,7 @@ title: "IHC and Immunofluorescence Quantification Skill"
 type: software
 authors:
   - name: "IHC and IF Quantification Skill contributors"
-version: 2.3.0-rc1
+version: 2.3.0-rc2
 date-released: 2026-08-22
 license: MIT
 abstract: >-
