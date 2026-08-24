@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.3.0-rc2 release candidate — 2026-08-22
+
+- Guarded IF cytoplasm propagation with a hard `max_cytoplasm_expansion_radius = 10 px` cap and a distance-transform cap derived from the closest neighboring nuclear boundary pair, retaining a `cytoplasm_boundary_gap_px = 1` gap so adjacent cell territories can no longer merge.
+- Set dense-field nuclear splitting defaults to watershed `tolerance = 1.0`, `ext = 1`, with dense-nuclei refinement enabled by default.
+- Rerendered QC Panel F from the labelled cell image instead of a binary re-labelling, preserving one boundary per nucleus and eliminating merged polygons.
+- Repaired the release package manifest: removed a stale generated `scripts/__pycache__` entry and hashed the four public demo assets, restoring the static manifest verification on `main`.
+- Aligned validation report versioning with the rc lineage (`IF_VALIDATION_REPORT.md` now records rc-level provenance).
+
 ## 2.3.0-rc1 release candidate — 2026-08-22
 
 - Promoted dual-modality workflow to Release Candidate (v2.3.0-rc1).
