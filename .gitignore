@@ -13,6 +13,8 @@ renv/python/
 
 # Generated analysis outputs
 results/
+!external_validation/results/
+!external_validation/results/**
 ihc_results/
 tests/synthetic_output/
 tests/synthetic_if_output/

@@ -22,7 +22,14 @@ PUBLIC_IMAGE_PREFIXES = {
     Path("docs/assets/synthetic"),
     # Small, derived PNGs from explicitly documented public teaching datasets.
     # Raw microscopy files remain blocked everywhere else.
-    Path("docs/assets/public_validation")
+    Path("docs/assets/public_validation"),
+    Path("external_validation/results/figures")
+}
+PUBLIC_RAW_IMAGE_PREFIXES = {
+    Path("tests/synthetic_fixture/images"),
+    Path("tests/synthetic_if_fixture/images"),
+    Path("tests/synthetic_coloc_fixture/images"),
+    Path("tests/synthetic_puncta_fixture/images"),
 }
 PRIVATE_FILENAME_PATTERNS = [
     re.compile(r"^ASSET_MANIFEST", re.IGNORECASE),
@@ -71,7 +78,7 @@ def main() -> int:
         rel = relative(path)
         if rel in {Path("scripts/preflight_public_release.py"), Path("PACKAGE_MANIFEST.sha256"), Path(".private_tokens.txt")}:
             continue
-        if any(part in {".git", "renv", "Rlib", "work", "synthetic_output", "synthetic_if_output", "synthetic_coloc_output", "synthetic_puncta_output", "__pycache__"} for part in rel.parts):
+        if any(part in {".git", "renv", "Rlib", "work", ".external_validation_cache", "synthetic_output", "synthetic_if_output", "synthetic_coloc_output", "synthetic_puncta_output", "__pycache__"} for part in rel.parts):
             continue
 
         for pattern in PRIVATE_FILENAME_PATTERNS:
@@ -82,7 +89,7 @@ def main() -> int:
         suffix = path.suffix.lower()
         if suffix in IMAGE_SUFFIXES and not under_prefix(rel, PUBLIC_IMAGE_PREFIXES):
             findings.append(f"UNAPPROVED_IMAGE\t{rel}\tpublic images must live under an approved demo directory")
-        if suffix in RAW_IMAGE_SUFFIXES and not under_prefix(rel, PUBLIC_IMAGE_PREFIXES):
+        if suffix in RAW_IMAGE_SUFFIXES and not under_prefix(rel, PUBLIC_RAW_IMAGE_PREFIXES):
             findings.append(f"RAW_IMAGE\t{rel}\traw microscopy/WSI file must not be public")
         if path.stat().st_size > 8_000_000 and not under_prefix(rel, PUBLIC_IMAGE_PREFIXES):
             findings.append(f"LARGE_FILE\t{rel}\tfile exceeds 8 MB; review for data leakage")
