@@ -19,6 +19,7 @@ tests/synthetic_if_output/
 tests/synthetic_coloc_output/
 tests/synthetic_puncta_output/
 work/
+.external_validation_cache/
 
 # Raw microscopy and whole-slide data: never commit by default
 *.tif
