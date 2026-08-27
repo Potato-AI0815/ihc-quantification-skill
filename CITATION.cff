@@ -5,7 +5,7 @@ type: software
 authors:
   - name: "IHC and IF Quantification Skill contributors"
 version: 2.3.0-rc2
-date-released: 2026-08-22
+date-released: 2026-08-25
 license: MIT
 abstract: >-
   A reproducible and auditable R/EBImage workflow for brightfield DAB-IHC and

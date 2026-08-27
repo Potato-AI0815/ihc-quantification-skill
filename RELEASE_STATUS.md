@@ -22,7 +22,7 @@
 | **G7** | Puncta / Subcellular Foci | IF | **PASS** | Validated synthetic puncta counting workflow: GT5=45->Det=43 (Err: 4.4%); GT15=135->Det=134 (Err: 0.7%); per-cell MAE = 0.17 |
 | **G8** | Public Benchmark Validation | Both | **PASS** | BBBC039 official 50-image validation split: Dice=0.8953, IoU=0.8390, precision=0.9106, recall=0.8254, F1=0.8919, Count Err=13.0%; 1-to-1 instance matching |
 | **G9** | 100% DAB Backward Compatibility| Brightfield DAB | **PASS** | Clean v2.2.2 checkout comparison ($\Delta \le 1.0\times 10^{-6}$) |
-| **G10**| Cross-Platform CI Matrix | Both | **PASS** | Exact release-candidate commit `d7a1be6` static, Ubuntu, Windows, and IF I/O contract jobs passed in Actions runs 32689822160 (main) and 32691033297 (tag `v2.3.0-rc2`) |
+| **G10**| Cross-Platform CI Matrix | Both | **PASS** | Exact public release-candidate commit `8099297a6b64b975e2845aabff6c08f6ca2d8efe` passed static, Ubuntu, Windows, and IF I/O contract jobs in exact-tag Actions run [32791143505](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32791143505) for `v2.3.0-rc2` |
 
 ---
 
@@ -40,4 +40,3 @@
 - [`BACKWARD_COMPATIBILITY_REPORT_FINAL.md`](BACKWARD_COMPATIBILITY_REPORT_FINAL.md)
 - [`GATE_MATRIX_FINAL.csv`](GATE_MATRIX_FINAL.csv)
 - [`segmentation_benchmark.csv`](segmentation_benchmark.csv)
-

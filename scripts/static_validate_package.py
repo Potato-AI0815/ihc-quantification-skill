@@ -318,7 +318,10 @@ def main() -> int:
             print(f"{level}\t{scope}\t{detail}")
         return 1 if any(level == "ERROR" for level, _, _ in findings) else 0
 
-    print("PASS\tpackage\tStatic structure, delimiters, schemas, GitHub files, portable-path contracts, v2.3.0-alpha.2 contracts, and dual-modality core checks passed")
+    print(
+        f"PASS\tpackage\tStatic structure, delimiters, schemas, GitHub files, "
+        f"portable-path contracts, {package_version} contracts, and dual-modality core checks passed"
+    )
     if package_version:
         print(f"INFO\tversion\t{package_version}")
     print("INFO\tmodalities\tbrightfield_dab,immunofluorescence")
