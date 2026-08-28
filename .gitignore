@@ -10,6 +10,7 @@ Rlib/
 renv/library/
 renv/staging/
 renv/python/
+scripts/__pycache__/
 
 # Generated analysis outputs
 results/

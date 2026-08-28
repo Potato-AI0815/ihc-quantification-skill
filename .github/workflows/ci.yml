@@ -18,6 +18,8 @@ jobs:
           python-version: "3.x"
       - name: Static package validation
         run: python scripts/static_validate_package.py
+      - name: External report consistency gate
+        run: python scripts/verify_report_consistency.py
       - name: Public-release privacy preflight
         run: python scripts/preflight_public_release.py
       - name: Verify release manifest

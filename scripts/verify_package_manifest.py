@@ -38,6 +38,8 @@ GENERATED_DIRS = {
     "tests/synthetic_if_fixture/images",
     "tests/synthetic_coloc_fixture/images",
     "tests/synthetic_puncta_fixture/images",
+    # Python bytecode caches are interpreter build artifacts, never source.
+    "scripts/__pycache__",
 }
 
 
