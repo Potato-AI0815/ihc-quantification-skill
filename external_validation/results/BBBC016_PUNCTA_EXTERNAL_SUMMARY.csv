@@ -1,0 +1,2 @@
+n_fields,n_wells,n_valid_wells,spearman_puncta_per_cell,spearman_integrated_intensity,spearman_density,maximum_dose,maximum_dose_minus_control_effect,status
+72,24,24,0.372003477868315,0.625384510273346,0.437420267645862,100,0.547424327098563,PASS_WITH_WARNINGS
