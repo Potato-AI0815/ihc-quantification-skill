@@ -1,0 +1,6 @@
+cohort,n_images,spearman_rho_mean_od,spearman_rho_p95_od,spearman_rho_h_score,spearman_rho_pos_fraction,monotonic_mean_od,monotonic_p95_od,monotonic_h_score
+All Genes (Overall),64,0.634,0.7058,0.5901,0.4078,TRUE,TRUE,TRUE
+Gene: ESR1,16,0.4729,0.4972,0.3398,0.5215,TRUE,TRUE,TRUE
+Gene: EPCAM,16,0.8004,0.8974,0.667,0.4244,TRUE,TRUE,TRUE
+Gene: KRT20,16,0.8367,0.8731,0.8731,0.57,TRUE,TRUE,TRUE
+Gene: PAX8,16,0.8853,0.9216,0.7882,0.7034,TRUE,TRUE,TRUE

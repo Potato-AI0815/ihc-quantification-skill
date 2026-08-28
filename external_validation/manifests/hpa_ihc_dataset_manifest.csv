@@ -1,0 +1,65 @@
+image_id,gene,antibody_id,patient_id,tissue,subcellular_location,gt_staining,gt_tier_num,gt_intensity,gt_quantity,local_filename,image_url
+HPA_ESR1_not_detected_103_01,ESR1,CAB000037,103,Breast cancer,nuclear,Not detected,0,Weak,<25%,HPA_ESR1_not_detected_103_01.jpg,https://images.proteinatlas.org/37/414_A_5_7.jpg
+HPA_ESR1_not_detected_108_02,ESR1,CAB000037,108,Breast cancer,none,Not detected,0,Negative,None,HPA_ESR1_not_detected_108_02.jpg,https://images.proteinatlas.org/37/414_A_4_1.jpg
+HPA_ESR1_not_detected_315_03,ESR1,CAB000037,315,Breast cancer,none,Not detected,0,Negative,None,HPA_ESR1_not_detected_315_03.jpg,https://images.proteinatlas.org/37/414_A_5_3.jpg
+HPA_ESR1_not_detected_227_04,ESR1,CAB000037,227,Carcinoid,none,Not detected,0,Negative,None,HPA_ESR1_not_detected_227_04.jpg,https://images.proteinatlas.org/37/363_A_1_3.jpg
+HPA_ESR1_low_39_05,ESR1,CAB000037,39,Endometrial cancer,nuclear,Low,1,Weak,75%-25%,HPA_ESR1_low_39_05.jpg,https://images.proteinatlas.org/37/287_B_7_1.jpg
+HPA_ESR1_low_1016_06,ESR1,CAB000037,1016,Ovarian cancer,nuclear,Low,1,Weak,75%-25%,HPA_ESR1_low_1016_06.jpg,https://images.proteinatlas.org/37/287_B_3_5.jpg
+HPA_ESR1_low_1115_07,ESR1,CAB000037,1115,Ovarian cancer,nuclear,Low,1,Weak,75%-25%,HPA_ESR1_low_1115_07.jpg,https://images.proteinatlas.org/37/287_B_3_7.jpg
+HPA_ESR1_low_137_08,ESR1,CAB000037,137,Prostate cancer,nuclear,Low,1,Moderate,<25%,HPA_ESR1_low_137_08.jpg,https://images.proteinatlas.org/37/414_A_7_3.jpg
+HPA_ESR1_medium_312_09,ESR1,CAB000037,312,Endometrial cancer,nuclear,Medium,2,Moderate,75%-25%,HPA_ESR1_medium_312_09.jpg,https://images.proteinatlas.org/37/287_B_9_6.jpg
+HPA_ESR1_medium_1328_10,ESR1,CAB000037,1328,Endometrial cancer,nuclear,Medium,2,Moderate,75%-25%,HPA_ESR1_medium_1328_10.jpg,https://images.proteinatlas.org/37/287_B_9_3.jpg
+HPA_ESR1_medium_1106_11,ESR1,CAB000037,1106,Ovarian cancer,nuclear,Medium,2,Moderate,75%-25%,HPA_ESR1_medium_1106_11.jpg,https://images.proteinatlas.org/37/287_B_1_7.jpg
+HPA_ESR1_medium_103_12,ESR1,HPA000449,103,Breast cancer,nuclear,Medium,2,Moderate,>75%,HPA_ESR1_medium_103_12.jpg,https://images.proteinatlas.org/449/1941_A_5_7.jpg
+HPA_ESR1_high_159_13,ESR1,CAB000037,159,Breast cancer,nuclear,High,3,Strong,>75%,HPA_ESR1_high_159_13.jpg,https://images.proteinatlas.org/37/414_A_4_3.jpg
+HPA_ESR1_high_214_14,ESR1,CAB000037,214,Breast cancer,nuclear,High,3,Strong,75%-25%,HPA_ESR1_high_214_14.jpg,https://images.proteinatlas.org/37/414_A_6_8.jpg
+HPA_ESR1_high_261_15,ESR1,CAB000037,261,Breast cancer,nuclear,High,3,Strong,75%-25%,HPA_ESR1_high_261_15.jpg,https://images.proteinatlas.org/37/414_A_5_1.jpg
+HPA_ESR1_high_319_16,ESR1,CAB000037,319,Breast cancer,nuclear,High,3,Strong,>75%,HPA_ESR1_high_319_16.jpg,https://images.proteinatlas.org/37/414_A_5_5.jpg
+HPA_EPCAM_not_detected_1939_17,EPCAM,CAB003809,1939,Breast cancer,none,Not detected,0,Negative,None,HPA_EPCAM_not_detected_1939_17.jpg,https://images.proteinatlas.org/3809/10495_A_6_5.jpg
+HPA_EPCAM_not_detected_1242_18,EPCAM,CAB003809,1242,Cervical cancer,none,Not detected,0,Negative,None,HPA_EPCAM_not_detected_1242_18.jpg,https://images.proteinatlas.org/3809/10495_B_4_3.jpg
+HPA_EPCAM_not_detected_122_19,EPCAM,CAB003809,122,Glioma,cytoplasmic/membranous,Not detected,0,Weak,<25%,HPA_EPCAM_not_detected_122_19.jpg,https://images.proteinatlas.org/3809/10496_A_6_8.jpg
+HPA_EPCAM_not_detected_1537_20,EPCAM,CAB003809,1537,Glioma,cytoplasmic/membranous,Not detected,0,Weak,<25%,HPA_EPCAM_not_detected_1537_20.jpg,https://images.proteinatlas.org/3809/10496_A_5_7.jpg
+HPA_EPCAM_low_1391_21,EPCAM,CAB003809,1391,Breast cancer,cytoplasmic/membranous,Low,1,Weak,>75%,HPA_EPCAM_low_1391_21.jpg,https://images.proteinatlas.org/3809/10495_A_5_8.jpg
+HPA_EPCAM_low_1838_22,EPCAM,CAB003809,1838,Breast cancer,cytoplasmic/membranous,Low,1,Weak,>75%,HPA_EPCAM_low_1838_22.jpg,https://images.proteinatlas.org/3809/10495_A_5_2.jpg
+HPA_EPCAM_low_1910_23,EPCAM,CAB003809,1910,Breast cancer,"cytoplasmic/membranous,nuclear",Low,1,Weak,>75%,HPA_EPCAM_low_1910_23.jpg,https://images.proteinatlas.org/3809/10495_A_6_7.jpg
+HPA_EPCAM_low_1953_24,EPCAM,CAB003809,1953,Breast cancer,cytoplasmic/membranous,Low,1,Weak,>75%,HPA_EPCAM_low_1953_24.jpg,https://images.proteinatlas.org/3809/10495_A_5_5.jpg
+HPA_EPCAM_medium_1785_25,EPCAM,CAB003809,1785,Breast cancer,cytoplasmic/membranous,Medium,2,Moderate,>75%,HPA_EPCAM_medium_1785_25.jpg,https://images.proteinatlas.org/3809/10495_A_6_1.jpg
+HPA_EPCAM_medium_2174_26,EPCAM,CAB003809,2174,Breast cancer,cytoplasmic/membranous,Medium,2,Moderate,>75%,HPA_EPCAM_medium_2174_26.jpg,https://images.proteinatlas.org/3809/10495_A_5_3.jpg
+HPA_EPCAM_medium_2392_27,EPCAM,CAB003809,2392,Breast cancer,cytoplasmic/membranous,Medium,2,Moderate,>75%,HPA_EPCAM_medium_2392_27.jpg,https://images.proteinatlas.org/3809/10495_A_6_3.jpg
+HPA_EPCAM_medium_1425_28,EPCAM,CAB003809,1425,Carcinoid,cytoplasmic/membranous,Medium,2,Moderate,>75%,HPA_EPCAM_medium_1425_28.jpg,https://images.proteinatlas.org/3809/10496_A_1_7.jpg
+HPA_EPCAM_high_1832_29,EPCAM,CAB003809,1832,Carcinoid,cytoplasmic/membranous,High,3,Strong,>75%,HPA_EPCAM_high_1832_29.jpg,https://images.proteinatlas.org/3809/10496_A_1_1.jpg
+HPA_EPCAM_high_1506_30,EPCAM,CAB003809,1506,Colorectal cancer,cytoplasmic/membranous,High,3,Strong,>75%,HPA_EPCAM_high_1506_30.jpg,https://images.proteinatlas.org/3809/10495_A_2_5.jpg
+HPA_EPCAM_high_1898_31,EPCAM,CAB003809,1898,Colorectal cancer,cytoplasmic/membranous,High,3,Strong,>75%,HPA_EPCAM_high_1898_31.jpg,https://images.proteinatlas.org/3809/10495_A_2_3.jpg
+HPA_EPCAM_high_2001_32,EPCAM,CAB003809,2001,Colorectal cancer,cytoplasmic/membranous,High,3,Strong,>75%,HPA_EPCAM_high_2001_32.jpg,https://images.proteinatlas.org/3809/10495_A_2_1.jpg
+HPA_KRT20_not_detected_103_33,KRT20,CAB000032,103,Breast cancer,none,Not detected,0,Negative,None,HPA_KRT20_not_detected_103_33.jpg,https://images.proteinatlas.org/32/2107_A_5_7.jpg
+HPA_KRT20_not_detected_108_34,KRT20,CAB000032,108,Breast cancer,none,Not detected,0,Negative,None,HPA_KRT20_not_detected_108_34.jpg,https://images.proteinatlas.org/32/2107_A_4_2.jpg
+HPA_KRT20_not_detected_159_35,KRT20,CAB000032,159,Breast cancer,none,Not detected,0,Negative,None,HPA_KRT20_not_detected_159_35.jpg,https://images.proteinatlas.org/32/2107_A_4_3.jpg
+HPA_KRT20_not_detected_214_36,KRT20,CAB000032,214,Breast cancer,none,Not detected,0,Negative,None,HPA_KRT20_not_detected_214_36.jpg,https://images.proteinatlas.org/32/2107_A_6_7.jpg
+HPA_KRT20_low_631_37,KRT20,CAB000032,631,Pancreatic cancer,cytoplasmic/membranous,Low,1,Moderate,<25%,HPA_KRT20_low_631_37.jpg,https://images.proteinatlas.org/32/1900_B_5_5.jpg
+HPA_KRT20_low_834_38,KRT20,CAB000032,834,Pancreatic cancer,cytoplasmic/membranous,Low,1,Moderate,<25%,HPA_KRT20_low_834_38.jpg,https://images.proteinatlas.org/32/1900_B_4_1.jpg
+HPA_KRT20_low_1910_39,KRT20,HPA024309,1910,Breast cancer,cytoplasmic/membranous,Low,1,Weak,75%-25%,HPA_KRT20_low_1910_39.jpg,https://images.proteinatlas.org/24309/54013_A_6_7.jpg
+HPA_KRT20_low_1939_40,KRT20,HPA024309,1939,Breast cancer,cytoplasmic/membranous,Low,1,Weak,>75%,HPA_KRT20_low_1939_40.jpg,https://images.proteinatlas.org/24309/54013_A_6_5.jpg
+HPA_KRT20_medium_140_41,KRT20,CAB000032,140,Liver cancer,cytoplasmic/membranous,Medium,2,Moderate,>75%,HPA_KRT20_medium_140_41.jpg,https://images.proteinatlas.org/32/1900_B_7_7.jpg
+HPA_KRT20_medium_1026_42,KRT20,CAB000032,1026,Liver cancer,cytoplasmic/membranous,Medium,2,Moderate,75%-25%,HPA_KRT20_medium_1026_42.jpg,https://images.proteinatlas.org/32/1900_B_9_3.jpg
+HPA_KRT20_medium_1073_43,KRT20,CAB000032,1073,Stomach cancer,cytoplasmic/membranous,Medium,2,Strong,<25%,HPA_KRT20_medium_1073_43.jpg,https://images.proteinatlas.org/32/1900_B_2_3.jpg
+HPA_KRT20_medium_1207_44,KRT20,CAB000032,1207,Stomach cancer,cytoplasmic/membranous,Medium,2,Strong,<25%,HPA_KRT20_medium_1207_44.jpg,https://images.proteinatlas.org/32/1900_B_3_5.jpg
+HPA_KRT20_high_237_45,KRT20,CAB000032,237,Colorectal cancer,cytoplasmic/membranous,High,3,Strong,>75%,HPA_KRT20_high_237_45.jpg,https://images.proteinatlas.org/32/2107_A_2_5.jpg
+HPA_KRT20_high_257_46,KRT20,CAB000032,257,Colorectal cancer,cytoplasmic/membranous,High,3,Strong,75%-25%,HPA_KRT20_high_257_46.jpg,https://images.proteinatlas.org/32/2107_A_2_7.jpg
+HPA_KRT20_high_273_47,KRT20,CAB000032,273,Colorectal cancer,cytoplasmic/membranous,High,3,Strong,>75%,HPA_KRT20_high_273_47.jpg,https://images.proteinatlas.org/32/2107_A_1_1.jpg
+HPA_KRT20_high_410_48,KRT20,CAB000032,410,Colorectal cancer,cytoplasmic/membranous,High,3,Strong,>75%,HPA_KRT20_high_410_48.jpg,https://images.proteinatlas.org/32/2107_A_3_7.jpg
+HPA_PAX8_not_detected_145_49,PAX8,CAB055097,145,Breast cancer,none,Not detected,0,Negative,None,HPA_PAX8_not_detected_145_49.jpg,https://images.proteinatlas.org/55097/120593_A_6_5.jpg
+HPA_PAX8_not_detected_955_50,PAX8,CAB055097,955,Breast cancer,none,Not detected,0,Negative,None,HPA_PAX8_not_detected_955_50.jpg,https://images.proteinatlas.org/55097/120593_A_5_7.jpg
+HPA_PAX8_not_detected_1688_51,PAX8,CAB055097,1688,Breast cancer,none,Not detected,0,Negative,None,HPA_PAX8_not_detected_1688_51.jpg,https://images.proteinatlas.org/55097/120593_A_4_3.jpg
+HPA_PAX8_not_detected_1874_52,PAX8,CAB055097,1874,Breast cancer,none,Not detected,0,Negative,None,HPA_PAX8_not_detected_1874_52.jpg,https://images.proteinatlas.org/55097/120593_A_6_1.jpg
+HPA_PAX8_low_28_53,PAX8,CAB055097,28,Colorectal cancer,cytoplasmic/membranous,Low,1,Weak,75%-25%,HPA_PAX8_low_28_53.jpg,https://images.proteinatlas.org/55097/120593_A_3_6.jpg
+HPA_PAX8_low_119_54,PAX8,CAB055097,119,Endometrial cancer,nuclear,Low,1,Weak,75%-25%,HPA_PAX8_low_119_54.jpg,https://images.proteinatlas.org/55097/120593_B_7_1.jpg
+HPA_PAX8_low_968_55,PAX8,CAB055097,968,Endometrial cancer,nuclear,Low,1,Weak,75%-25%,HPA_PAX8_low_968_55.jpg,https://images.proteinatlas.org/55097/120593_B_9_1.jpg
+HPA_PAX8_low_1831_56,PAX8,CAB055097,1831,Renal cancer,nuclear,Low,1,Weak,75%-25%,HPA_PAX8_low_1831_56.jpg,https://images.proteinatlas.org/55097/120597_A_8_5.jpg
+HPA_PAX8_medium_67_57,PAX8,CAB055097,67,Endometrial cancer,nuclear,Medium,2,Moderate,>75%,HPA_PAX8_medium_67_57.jpg,https://images.proteinatlas.org/55097/120593_B_8_3.jpg
+HPA_PAX8_medium_465_58,PAX8,CAB055097,465,Endometrial cancer,nuclear,Medium,2,Moderate,75%-25%,HPA_PAX8_medium_465_58.jpg,https://images.proteinatlas.org/55097/120593_B_7_3.jpg
+HPA_PAX8_medium_747_59,PAX8,CAB055097,747,Endometrial cancer,nuclear,Medium,2,Moderate,>75%,HPA_PAX8_medium_747_59.jpg,https://images.proteinatlas.org/55097/120593_B_9_7.jpg
+HPA_PAX8_medium_1129_60,PAX8,CAB055097,1129,Endometrial cancer,nuclear,Medium,2,Moderate,>75%,HPA_PAX8_medium_1129_60.jpg,https://images.proteinatlas.org/55097/120593_B_9_3.jpg
+HPA_PAX8_high_1236_61,PAX8,CAB055097,1236,Cervical cancer,nuclear,High,3,Strong,>75%,HPA_PAX8_high_1236_61.jpg,https://images.proteinatlas.org/55097/120593_B_6_5.jpg
+HPA_PAX8_high_359_62,PAX8,CAB055097,359,Endometrial cancer,nuclear,High,3,Strong,>75%,HPA_PAX8_high_359_62.jpg,https://images.proteinatlas.org/55097/120593_B_8_5.jpg
+HPA_PAX8_high_1058_63,PAX8,CAB055097,1058,Endometrial cancer,nuclear,High,3,Strong,>75%,HPA_PAX8_high_1058_63.jpg,https://images.proteinatlas.org/55097/120593_B_7_6.jpg
+HPA_PAX8_high_1100_64,PAX8,CAB055097,1100,Endometrial cancer,nuclear,High,3,Strong,>75%,HPA_PAX8_high_1100_64.jpg,https://images.proteinatlas.org/55097/120593_B_8_7.jpg
