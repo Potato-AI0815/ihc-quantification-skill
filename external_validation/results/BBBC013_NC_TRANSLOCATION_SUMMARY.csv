@@ -1,0 +1,3 @@
+drug,n_wells,n_valid_wells,negative_control_median_NC_ratio,positive_control_median_NC_ratio,empty_well_median_NC_ratio,positive_minus_negative_effect,spearman_dose_response_rho,z_prime_descriptive,expected_direction_recovered
+Wortmannin,48,48,0.702648534581426,4.77615537034034,,4.07350683575892,0.884416300275042,0.663532539132879,TRUE
+LY294002,48,48,0.731538796965145,4.89144737660402,0.837422176744921,4.15990857963887,0.903057393255077,0.534768009058595,TRUE
