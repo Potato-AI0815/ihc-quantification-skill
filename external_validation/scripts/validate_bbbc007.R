@@ -102,6 +102,25 @@ internal_label_boundary <- function(labels) {
   out
 }
 
+full_label_perimeter <- function(labels) {
+  nr <- nrow(labels); nc <- ncol(labels)
+  out <- matrix(FALSE, nr, nc)
+  occupied <- labels > 0
+  if (nr > 1L) {
+    out[2:nr, ] <- out[2:nr, ] | (occupied[2:nr, ] & labels[2:nr, ] != labels[1:(nr - 1L), ])
+    out[1:(nr - 1L), ] <- out[1:(nr - 1L), ] | (occupied[1:(nr - 1L), ] & labels[1:(nr - 1L), ] != labels[2:nr, ])
+  }
+  if (nc > 1L) {
+    out[, 2:nc] <- out[, 2:nc] | (occupied[, 2:nc] & labels[, 2:nc] != labels[, 1:(nc - 1L)])
+    out[, 1:(nc - 1L)] <- out[, 1:(nc - 1L)] | (occupied[, 1:(nc - 1L)] & labels[, 1:(nc - 1L)] != labels[, 2:nc])
+  }
+  out[1L, ] <- out[1L, ] | occupied[1L, ]
+  out[nr, ] <- out[nr, ] | occupied[nr, ]
+  out[, 1L] <- out[, 1L] | occupied[, 1L]
+  out[, nc] <- out[, nc] | occupied[, nc]
+  out
+}
+
 pixel_metrics <- function(pred, gt) {
   intersection <- sum(pred & gt)
   denom <- sum(pred) + sum(gt)
@@ -170,7 +189,10 @@ render_qc <- function(record, category, out_path) {
   actin <- read_tiff_matrix(record$image_path_actin)
   gt_cell <- decode_manual_outlines(record$outline_path_actin)
   seg <- segment_if_image(dna, cyto_ref_mat = actin)
-  pred_boundary <- internal_label_boundary(seg$cell_labels)
+  # The visual plate shows the full perimeter of every predicted territory,
+  # including its exterior edge. Metrics below still use only relevant
+  # internal boundaries as specified by BBBC007.
+  pred_boundary <- full_label_perimeter(seg$cell_labels)
   manual_boundary <- gt_cell$boundary
 
   panels <- list(

@@ -107,7 +107,7 @@ segment_if_image <- function(
   # The legacy implementation used one unconstrained radius for every
   # nucleus.  In dense fields that can make neighboring dilations overlap and
   # produce a single report-like cell polygon.  The effective radius is now
-  # capped both globally and by the closest pair of nuclear boundaries.
+  # capped per nucleus by its closest neighbouring nuclear boundaries.
   configured_radius <- as.numeric(cell_propagation_radius)
   max_radius <- as.numeric(max_cytoplasm_expansion_radius)
   boundary_gap_px <- as.numeric(cytoplasm_boundary_gap_px)
@@ -117,7 +117,12 @@ segment_if_image <- function(
   configured_radius <- floor(configured_radius)
   max_radius <- floor(max_radius)
   boundary_gap_px <- floor(boundary_gap_px)
-  effective_radius <- min(configured_radius, max_radius)
+  configured_effective_radius <- min(configured_radius, max_radius)
+  local_expansion_radii <- if (n_cells > 0L) {
+    rep(configured_effective_radius, n_cells)
+  } else {
+    numeric()
+  }
 
   if (n_cells >= 2L) {
     centers <- do.call(rbind, lapply(seq_len(n_cells), function(id) {
@@ -129,25 +134,28 @@ segment_if_image <- function(
     radii <- sqrt(pmax(areas, 1) / pi)
     center_dist <- as.matrix(stats::dist(centers))
     diag(center_dist) <- Inf
-    safe_pairs <- outer(radii, radii, "+")
-    safe_pairs <- (center_dist - safe_pairs - boundary_gap_px) / 2
-    safe_pairs <- safe_pairs[is.finite(safe_pairs)]
-    if (length(safe_pairs)) {
-      safe_radius <- floor(max(0, min(safe_pairs)))
-      effective_radius <- min(effective_radius, safe_radius)
-    }
+    safe_pairs <- (center_dist - outer(radii, radii, "+") - boundary_gap_px) / 2
+    safe_pairs[!is.finite(safe_pairs)] <- Inf
+    local_safe_radius <- floor(pmax(0, apply(safe_pairs, 1L, min)))
+    local_expansion_radii <- pmin(local_expansion_radii, local_safe_radius)
   }
+  effective_radius <- if (length(local_expansion_radii)) max(local_expansion_radii) else 0
 
   if (n_cells > 0) {
-    # Define cell territory with the distance-transform threshold, now using
-    # the guarded effective radius.  The dynamic cap above prevents the
-    # distance shells of neighboring nuclei from reaching one another.
+    # Assign every pixel to its nearest nucleus first, then apply the guarded
+    # radius for that specific nucleus.  A single close pair therefore cannot
+    # collapse propagation for the entire field, while each pixel still has at
+    # most one cell label.
     dist_from_nuc <- as.matrix(EBImage::distmap(!nuc_mask))
-    cell_allowed <- if (effective_radius > 0) {
-      dist_from_nuc <= effective_radius
-    } else {
-      nuc_mask
-    }
+    nearest_labels <- round(as.matrix(EBImage::propagate(
+      x = EBImage::Image(matrix(0, nrow = nr, ncol = nc), colormode = "Grayscale"),
+      seeds = EBImage::Image(nuc_labels, colormode = "Grayscale"),
+      mask = EBImage::Image(matrix(TRUE, nrow = nr, ncol = nc), colormode = "Grayscale")
+    )))
+    radius_map <- matrix(0, nrow = nr, ncol = nc)
+    assigned <- nearest_labels > 0
+    radius_map[assigned] <- local_expansion_radii[as.integer(nearest_labels[assigned])]
+    cell_allowed <- nuc_mask | (assigned & dist_from_nuc <= radius_map)
 
     if (!is.null(cyto_ref_mat)) {
       # If cytoplasm reference channel exists, intersect with positive cyto signal
@@ -157,13 +165,8 @@ segment_if_image <- function(
       cell_allowed <- cell_allowed & (nuc_mask | cyto_allowed)
     }
 
-    # Propagate labels from nuclei into cell_allowed territory
-    cell_labels <- EBImage::propagate(
-      x = EBImage::Image(matrix(0, nrow = nr, ncol = nc), colormode = "Grayscale"),
-      seeds = EBImage::Image(nuc_labels, colormode = "Grayscale"),
-      mask = EBImage::Image(cell_allowed, colormode = "Grayscale")
-    )
-    cell_labels <- round(as.matrix(cell_labels))
+    cell_labels <- nearest_labels
+    cell_labels[!cell_allowed] <- 0L
 
     # Remove a narrow neutral boundary wherever two propagated labels touch.
     # Nuclei are protected, so this only trims cytoplasm and cannot erase a
@@ -249,11 +252,15 @@ segment_if_image <- function(
     tissue_mask = tissue_mask,
     n_cells = n_cells,
     engine_used = engine_used,
+    cell_expansion_radius_by_nucleus = local_expansion_radii,
     metrics = data.table(
       n_cells = n_cells,
       requested_cell_propagation_radius = configured_radius,
       max_cytoplasm_expansion_radius = max_radius,
       effective_cell_propagation_radius = effective_radius,
+      median_cell_propagation_radius = if (length(local_expansion_radii)) stats::median(local_expansion_radii) else 0,
+      mean_cell_propagation_radius = if (length(local_expansion_radii)) mean(local_expansion_radii) else 0,
+      nonzero_cell_propagation_fraction = if (length(local_expansion_radii)) mean(local_expansion_radii > 0) else 0,
       cytoplasm_boundary_gap_px = boundary_gap_px,
       nuc_watershed_tolerance = watershed_tolerance,
       nuc_watershed_ext = as.integer(round(watershed_ext)),
