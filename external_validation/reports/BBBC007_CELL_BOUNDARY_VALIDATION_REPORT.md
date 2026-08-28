@@ -4,11 +4,16 @@
 
 **Dataset**: BBBC007 v1, all 16 complete fields
 
+**Software commit**: `c8bbe77bf0707574d9b8f4c1cd9b92778ba2cb56` (independent bugfix after the recorded zero-propagation failure)
+
 **Status**: **PASS_WITH_WARNINGS**
 
 ## Frozen-method result
 
-No BBBC007 field was used for calibration and no core parameter was changed after result inspection.
+No BBBC007 field was used for calibration and no boundary threshold was tuned
+after result inspection. This run uses the independent bugfix that replaces the
+field-wide radius collapse with per-nucleus local safety radii; the frozen
+maximum (10 px), one-pixel gap, and watershed settings are unchanged.
 
 | Metric | Aggregate result |
 |---|---:|

@@ -46,3 +46,7 @@ Replace the field-wide radius collapse with per-nucleus local safety radii or
 an equivalent exclusive propagation constraint. The 10-px maximum, 1-px
 inter-cell gap, one-nucleus-per-cell rule, and frozen watershed settings remain
 unchanged. No BBBC007 outcome may be used to tune an accuracy threshold.
+
+The independent fix was implemented in commit
+`c8bbe77bf0707574d9b8f4c1cd9b92778ba2cb56` and then re-run against all 16
+fields.
