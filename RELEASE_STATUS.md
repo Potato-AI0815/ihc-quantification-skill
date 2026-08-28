@@ -1,7 +1,7 @@
 # Release Status — IHC & Immunofluorescence Quantification Skill
 
-**Current Version**: `2.3.0-rc2`
-**Validation Decision**: `v2.3.0-rc2 READY (Exact-commit GitHub Ubuntu/Windows CI passed on main and on tag v2.3.0-rc2; Release Candidate Ready)`
+**Current Version**: `2.3.0-rc3`
+**Validation Decision**: `v2.3.0-rc3 CANDIDATE (external real-data validation layer corrected and re-run on the frozen core; DAB backward compatibility re-verified at zero deviation; ready for release tagging)`
 
 > [!IMPORTANT]
 > **Known limitation**: OME-TIFF metadata workflows are not yet formally validated. Standard multi-channel TIFF, ImageJ hyperstacks, and 8/16/32-bit (plus 12-bit in 16-bit container) data are fully verified and supported.
@@ -27,6 +27,8 @@
 ---
 
 ## 2. Validation Deliverables Index
+- [`EXTERNAL_REALDATA_VALIDATION_REPORT.md`](EXTERNAL_REALDATA_VALIDATION_REPORT.md)
+- [`EXTERNAL_VALIDATION_MATRIX.csv`](EXTERNAL_VALIDATION_MATRIX.csv)
 - [`VALIDATION_CLOSEOUT_REPORT.md`](VALIDATION_CLOSEOUT_REPORT.md)
 - [`IF_IO_VALIDATION_REPORT.md`](IF_IO_VALIDATION_REPORT.md)
 - [`IF_IO_VALIDATION_FINAL.md`](IF_IO_VALIDATION_FINAL.md)
