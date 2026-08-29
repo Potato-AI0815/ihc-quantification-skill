@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 # verify_if_synthetic_output.R
 # Validation and Contract Checker for Immunofluorescence (IF) Modality Synthetic Outputs.
-# Part of IHC/IF Quantification Skill v2.3.0-alpha.2
+# Part of the IHC/IF Quantification Skill
 
 options(stringsAsFactors = FALSE)
 args <- commandArgs(trailingOnly = TRUE)

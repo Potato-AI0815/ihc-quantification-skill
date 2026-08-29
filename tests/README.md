@@ -1,6 +1,6 @@
-# Dual-modality synthetic smoke test — v2.3.0-alpha.2
+# Dual-modality synthetic smoke test
 
-The fixture contains four deterministic DAB/hematoxylin-like RGB images and four deterministic IF images. It validates the maintained DAB v2.2.2 workflow together with the v2.3.0-alpha.2 IF modality.
+The fixture contains four deterministic DAB/hematoxylin-like RGB images and four deterministic IF images. It validates the maintained DAB workflow together with the multi-channel IF modality.
 
 Linux/macOS:
 

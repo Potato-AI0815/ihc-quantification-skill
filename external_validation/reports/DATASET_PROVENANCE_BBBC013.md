@@ -12,7 +12,7 @@
 | Images archive SHA-256 | `c059b569d96f70ad5626fad144867e6ece4353622119c46a8af8f9794f1e7985` |
 | Platemap SHA-256 | `e8db6666271d47962fa7d2abfa3ea965352b8e87bee461f2983d0f667bc7ff08` |
 | Dataset selection | All 96 wells × 2 channels; rows A–D Wortmannin (nM), rows E–H LY294002 (µM); one image per channel/well |
-| Official layout | Rows A–D (Wortmannin, nM): columns 1–2 negative controls (0), columns 3–11 dose series (0.98–250), column 12 plate-wide positive control (150 nM Wortmannin). Rows E–H (LY294002, µM): column 1 positive control (80), column 2 negative control (0), columns 3–11 dose series (0.31–80), column 12 no-drug ("empty") wells — E12–H12 are **not** LY294002 positive controls |
+| Official layout | Rows A–D (Wortmannin, nM): columns 1–2 negative controls (0), columns 3–11 dose series (0.98–250), column 12 plate-wide positive-control reference (150 nM Wortmannin). Rows E–H (LY294002, µM): column 1 high-dose reference (80, the maximum dose of the official LY294002 series), column 2 negative control (0), columns 3–11 dose series (0.31–80), column 12 no-drug ("empty") wells — E12–H12 are **not** LY294002 positive controls. Officially, both drugs act as positive-control drugs for the assay, while the plate-level control wells are "no drug" and "150 nM Wortmannin" |
 | Platemap sources | `BBBC013_v1_platemap_all.txt`; per-drug `BBBC013_v1_platemap_wortmannin.txt` (doses in nM) and `BBBC013_v1_platemap_ly294002.txt` (doses in µM) from the official BBBC013 download area |
 | Conversion | BMP → uncompressed 8-bit TIFF in the ignored cache using `bmp` + `tiff`; exact integer pixel round-trip checked for every file |
 | Software baseline | `8099297a6b64b975e2845aabff6c08f6ca2d8efe` (`v2.3.0-rc2`) before any bugfix |

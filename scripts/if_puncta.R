@@ -1,6 +1,6 @@
 # if_puncta.R
 # Puncta and Foci Detection (LoG / DoG) for IF Modality.
-# Part of IHC/IF Quantification Skill v2.3.0-alpha.2
+# Part of the IHC/IF Quantification Skill
 
 suppressPackageStartupMessages({
   library(EBImage)

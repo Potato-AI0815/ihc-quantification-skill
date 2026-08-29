@@ -1,33 +1,39 @@
-# GitHub release checklist
+# GitHub release checklist (reusable)
+
+Apply this checklist to every release candidate. It is deliberately
+version-agnostic: record the exact candidate SHA and CI run in the release
+notes and in `CI_PROVENANCE_REPORT.md` rather than editing this file per
+release.
 
 ## Code and tests
 
-- [x] Repository root contains the contents of `ihc-quantification-skill-repo/`, not an extra nested archive folder.
-
-- [x] `python scripts/static_validate_package.py` passes.
-- [x] `python scripts/preflight_public_release.py` passes.
-- [x] Synthetic smoke test passes on the intended R/EBImage environment.
-- [x] `tests/verify_plot_contract.R` passes.
-- [x] GitHub Actions passes on Windows and Linux for the v2.3.0-alpha.2 candidate ([exact main run 32555682952](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32555682952)).
+- [ ] `python scripts/static_validate_package.py` passes.
+- [ ] `python scripts/preflight_public_release.py` passes.
+- [ ] `python scripts/verify_report_consistency.py` passes (external evidence + gate/wording guards).
+- [ ] `python tests/verify_summary_generator_determinism.py` passes (generated evidence rebuilds byte-identically).
+- [ ] Synthetic dual-modality smoke test passes on the intended R/EBImage environment, and the working tree is unchanged afterwards (`git diff --exit-code`).
+- [ ] `tests/verify_plot_contract.R` passes.
+- [ ] GitHub Actions passes on Windows and Linux for the **exact** release-commit SHA (`headSha == FINAL_MAIN_SHA`, conclusion `success`).
 
 ## Figures
 
-- [x] Fraction figures use a 0–100% publication axis.
-- [x] H-score figures use a 0–300 publication axis.
-- [x] `n=1` captions do not claim an SE.
-- [x] Subtitles and captions are not clipped.
-- [x] Zoomed figures, when generated, are labeled as QC diagnostics.
+- [ ] Fraction figures use a 0–100% publication axis.
+- [ ] H-score figures use a 0–300 publication axis.
+- [ ] `n=1` captions do not claim an SE.
+- [ ] Subtitles and captions are not clipped.
+- [ ] Zoomed figures, when generated, are labeled as QC diagnostics.
 
-## Privacy and provenance
+## Privacy, licensing, and provenance
 
-- [x] No raw or identifiable microscopy data are committed.
-- [x] No local absolute paths or usernames remain; optional `.private_tokens.txt` preflight passes.
-- [x] README examples use only the bundled synthetic fixture.
-- [x] Tumor/stroma/interface examples include reviewer provenance.
-- [x] The license and citation metadata are correct for the repository owner.
+- [ ] No raw or identifiable microscopy data are committed.
+- [ ] No local absolute paths or usernames remain; optional `.private_tokens.txt` preflight passes.
+- [ ] Every bundled public-derived image has a verified license and per-asset provenance (`docs/assets/public_validation/provenance.csv`, `THIRD_PARTY_ASSETS.md`); "freely downloadable" is not a license.
+- [ ] README examples use bundled synthetic fixtures or provenance-tracked public-derived demos only.
+- [ ] The license and citation metadata are correct for the repository owner.
 
 ## Release metadata
 
-- [x] `VERSION`, `SKILL.md`, `DESCRIPTION`, `CITATION.cff`, and `CHANGELOG.md` agree.
-- [x] `RELEASE_STATUS.md` reflects the exact runtime evidence for this build, including the completed GitHub CI run.
-- [x] The release archive SHA256 is published as a sidecar asset with the GitHub prerelease.
+- [ ] `VERSION`, `SKILL.md`, `DESCRIPTION` (`X-Release-Version`), `CITATION.cff`, and `CHANGELOG.md` agree.
+- [ ] `RELEASE_STATUS.md` reflects the exact runtime evidence for this build, including the completed GitHub CI run.
+- [ ] The release archive SHA256 is published as a sidecar asset with the GitHub prerelease.
+- [ ] Immutable-tag discipline: a released tag is never moved, deleted, or recreated; release-body fixes (if any) are metadata-only (`gh release edit`), never archive replacements or tag rewrites.

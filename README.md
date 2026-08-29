@@ -92,9 +92,9 @@ DAB-IHC and puncta panels are deterministic synthetic fixtures because this
 release does not bundle a public DAB-IHC or public puncta run. None of these
 images should be interpreted as a biological benchmark or clinical result.
 
-| DAB-IHC global burden (synthetic fixture) | IF 8-panel QC (public FluorescentCells run) |
+| DAB-IHC global burden (synthetic fixture) | IF 8-panel QC (public BBBC007 run) |
 | :---: | :---: |
-| <img src="docs/assets/synthetic/dab_synthetic_global_burden_demo.png" alt="DAB-IHC global burden synthetic validation output" width="430"> | <img src="docs/assets/public_validation/fluorescentcells_if_8panel_qc.png" alt="Eight-panel IF QC output from the public FluorescentCells teaching image" width="430"> |
+| <img src="docs/assets/synthetic/dab_synthetic_global_burden_demo.png" alt="DAB-IHC global burden synthetic validation output" width="430"> | <img src="docs/assets/public_validation/bbbc007_if_8panel_qc.png" alt="Eight-panel IF QC output from the public CC0 BBBC007v1 field A9 p5" width="430"> |
 
 | IF colocalization (public CIL45501 run) | IF puncta/foci (synthetic fixture) |
 | :---: | :---: |

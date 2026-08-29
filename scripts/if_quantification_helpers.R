@@ -1,6 +1,6 @@
 # if_quantification_helpers.R
 # Core Four-Domain and Single-Cell Fluorescence Intensity Quantification for IF Modality.
-# Part of IHC/IF Quantification Skill v2.3.0-alpha.2
+# Part of the IHC/IF Quantification Skill
 
 suppressPackageStartupMessages({
   library(data.table)

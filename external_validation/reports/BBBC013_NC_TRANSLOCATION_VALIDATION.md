@@ -15,7 +15,7 @@ BBBC013 is a PI3K/Akt-inhibition translocation assay: inhibiting PI3K/Akt preven
 - Channel 1: FKHR-EGFP target; Channel 2: DNA.
 - Roles follow the official per-drug platemap files, not column symmetry:
   - Rows A-D, Wortmannin (nM): columns 1-2 negative controls (0), columns 3-11 dose series (0.98-250), column 12 positive control (150 nM Wortmannin — the plate-wide positive control).
-  - Rows E-H, LY294002 (uM): column 1 positive control (80), column 2 negative control (0), columns 3-11 dose series (0.31-80), column 12 no-drug (empty) wells.
+  - Rows E-H, LY294002 (uM): column 1 high-dose reference (80, the maximum dose of the official LY294002 series), column 2 negative control (0), columns 3-11 dose series (0.31-80), column 12 no-drug (empty) wells.
 - E12-H12 contain no LY294002 and are therefore **excluded from the LY294002 positive-control statistics**; they are reported separately as no-drug wells.
 - Primary endpoint: well-level median nuclear-to-cytoplasmic ratio.
 - Cells are nested observations and are aggregated to wells before response summaries.

@@ -45,6 +45,20 @@ PATH_PATTERNS = {
 PLACEHOLDER_PATH_ALLOW = re.compile(r"(?:example|placeholder|<[^>]+>|path/to)", re.IGNORECASE)
 PRIVATE_TOKEN_FILE = ROOT / ".private_tokens.txt"
 
+# Every bundled public-derived image must carry verified license provenance.
+PROVENANCE_CSV = ROOT / "docs/assets" / "public_validation" / "provenance.csv"
+PROVENANCE_REQUIRED_COLUMNS = {
+    "asset_path", "source_dataset", "source_url", "license", "attribution",
+    "derived_or_original", "transformation", "source_access_date",
+}
+# "Freely downloadable" is not a license. Only explicitly reviewed
+# redistribution-permitting licenses may be bundled.
+ALLOWED_LICENSES = {"public domain", "cc0", "cc by 4.0"}
+PROVENANCE_REQUIRED_PREFIXES = {
+    Path("docs/assets/public_validation"),
+    Path("external_validation/results/figures"),
+}
+
 
 def relative(path: Path) -> Path:
     return path.relative_to(ROOT)
@@ -67,6 +81,45 @@ def private_tokens() -> list[str]:
 def binary_text_probe(path: Path, max_bytes: int = 2_000_000) -> str:
     data = path.read_bytes()[:max_bytes]
     return data.decode("latin-1", errors="ignore")
+
+
+def provenance_rows() -> dict[Path, dict[str, str]]:
+    if not PROVENANCE_CSV.is_file():
+        return {}
+    import csv
+
+    rows: dict[Path, dict[str, str]] = {}
+    with PROVENANCE_CSV.open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            asset = (row.get("asset_path") or "").strip()
+            if asset:
+                rows[Path(asset)] = row
+    return rows
+
+
+def check_public_asset_provenance(findings: list[str]) -> None:
+    rows = provenance_rows()
+    if not rows:
+        findings.append(f"PROVENANCE\tdocs/assets/public_validation/provenance.csv\tprovenance manifest is missing or empty")
+        return
+    for prefix in PROVENANCE_REQUIRED_PREFIXES:
+        directory = ROOT / prefix
+        if not directory.is_dir():
+            continue
+        for path in directory.rglob("*"):
+            if path.suffix.lower() not in {".png", ".jpg", ".jpeg", ".webp"}:
+                continue
+            rel = relative(path)
+            row = rows.get(rel)
+            if row is None:
+                findings.append(f"PROVENANCE\t{rel}\tno provenance entry for a bundled public-derived image")
+                continue
+            for column in ("source_dataset", "source_url", "license", "attribution", "transformation", "source_access_date"):
+                if not (row.get(column) or "").strip():
+                    findings.append(f"PROVENANCE\t{rel}\tprovenance field '{column}' is empty")
+            license_text = (row.get("license") or "").strip().lower()
+            if not any(allowed in license_text for allowed in ALLOWED_LICENSES):
+                findings.append(f"PROVENANCE\t{rel}\tlicense '{row.get('license')}' is not in the approved allow-list (Public Domain / CC0 / CC BY 4.0)")
 
 
 def main() -> int:
@@ -117,6 +170,8 @@ def main() -> int:
         for token in tokens:
             if token in text or token in path.name:
                 findings.append(f"PRIVATE_TOKEN\t{rel}\tmatched token supplied via .private_tokens.txt or IHC_PRIVATE_TOKENS")
+
+    check_public_asset_provenance(findings)
 
     if findings:
         print("Public-release preflight failed:")

@@ -8,6 +8,22 @@ if (length(script_arg) != 1L) stop("Run with Rscript.")
 script_dir <- dirname(normalizePath(path.expand(sub("^--file=", "", script_arg[[1L]])), mustWork = TRUE))
 root <- dirname(script_dir)
 
+# Deterministic report metadata: the tracked validation reports must be a pure
+# function of the current checkout. The version comes from the VERSION file and
+# the report date from the frozen validation metadata — never from the wall
+# clock — so regenerated reports cannot drift across days or machines.
+package_version <- trimws(readLines(file.path(root, "VERSION"), warn = FALSE)[1L])
+validation_meta_text <- paste(
+  readLines(file.path(root, "external_validation", "VALIDATION_METADATA.json"), warn = FALSE),
+  collapse = "\n"
+)
+validation_date <- {
+  match <- regmatches(validation_meta_text, regexpr('"validation_date"\\s*:\\s*"[^"]*"', validation_meta_text))
+  if (!length(match)) stop("external_validation/VALIDATION_METADATA.json is missing 'validation_date'.")
+  sub('"$', "", sub('"validation_date"\\s*:\\s*"', "", match))
+}
+if (!nzchar(validation_date)) stop("external_validation/VALIDATION_METADATA.json has an empty validation_date.")
+
 source(file.path(root, "scripts", "generate_advanced_if_fixtures.R"))
 
 # ==============================================================================
@@ -57,7 +73,7 @@ cat(sprintf("PASS: Colocalization contract validated (Pearson: %.3f >> %.3f, M1:
 # Generate COLOCALIZATION_VALIDATION_REPORT.md
 coloc_report <- sprintf("# Colocalization Module Validation Report
 
-**Version**: 2.3.0-rc1
+**Version**: %s
 **Date**: %s
 **Status**: **PASS**
 
@@ -81,7 +97,7 @@ coloc_report <- sprintf("# Colocalization Module Validation Report
 
 ## 3. Scientific Governance
 The colocalization pipeline reports spatial pixel intensity associations within the optical resolution limits of the microscope; colocalization does not establish molecular binding or physical complex formation without complementary biophysical assays (e.g. FRET, PLA, Co-IP).
-", Sys.Date(), r_high, r_low, m1_high, m1_low, m2_high, m2_low)
+", package_version, validation_date, r_high, r_low, m1_high, m1_low, m2_high, m2_low)
 
 writeLines(coloc_report, file.path(root, "COLOCALIZATION_VALIDATION_REPORT.md"))
 
@@ -141,7 +157,7 @@ cat(sprintf("Puncta Benchmark: GT5=%d, Det5=%d (Err: %.1f%%) | GT15=%d, Det15=%d
 # Generate PUNCTA_VALIDATION_REPORT.md
 puncta_report <- sprintf("# Puncta / Foci Module Quantitative Benchmark Report
 
-**Version**: 2.3.0-rc1
+**Version**: %s
 **Date**: %s
 **Module Classification**: **%s**
 **Gate G7 Assessment**: **%s**
@@ -174,7 +190,7 @@ puncta_report <- sprintf("# Puncta / Foci Module Quantitative Benchmark Report
 - When puncta are closely clustered or near the diffraction limit, DoG connected components may group adjoining peaks into single merged regions.
 - **Classification Status**: Assigned **%s**; Gate G7 evaluated as **%s**.
 - **Usage Recommendation**: Recommended for relative comparison across experimental conditions (dose-response, knock-down vs control); absolute single-molecule counts should be cross-validated with single-molecule localization microscopy or spot-intensity deconvolution if exact counting is required.
-", Sys.Date(), puncta_status, puncta_gate, count_5_gt, per_cell_5_gt, count_15_gt, per_cell_15_gt,
+", package_version, validation_date, puncta_status, puncta_gate, count_5_gt, per_cell_5_gt, count_15_gt, per_cell_15_gt,
    count_5_gt, count_15_gt, count_5_gt + count_15_gt,
    count_5_det, count_15_det, count_5_det + count_15_det,
    per_cell_5_gt, per_cell_15_gt,

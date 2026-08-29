@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 # run_if_quantification.R
 # Master Execution Controller for Immunofluorescence (IF) Modality Quantification.
-# Part of IHC/IF Quantification Skill v2.3.0-alpha.2
+# Part of the IHC/IF Quantification Skill
 
 options(stringsAsFactors = FALSE, scipen = 999)
 

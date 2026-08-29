@@ -171,9 +171,10 @@ matrix_rows = [
         "Secondary_Metric_Value": num(bbbc013_rho["LY294002"]),
         "Trend_Association": "Positive dose association = TRUE",
         "Gate_Status": bbbc013_status,
-        "Notes": ("Official platemap roles: Wortmannin positive control = col 12 (150 nM); "
-                  "LY294002 positive control = col 1 (80 uM); E12-H12 are no-drug wells, "
-                  "not positive controls; N/C ratio increases with dose (nuclear accumulation)"),
+        "Notes": ("Official platemap roles: 150 nM Wortmannin (col 12, rows A-D) is the plate-wide "
+                  "positive-control reference; col 1 (80 uM, rows E-H) is the maximum-dose/high-dose "
+                  "reference for the LY294002 series; E12-H12 are no-drug wells, not positive controls; "
+                  "N/C ratio increases with dose (nuclear accumulation)"),
     },
     {
         "Dataset": "BBBC016",
@@ -281,8 +282,8 @@ To validate that the dual-modality **IHC & Immunofluorescence Quantification Ski
 **Dose-response recovery** (roles from the official per-drug platemaps; dose units nM for Wortmannin, µM for LY294002):
 
 - Wortmannin dose-response Spearman rho = +{num(bbbc013_rho['Wortmannin'])}; LY294002 dose-response Spearman rho = +{num(bbbc013_rho['LY294002'])}.
-- Wortmannin: positive control (150 nM, column 12) median N/C = {num(float(bbbc013_by_drug['Wortmannin']['positive_control_median_NC_ratio']))} vs negative controls (columns 1–2) = {num(float(bbbc013_by_drug['Wortmannin']['negative_control_median_NC_ratio']))}; effect = +{num(float(bbbc013_by_drug['Wortmannin']['positive_minus_negative_effect']))}; Z-prime (descriptive) = {num(float(bbbc013_by_drug['Wortmannin']['z_prime_descriptive']))}.
-- LY294002: positive control (80 µM, column 1) median N/C = {num(float(bbbc013_by_drug['LY294002']['positive_control_median_NC_ratio']))} vs negative controls (column 2) = {num(float(bbbc013_by_drug['LY294002']['negative_control_median_NC_ratio']))}; effect = +{num(float(bbbc013_by_drug['LY294002']['positive_minus_negative_effect']))}; Z-prime (descriptive) = {num(float(bbbc013_by_drug['LY294002']['z_prime_descriptive']))}.
+- Wortmannin: plate-wide positive-control reference (150 nM, column 12) median N/C = {num(float(bbbc013_by_drug['Wortmannin']['positive_control_median_NC_ratio']))} vs negative controls (columns 1–2) = {num(float(bbbc013_by_drug['Wortmannin']['negative_control_median_NC_ratio']))}; effect = +{num(float(bbbc013_by_drug['Wortmannin']['positive_minus_negative_effect']))}; Z-prime (descriptive) = {num(float(bbbc013_by_drug['Wortmannin']['z_prime_descriptive']))}.
+- LY294002: high-dose reference (80 µM, column 1 — the maximum dose of the official LY294002 series) median N/C = {num(float(bbbc013_by_drug['LY294002']['positive_control_median_NC_ratio']))} vs negative controls (column 2) = {num(float(bbbc013_by_drug['LY294002']['negative_control_median_NC_ratio']))}; maximum-dose reference effect = +{num(float(bbbc013_by_drug['LY294002']['positive_minus_negative_effect']))}; Z-prime (descriptive) = {num(float(bbbc013_by_drug['LY294002']['z_prime_descriptive']))}.
 - E12–H12 are no-drug wells (platemap dose 0): median N/C = {num(float(bbbc013_by_drug['LY294002']['empty_well_median_NC_ratio']))}. They are **excluded** from the LY294002 positive-control statistics — the official plate positive control is the 150 nM Wortmannin column, and the LY294002 arm's maximum-dose control is column 1.
 
 **Gate status**: **{bbbc013_status}**.
@@ -334,7 +335,7 @@ Tier-mean progression is strictly monotonic for both mean OD and P95 OD: **{'TRU
 
 ## 4. Technical Audit & Discrepancy Reconciliation
 
-1. **BBBC013 plate semantics correction (rc3)**: the rc2-era draft summary mislabeled E12–H12 as LY294002 positive controls (they are no-drug wells with platemap dose 0) and quoted contradictory negative correlations that never existed in the measured summary CSV. The corrected roles (LY294002 positive control = column 1, 80 µM) were verified against the official per-drug platemap files and the observed per-well N/C data; the measured positive correlations (Wortmannin +{num(bbbc013_rho['Wortmannin'])}, LY294002 +{num(bbbc013_rho['LY294002'])}) now match every summary artifact via the consistency gate.
+1. **BBBC013 plate semantics correction (rc3)**: the rc2-era draft summary mislabeled E12–H12 as LY294002 positive controls (they are no-drug wells with platemap dose 0) and quoted contradictory negative correlations that never existed in the measured summary CSV. The corrected roles (150 nM Wortmannin column 12 as the plate-wide positive-control reference; LY294002 column 1, 80 µM, as the high-dose reference for the LY294002 series) were verified against the official per-drug platemap files and the observed per-well N/C data; the measured positive correlations (Wortmannin +{num(bbbc013_rho['Wortmannin'])}, LY294002 +{num(bbbc013_rho['LY294002'])}) now match every summary artifact via the consistency gate.
 2. **Preliminary HPA mock run vs real execution**: an initial test-run script drafted before a function-naming mismatch (`deconvolve_stains` vs `hdab_deconvolution`) produced an early mock log ($\\rho = 0.9856$). Once corrected to the canonical `analyse_ihc_image` pipeline on the downloaded JPEG files, the real metrics were calculated and permanently recorded in `HPA_IHC_REALDATA_RESULTS.csv`. The mock figures are superseded and appear nowhere in the artifacts.
 3. **Distinct TMA cores & independent cell counts**: all {len(hpa_results)} images have unique URLs, unique image files, and unique biological cell counts ({min(hpa_cell_counts)}–{max(hpa_cell_counts)} cells per core), confirming zero file overwriting or placeholder reuse.
 4. **No outcome-based re-selection**: dataset selections (BBBC007 all 16 fields; BBBC013 all 96 wells; BBBC016 all 24 wells × 3 fields; HPA 64 pre-selected cores) were fixed before analysis and were not modified after inspecting results.

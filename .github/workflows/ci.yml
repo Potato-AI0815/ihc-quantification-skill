@@ -102,11 +102,21 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: bash tests/run_synthetic_smoke_test.sh
+      - name: Fail on tracked-artifact drift after smoke test (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          git diff --exit-code || { echo "::error::tracked release-evidence files drifted after regeneration; committed generated evidence is stale"; git diff --stat; exit 1; }
 
       - name: Run synthetic smoke test on Windows
         if: runner.os == 'Windows'
         shell: pwsh
         run: powershell -ExecutionPolicy Bypass -File .\tests\run_synthetic_smoke_test.ps1
+      - name: Fail on tracked-artifact drift after smoke test (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git diff --exit-code || { echo "::error::tracked release-evidence files drifted after regeneration; committed generated evidence is stale"; git diff --stat; exit 1; }
 
       - name: Upload synthetic QC and figures on failure
         if: failure()

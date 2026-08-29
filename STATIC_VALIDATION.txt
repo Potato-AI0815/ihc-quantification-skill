@@ -1,4 +1,5 @@
-PASS	package	Static structure, delimiters, schemas, GitHub files, portable-path contracts, v2.2.2 contracts, and generic-core checks passed
-INFO	version	2.2.2
-INFO	default_figures	global,nucleus,cytoplasm,extracellular
+PASS	package	Static structure, delimiters, schemas, GitHub files, portable-path contracts, 2.3.0-rc3 contracts, and dual-modality core checks passed
+INFO	version	2.3.0-rc3
+INFO	modalities	brightfield_dab,immunofluorescence
+INFO	default_figures	global,nucleus,cytoplasm,extracellular,colocalization,puncta
 LIMITATION	runtime	R parser, EBImage execution, and graphics rendering are checked by the bundled synthetic smoke test, not by this static checker

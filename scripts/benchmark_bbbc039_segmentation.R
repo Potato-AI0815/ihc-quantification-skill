@@ -1,7 +1,7 @@
 # scripts/benchmark_bbbc039_segmentation.R
 # Downloads the official BBBC039 validation split and evaluates ground-truth
 # segmentation metrics (P3).
-# Part of IHC/IF Quantification Skill v2.3.0-alpha.2
+# Part of the IHC/IF Quantification Skill
 
 suppressPackageStartupMessages({
   library(EBImage)
@@ -14,6 +14,9 @@ root <- if (length(script_arg) == 1L) {
 } else {
   getwd()
 }
+
+source(file.path(root, "scripts", "validation_report_metadata.R"))
+report_meta <- validation_report_metadata(root)
 
 source(file.path(root, "scripts", "if_segmentation.R"))
 source(file.path(root, "scripts", "path_utils.R"))
@@ -240,7 +243,7 @@ Predicted-vs-Ground-Truth overlay montages have been exported to:
 - **Green**: True Positives (Spatial agreement between prediction and GT)
 - **Red**: False Negatives (GT nuclei unsegmented by watershed)
 - **Blue**: False Positives (Over-segmented or spurious background regions)
-", Sys.Date(), zero_gt_images,
+", report_meta$date, zero_gt_images,
    paste(apply(dt_benchmark, 1, function(r) {
      sprintf("| `%s` | %s | %s | %s | %.3f | %.3f | %.3f | %.3f | %.3f |",
              r["image_name"], r["n_gt_cells"], r["n_pred_cells"], if (is.finite(as.numeric(r["cell_count_rel_error"]))) sprintf("%.1f%%", as.numeric(r["cell_count_rel_error"])*100) else "NA",

@@ -34,7 +34,7 @@ is empty (byte-identical core, including the version constant).
 | Benchmark | Gate status | Key values |
 |---|---|---|
 | BBBC007 (manual GT segmentation, Level A) | `PASS_WITH_WARNINGS` | Nucleus F1 0.7781; 58.8% boundary within 2 px; median boundary distance 2.7257 px |
-| BBBC013 (real N/C translocation, Level B) | `PASS` | Wortmannin ρ = +0.884; LY294002 ρ = +0.903; both positive-control shifts correct |
+| BBBC013 (real N/C translocation, Level B) | `PASS` | Wortmannin ρ = +0.884 (plate-wide positive-control reference at 150 nM above negatives); LY294002 ρ = +0.903 (80 µM maximum-dose reference above negatives) |
 | BBBC016 (real puncta dose association, Level B) | `PASS_WITH_WARNINGS` | puncta/cell ρ = 0.3720; integrated puncta intensity ρ = 0.6254 (values unchanged by this cleanup) |
 | HPA DAB-IHC (qualitative ordinal grading, Level B) | `PASS_WITH_WARNINGS` | P95 OD ρ = 0.7058; mean OD ρ = 0.6340; H-Score ρ = 0.5901; ESR1 ρ = 0.4972 kept visible |
 

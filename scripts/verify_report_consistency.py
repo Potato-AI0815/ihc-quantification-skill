@@ -393,6 +393,89 @@ for name in ("README.md", "README_EN.md"):
         fail(f"release metadata guard: {name} release badge does not link to the {version} release tag")
 
 # ---------------------------------------------------------------------------
+# 5. Active release-evidence consistency (gate normalization, versions, dates)
+# ---------------------------------------------------------------------------
+def file_text(path: Path) -> str | None:
+    return path.read_text(encoding="utf-8") if path.is_file() else None
+
+
+validation_date_match = re.search(
+    r'"validation_date"\s*:\s*"([^"]+)"',
+    (ROOT / "external_validation" / "VALIDATION_METADATA.json").read_text(encoding="utf-8"),
+)
+if not validation_date_match:
+    fail("VALIDATION_METADATA.json is missing validation_date (needed by the report guards)")
+else:
+    validation_date = validation_date_match.group(1)
+
+    puncta_text = file_text(ROOT / "PUNCTA_VALIDATION_REPORT.md")
+    coloc_text = file_text(ROOT / "COLOCALIZATION_VALIDATION_REPORT.md")
+    release_text = file_text(ROOT / "RELEASE_STATUS.md")
+    decision_text = file_text(ROOT / "FINAL_RELEASE_DECISION.md")
+
+    # A. G7 consistency: the puncta report is the source of truth.
+    if puncta_text is None or release_text is None:
+        fail("G7 guard: PUNCTA_VALIDATION_REPORT.md or RELEASE_STATUS.md is missing")
+    else:
+        gate_report = re.search(r"\*\*Gate G7 Assessment\*\*: \*\*([A-Z_]+)\*\*", puncta_text)
+        gate_release = re.search(r"\*\*G7\*\*[^\n]*?\*\*(PASS_WITH_WARNINGS|PASS|FAIL)\*\*", release_text)
+        if not gate_report or not gate_release:
+            fail("G7 guard: cannot parse the G7 status from the puncta report or RELEASE_STATUS")
+        elif gate_report.group(1) != gate_release.group(1):
+            fail(f"G7 guard: puncta report says {gate_report.group(1)} but RELEASE_STATUS says {gate_release.group(1)}")
+        elif gate_report.group(1) != "PASS_WITH_WARNINGS":
+            fail(f"G7 guard: expected PASS_WITH_WARNINGS, found {gate_report.group(1)}")
+
+    # B. G6 consistency
+    if coloc_text is None or release_text is None:
+        fail("G6 guard: COLOCALIZATION_VALIDATION_REPORT.md or RELEASE_STATUS.md is missing")
+    else:
+        gate_coloc = re.search(r"\*\*Status\*\*: \*\*([A-Z_]+)\*\*", coloc_text)
+        gate_release_g6 = re.search(r"\*\*G6\*\*[^\n]*?\*\*(PASS_WITH_WARNINGS|PASS|FAIL)\*\*", release_text)
+        if not gate_coloc or not gate_release_g6:
+            fail("G6 guard: cannot parse the G6 status from the colocalization report or RELEASE_STATUS")
+        elif gate_coloc.group(1) != gate_release_g6.group(1):
+            fail(f"G6 guard: colocalization report says {gate_coloc.group(1)} but RELEASE_STATUS says {gate_release_g6.group(1)}")
+
+    # C/D. Active generated reports must carry the current version and the
+    # frozen validation date (they are regenerated in every smoke test).
+    for name, text in (("PUNCTA_VALIDATION_REPORT.md", puncta_text),
+                       ("COLOCALIZATION_VALIDATION_REPORT.md", coloc_text)):
+        if text is None:
+            fail(f"report guard: {name} is missing")
+            continue
+        if f"**Version**: {version}" not in text:
+            fail(f"report guard: {name} Version does not match VERSION ({version})")
+        if f"**Date**: {validation_date}" not in text:
+            fail(f"report guard: {name} Date does not match the frozen validation_date ({validation_date})")
+
+    # E. Generic release files must describe the current state.
+    active_generic = [ROOT / name for name in (
+        "RUNTIME_VALIDATION_SUMMARY.md", "PUBLIC_RELEASE_PREFLIGHT.md",
+        "PUBLIC_RELEASE_AUDIT.md", "FINAL_RELEASE_DECISION.md",
+        "README.md", "README_EN.md",
+    )]
+    for target in active_generic:
+        text = file_text(target)
+        if text is None:
+            fail(f"generic-file guard: {target.name} is missing")
+            continue
+        if "This remains an Alpha prerelease" in text:
+            fail(f"generic-file guard: {target.name} still claims an Alpha prerelease state")
+    if decision_text is None:
+        fail("generic-file guard: FINAL_RELEASE_DECISION.md is missing")
+    else:
+        if re.search(r"\*\*Release Candidate\*\*:\s*`v2\.3\.0-rc1`", decision_text):
+            fail("generic-file guard: FINAL_RELEASE_DECISION.md still presents rc1 as the current candidate")
+        if "READY_FOR_FINAL_STABLE_REVIEW" not in decision_text:
+            fail("generic-file guard: FINAL_RELEASE_DECISION.md must state READY_FOR_FINAL_STABLE_REVIEW")
+    static_txt = file_text(ROOT / "STATIC_VALIDATION.txt")
+    if static_txt is None:
+        fail("generic-file guard: STATIC_VALIDATION.txt is missing")
+    elif f"INFO\tversion\t{version}" not in static_txt:
+        fail(f"generic-file guard: STATIC_VALIDATION.txt version does not match VERSION ({version})")
+
+# ---------------------------------------------------------------------------
 if failures:
     print("FAIL\treport-consistency")
     for item in failures:

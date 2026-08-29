@@ -1,6 +1,6 @@
 # scripts/verify_if_io_bitdepth_contract.R
 # Validates the supported IF TIFF/ImageJ I/O scope, bit depths, and Z-projections (P2).
-# Part of IHC/IF Quantification Skill v2.3.0-alpha.2
+# Part of the IHC/IF Quantification Skill
 
 suppressPackageStartupMessages({
   library(EBImage)
@@ -13,6 +13,9 @@ root <- if (length(script_arg) == 1L) {
 } else {
   getwd()
 }
+
+source(file.path(root, "scripts", "validation_report_metadata.R"))
+report_meta <- validation_report_metadata(root)
 
 source(file.path(root, "scripts", "if_io_helpers.R"))
 source(file.path(root, "scripts", "if_preprocessing.R"))
@@ -197,7 +200,7 @@ print(dt_report)
 # ==============================================================================
 report_md <- sprintf("# IF Image I/O, Bit-Depth, and Projection Validation Report
 
-**Version**: 2.3.0-rc1
+**Version**: %s
 **Date**: %s
 **Status**: **PASS_WITH_WARNINGS (validated scope only)**
 
@@ -239,7 +242,7 @@ report_md <- sprintf("# IF Image I/O, Bit-Depth, and Projection Validation Repor
 1. **Sum Projection** $\\ge$ **Max Projection**: Verified ($I_{\\text{sum, max}} = %.4f \\ge I_{\\text{max, max}} = %.4f$).
 2. **Max Projection** $\\ge$ **Mean Projection**: Verified ($I_{\\text{max, max}} = %.4f \\ge I_{\\text{mean, max}} = %.4f$).
 3. **Channel Integrity**: Multi-channel Z-stacks parse individual channels independently prior to slice projection.
-", Sys.Date(),
+", report_meta$version, report_meta$date,
    dt_report$bit_depth_detected[1], dt_report$dim_x[1], dt_report$dim_y[1], dt_report$dim_z[1], dt_report$raw_min[1], dt_report$raw_max[1], dt_report$dynamic_range_used[1], dt_report$silent_conversion_check[1],
    dt_report$bit_depth_detected[2], dt_report$dim_x[2], dt_report$dim_y[2], dt_report$dim_z[2], dt_report$raw_min[2], dt_report$raw_max[2], dt_report$dynamic_range_used[2], dt_report$silent_conversion_check[2],
    dt_report$bit_depth_detected[3], dt_report$dim_x[3], dt_report$dim_y[3], dt_report$dim_z[3], dt_report$raw_min[3], dt_report$raw_max[3], dt_report$dynamic_range_used[3], dt_report$silent_conversion_check[3],

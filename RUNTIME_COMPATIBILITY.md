@@ -1,8 +1,27 @@
-# Runtime compatibility — v2.2.2
+# Runtime compatibility — dual-modality workflow (current `main`)
 
-## Baseline evidence
+## Compatibility summary
 
-The v2.2 quantitative core was exercised under Windows 11, R 4.5.3, EBImage 4.52.0, and data.table 1.18.2.1. Private images and identifiers are not distributed. The bundled synthetic fixture is the only public image dataset.
+The repository ships two modalities behind one router:
+
+- **Brightfield DAB-IHC** — the maintained DAB workflow, provenance-tracked to
+  the v2.2.2 release line: backward compatibility against a clean v2.2.2
+  checkout is part of every regression run (`tests/verify_backward_compatibility.R`,
+  observed delta 0, tolerance 1e-6). v2.2.2 is used **only** as the DAB baseline
+  provenance reference, not as the current version label.
+- **Multi-channel immunofluorescence (IF)** — TIFF/ImageJ multi-channel and
+  hyperstack inputs, 8/16/32-bit plus 12-bit-in-16-bit-container values,
+  Z-projection contracts, 4-compartment quantification, colocalization, and
+  puncta modules. OME-TIFF metadata-aware ingestion and packed native-12-bit
+  encodings remain experimental and are not advertised as validated.
+
+## Bundled image assets
+
+Bundled images are limited to (a) deterministic synthetic fixtures generated
+in-repo and (b) small derived demo/QC figures from explicitly licensed public
+datasets with per-asset provenance (`docs/assets/public_validation/provenance.csv`,
+`THIRD_PARTY_ASSETS.md`). Raw external datasets (BBBC, HPA, CIL originals) are
+not bundled and are not redistributed.
 
 ## Portable path contract
 

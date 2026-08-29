@@ -9,7 +9,9 @@
 #     (never a silent overwrite or silent drop);
 #   - merged output is always ordered by the manifest;
 #   - final results must cover the manifest exactly (no missing, no extra);
-#   - checkpoint writes are atomic (temporary file + rename).
+#   - checkpoint writes use temporary-file replacement: atomic on POSIX and
+#     failure-safe with clean-restart semantics on Windows (see
+#     hpa_atomic_fwrite below).
 
 suppressPackageStartupMessages(library(data.table))
 

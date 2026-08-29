@@ -1,6 +1,6 @@
 # if_plot_helpers.R
 # Publication-Ready Biological-Unit Plots (Figures 1-6) for IF Modality.
-# Part of IHC/IF Quantification Skill v2.3.0-alpha.2
+# Part of the IHC/IF Quantification Skill
 
 suppressPackageStartupMessages({
   library(data.table)

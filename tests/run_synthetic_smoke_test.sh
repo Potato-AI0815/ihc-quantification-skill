@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # run_synthetic_smoke_test.sh
 # Dual-Modality Smoke Test for DAB-IHC and Immunofluorescence (IF).
-# Part of IHC/IF Quantification Skill v2.3.0-alpha.2
+# Part of the IHC/IF Quantification Skill
 
 set -euo pipefail
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"

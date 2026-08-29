@@ -1,6 +1,6 @@
 # if_segmentation.R
 # Core EBImage Segmentation, Cell Propagation, and Four-Compartment Definition for IF Modality.
-# Part of IHC/IF Quantification Skill v2.3.0-alpha.2
+# Part of the IHC/IF Quantification Skill
 
 suppressPackageStartupMessages({
   library(EBImage)

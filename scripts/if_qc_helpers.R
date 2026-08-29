@@ -1,6 +1,6 @@
 # if_qc_helpers.R
 # Standardization of 8-Panel IF QC Overviews, Pseudocolor Overlays, and QC Flag Auditing.
-# Part of IHC/IF Quantification Skill v2.3.0-alpha.2
+# Part of the IHC/IF Quantification Skill
 
 suppressPackageStartupMessages({
   library(EBImage)
