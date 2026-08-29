@@ -17,6 +17,18 @@
 #   G. malformed / incomplete checkpoints    -> FAIL clearly, never silently
 
 options(stringsAsFactors = FALSE, scipen = 999)
+
+# CI bootstrap: on GitHub Actions the R dependencies live in <workspace>/Rlib
+# (see .github/workflows/ci.yml); add it explicitly because R_LIBS_USER alone
+# is not reliably applied on the Windows runner. No-op when unset or absent.
+ci_local_lib <- Sys.getenv("GITHUB_WORKSPACE", unset = "")
+if (nzchar(ci_local_lib)) {
+  ci_local_lib <- file.path(ci_local_lib, "Rlib")
+  if (dir.exists(ci_local_lib)) {
+    .libPaths(c(normalizePath(ci_local_lib), .libPaths()))
+  }
+}
+
 suppressPackageStartupMessages(library(data.table))
 
 script_arg <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
