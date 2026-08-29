@@ -93,9 +93,9 @@ A rigorous independent review of the external real-data validation bundle (`exte
 
 | Purpose | File Path |
 |---|---|
-| Project Root | `/Users/yue/Documents/codex_work/ihc-quantification-skill-repo` |
-| R Library Path | `export R_LIBS_USER="/Users/yue/Documents/codex_work/.r-lib-4.6"` |
-| Review Zip Archive | `/Users/yue/Documents/codex_work/external_realdata_validation_review_bundle.zip` |
+| Project Root | Local checkout of `ihc-quantification-skill` (repository root; branch `bugfix/if-per-nucleus-propagation`) |
+| R Library Path | `export R_LIBS_USER="<local R 4.6 user library>"` (site-local; any library containing EBImage/data.table works) |
+| Review Zip Archive | `external_realdata_validation_review_bundle.zip` (SHA256 `09de2f356c695cccd7e8afe45cb571f2fecde2f1d21daaf303bc05ef01424c4a`, distributed out-of-band by the reviewer) |
 | BBBC007 Script | `external_validation/scripts/validate_bbbc007.R` |
 | BBBC013 Script | `external_validation/scripts/validate_bbbc013.R` |
 | BBBC016 Script | `external_validation/scripts/validate_bbbc016.R` |
