@@ -17,6 +17,7 @@ script_dir <- dirname(normalizePath(sub("^--file=", "", script_arg[[1L]]), mustW
 root <- dirname(dirname(script_dir))
 
 source(file.path(root, "scripts", "ihc_helpers.R"))
+source(file.path(script_dir, "hpa_checkpoint_helpers.R"))
 
 manifest_path <- file.path(root, "external_validation", "manifests", "hpa_ihc_dataset_manifest.csv")
 img_dir <- file.path(root, ".external_validation_cache", "HPA", "images")
@@ -32,32 +33,29 @@ cat(sprintf("Loaded HPA IHC manifest with %d images across %d genes.\n", nrow(ma
 # Base configuration for DAB-IHC
 cfg <- ihc_default_config()
 
-results_list <- vector("list", nrow(manifest))
-
 # Crash-resilient checkpointing: every processed image is flushed to the
-# results CSV immediately, and a rerun skips already-processed image_ids. The
-# sidecar mode marker (kept in the ignored cache, so it never becomes a
-# release artifact) prevents mixing rows across calibration modes; a mode
-# change or an absent marker invalidates the checkpoint.
+# results CSV immediately (atomic write), and a rerun resumes from validated
+# checkpoint rows instead of recomputing them. Previously completed rows are
+# always merged back into the final results — an interrupted-then-resumed run
+# must produce exactly the same result table as a clean run. The sidecar mode
+# marker (kept in the ignored cache, so it never becomes a release artifact)
+# prevents mixing rows across calibration modes; a mode change or an absent
+# marker invalidates the checkpoint. Merge/resume semantics live in
+# hpa_checkpoint_helpers.R and are regression-tested by
+# tests/verify_hpa_checkpoint_resume.R.
 checkpoint_csv <- file.path(result_dir, "HPA_IHC_REALDATA_RESULTS.csv")
 checkpoint_mode_file <- file.path(root, ".external_validation_cache", "HPA", "checkpoint_mode.txt")
 checkpoint_mode <- "pixel_fallback_v1"
-if (!file.exists(checkpoint_mode_file)) {
-  # No mode marker: any existing results CSV belongs to an unknown prior run
-  # (e.g. a stale different-calibration pass) and must not be resumed.
-  unlink(checkpoint_csv)
-  writeLines(checkpoint_mode, checkpoint_mode_file)
-} else if (readLines(checkpoint_mode_file, warn = FALSE)[1L] != checkpoint_mode) {
-  unlink(checkpoint_csv)
-  writeLines(checkpoint_mode, checkpoint_mode_file)
+state <- hpa_checkpoint_state(checkpoint_mode_file, checkpoint_csv, checkpoint_mode)
+existing_results <- data.table()
+if (state$action == "resume") {
+  existing_results <- hpa_validate_checkpoint(fread(checkpoint_csv), manifest)
 }
-writeLines(checkpoint_mode, checkpoint_mode_file)
-done_ids <- character()
-if (file.exists(checkpoint_csv)) {
-  prev <- fread(checkpoint_csv)
-  done_ids <- prev$image_id
-  cat(sprintf("Resuming: %d of %d images already processed.\n", length(done_ids), nrow(manifest)))
+done_ids <- existing_results$image_id
+if (length(done_ids)) {
+  cat(sprintf("Resuming: %d of %d images already checkpointed.\n", length(done_ids), nrow(manifest)))
 }
+new_results <- vector("list", nrow(manifest))
 
 cat("=== Processing HPA IHC Images ===\n")
 for (i in seq_len(nrow(manifest))) {
@@ -134,7 +132,7 @@ for (i in seq_len(nrow(manifest))) {
   cat(sprintf("Cells: %d | Tissue OD: %.4f | P95 OD: %.4f | H-Score: %.1f | Pos%%: %.1f%%\n",
               n_cells, dab_mean_od, dab_p95_od, h_score, dab_pos_fraction * 100))
   
-  results_list[[i]] <- data.table(
+  new_results[[i]] <- data.table(
     image_id = row$image_id,
     gene = row$gene,
     antibody_id = row$antibody_id,
@@ -160,15 +158,24 @@ for (i in seq_len(nrow(manifest))) {
     positive_cell_fraction = round(pos_cell_fraction, 4)
   )
 
-  # Flush progress immediately so a crash can only lose the current image.
-  fwrite(rbindlist(results_list, fill = TRUE), checkpoint_csv)
+  # Flush progress immediately (atomic write) so a crash can only lose the
+  # current image; previously checkpointed rows are always carried forward.
+  combined <- hpa_merge_checkpoint(existing_results,
+                                   rbindlist(new_results, fill = TRUE),
+                                   manifest)
+  hpa_atomic_fwrite(combined, checkpoint_csv)
   rm(result, deconv, cell_meas, dab_tissue_vals)
   invisible(gc(verbose = FALSE))
 }
 
-res_dt <- rbindlist(results_list)
+# Final merge must cover the manifest exactly: previously checkpointed rows
+# plus the newly computed rows, manifest-ordered, no duplicates, none missing.
+res_dt <- hpa_merge_checkpoint(existing_results,
+                               rbindlist(new_results, fill = TRUE),
+                               manifest,
+                               allow_incomplete = FALSE)
 res_csv <- file.path(result_dir, "HPA_IHC_REALDATA_RESULTS.csv")
-fwrite(res_dt, res_csv)
+hpa_atomic_fwrite(res_dt, res_csv)
 cat(sprintf("\nResults saved to: %s\n", res_csv))
 
 # ==============================================================================
@@ -320,10 +327,10 @@ Images were queried and downloaded directly via the HPA XML API, covering 4 repr
 ## 4. Scientific Interpretation Boundaries
 
 - **Qualitative Grading, Not Pixel-Level Ground Truth**: The HPA 4-tier levels (Not detected, Low, Medium, High) are pathologist-assigned qualitative staining levels that span different tissues, patients, and antibodies. The concordance measured here is ordinal grading agreement at the image level; it is not a single-pixel or region-level ground-truth comparison.
-- **Calibration Boundary**: HPA metadata and image payloads carry no pixel-size calibration. Analyses therefore ran in the explicit pixel-fallback mode of the pipeline (`scale_mode = "pixel_fallback"`, flagged `MISSING_PIXEL_SIZE_CALIBRATION`); all reported endpoints (optical density, area fraction, H-Score) are scale-invariant, and no physical-length claims are derived from these images.
+- **Calibration Boundary**: HPA metadata and image payloads carry no pixel-size calibration. Analyses therefore ran in the explicit pixel-fallback mode of the pipeline (`scale_mode = "pixel_fallback"`, flagged `MISSING_PIXEL_SIZE_CALIBRATION`). The reported endpoints do not carry physical-length units, and no physical-scale claims are made for this HPA validation because calibrated pixel size is unavailable.
 - **TMA Core Heterogeneity**: Real-world TMA cores contain variable tissue architecture, stroma proportion, and counterstain intensity. The automated pipeline successfully handles this background variation without manual tuning.
 - **Grading Granularity**: Pathologist visual grading relies on a categorical 4-tier scale (0–3), whereas digital image analysis provides continuous optical density ($OD$) and pixel-level area fraction.
-- **Conclusion**: The quantitative endpoints produced by `run_ihc_quantification.R` correlate strongly and monotonically with expert ground-truth annotations across both nuclear and cytoplasmic/membranous targets. This supports ordinal grading concordance on real clinical material; it does not establish pixel-level accuracy or diagnostic equivalence.
+- **Conclusion**: The evaluated quantitative endpoints showed overall moderate-to-strong ordinal concordance with HPA staining tiers, with substantial marker-specific heterogeneity (compare PAX8 with ESR1 in the table above). The weak ESR1 association (P95 OD $\\rho$ = %.4f) is a real biological result of this cohort and is reported as measured. This supports ordinal grading concordance on real clinical material; it does not establish pixel-level accuracy, diagnostic equivalence, or universal performance across tissues, antibodies, and scanning systems.
 ',
 gate_status, hpa_access_date,
 summary_overall$spearman_rho_mean_od, summary_overall$spearman_rho_p95_od, summary_overall$spearman_rho_h_score, summary_overall$spearman_rho_pos_fraction,
@@ -335,7 +342,8 @@ gene_summaries[cohort == "Gene: PAX8"]$spearman_rho_mean_od, gene_summaries[coho
 mean(res_dt[gt_tier_num == 0]$dab_tissue_mean_od), mean(res_dt[gt_tier_num == 0]$dab_tissue_p95_od), mean(res_dt[gt_tier_num == 0]$ihc_h_score), mean(res_dt[gt_tier_num == 0]$dab_tissue_pos_fraction) * 100,
 mean(res_dt[gt_tier_num == 1]$dab_tissue_mean_od), mean(res_dt[gt_tier_num == 1]$dab_tissue_p95_od), mean(res_dt[gt_tier_num == 1]$ihc_h_score), mean(res_dt[gt_tier_num == 1]$dab_tissue_pos_fraction) * 100,
 mean(res_dt[gt_tier_num == 2]$dab_tissue_mean_od), mean(res_dt[gt_tier_num == 2]$dab_tissue_p95_od), mean(res_dt[gt_tier_num == 2]$ihc_h_score), mean(res_dt[gt_tier_num == 2]$dab_tissue_pos_fraction) * 100,
-mean(res_dt[gt_tier_num == 3]$dab_tissue_mean_od), mean(res_dt[gt_tier_num == 3]$dab_tissue_p95_od), mean(res_dt[gt_tier_num == 3]$ihc_h_score), mean(res_dt[gt_tier_num == 3]$dab_tissue_pos_fraction) * 100
+mean(res_dt[gt_tier_num == 3]$dab_tissue_mean_od), mean(res_dt[gt_tier_num == 3]$dab_tissue_p95_od), mean(res_dt[gt_tier_num == 3]$ihc_h_score), mean(res_dt[gt_tier_num == 3]$dab_tissue_pos_fraction) * 100,
+gene_summaries[cohort == "Gene: ESR1"]$spearman_rho_p95_od
 )
 
 writeLines(val_text, file.path(report_dir, "HPA_IHC_EXTERNAL_VALIDATION.md"))

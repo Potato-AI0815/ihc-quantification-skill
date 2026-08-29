@@ -10,11 +10,11 @@ the specialized reports instead, then re-run it.
 from __future__ import annotations
 
 import csv
+import json
 import math
 import re
 import statistics
 import sys
-from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -22,6 +22,15 @@ RESULTS = ROOT / "external_validation" / "results"
 REPORTS = ROOT / "external_validation" / "reports"
 MATRIX_OUT = ROOT / "EXTERNAL_VALIDATION_MATRIX.csv"
 REPORT_OUT = ROOT / "EXTERNAL_REALDATA_VALIDATION_REPORT.md"
+METADATA = ROOT / "external_validation" / "VALIDATION_METADATA.json"
+
+# Deterministic build contract: the report date and release milestone come from
+# the frozen validation metadata file, never from the wall clock, so identical
+# result CSVs rebuild to byte-identical artifacts on any date.
+with METADATA.open(encoding="utf-8") as _meta_handle:
+    _METADATA = json.load(_meta_handle)
+VALIDATION_DATE = _METADATA["validation_date"]
+RELEASE_MILESTONE = _METADATA["release_milestone"]
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -174,7 +183,7 @@ matrix_rows = [
         "Sample_Size": f"{bbbc016_metrics['n_wells']} wells ({bbbc016_metrics['n_fields']} fields)",
         "Primary_Metric_Name": "Spearman rho (puncta per cell vs dose)",
         "Primary_Metric_Value": num(bbbc016_metrics["rho_count"]),
-        "Secondary_Metric_Name": "Spearman rho (integrated puncta OD vs dose)",
+        "Secondary_Metric_Name": "Spearman rho (integrated puncta intensity vs dose)",
         "Secondary_Metric_Value": num(bbbc016_metrics["rho_intensity"]),
         "Trend_Association": "Positive dose association = TRUE",
         "Gate_Status": bbbc016_status,
@@ -223,8 +232,8 @@ def matrix_table_rows() -> list[str]:
 
 report = f"""# External Real-Data Validation Comprehensive Report
 
-**Release Milestone**: `v2.3.0-rc3` Preparation & Review  
-**Date**: {date.today().isoformat()}  
+**Release Milestone**: `{RELEASE_MILESTONE}` — external real-data validation evidence  
+**Validation Date**: {VALIDATION_DATE}  
 **Scope**: Level A (Manual Ground-Truth) and Level B (Biological Concordance) External Datasets  
 **Provenance**: This report and `EXTERNAL_VALIDATION_MATRIX.csv` are generated from the result CSVs by `external_validation/scripts/build_summary_reports.py`; `scripts/verify_report_consistency.py` fails CI if either artifact drifts from the measured data. Manual edits to the two summary artifacts are not permitted.
 
@@ -287,7 +296,7 @@ To validate that the dual-modality **IHC & Immunofluorescence Quantification Ski
 **Positive dose association** (not a strict monotonicity claim): the frozen puncta workflow recovered a positive dose-associated trend across {bbbc016_metrics['n_valid']}/{bbbc016_metrics['n_wells']} valid wells:
 
 - Puncta per cell Spearman rho = {num(bbbc016_metrics['rho_count'])} (weaker endpoint).
-- Integrated puncta OD Spearman rho = {num(bbbc016_metrics['rho_intensity'])} (stronger endpoint).
+- Integrated puncta intensity Spearman rho = {num(bbbc016_metrics['rho_intensity'])} (stronger endpoint).
 - Puncta density Spearman rho = {num(bbbc016_metrics['rho_density'])}; maximum-dose minus control effect = +{num(bbbc016_metrics['effect'])}.
 
 **Gate status**: **{bbbc016_status}**.
@@ -297,9 +306,10 @@ To validate that the dual-modality **IHC & Immunofluorescence Quantification Ski
 ### 3.4 Human Protein Atlas (HPA) — DAB-IHC Pathological Grading
 
 - **Data Source**: Official HPA XML metadata API (schemaVersion 3.0, release 25). License: **Creative Commons Attribution 4.0 International (CC BY 4.0)** with the canonical HPA citation and portal-URL attribution requirements (see [`DATASET_PROVENANCE_HPA_IHC.md`](external_validation/reports/DATASET_PROVENANCE_HPA_IHC.md)).
-- **Calibration boundary**: HPA metadata carries no pixel size, so analyses ran in the pipeline's explicit pixel-fallback mode (`scale_mode = "pixel_fallback"`); endpoints are scale-invariant and no physical-length claims are made.
+- **Calibration boundary**: HPA metadata carries no pixel size, so analyses ran in the pipeline's explicit pixel-fallback mode (`scale_mode = "pixel_fallback"`). The reported endpoints do not carry physical-length units, and no physical-scale claims are made for this HPA validation because calibrated pixel size is unavailable.
 - **Cohort composition**: {len(hpa_results)} distinct TMA cores (16 per marker) across 4 clinical biomarkers: `EPCAM`, `ESR1`, `KRT20`, `PAX8`; {hpa_unique_files} unique image IDs and cell counts from {min(hpa_cell_counts)} to {max(hpa_cell_counts)} cells per core.
-- **Ground-truth semantics**: the 4 tiers are pathologist-assigned **qualitative** staining levels spanning different tissues, patients, and antibodies; the evaluation measures ordinal grading concordance at the image level, not single-pixel or region-level ground truth.
+- **Ground-truth semantics**: the 4 tiers are pathologist-assigned **qualitative** staining levels spanning different tissues, patients, and antibodies; the evaluation measures ordinal grading concordance at the image level, not single-pixel or region-level ground truth, and is not a diagnostic validation.
+- **Concordance summary**: the evaluated quantitative endpoints showed overall moderate-to-strong ordinal concordance with HPA staining tiers, with substantial marker-specific heterogeneity. Weak results are reported as measured (see the per-gene list below).
 
 **Grading concordance**:
 

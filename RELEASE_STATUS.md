@@ -1,7 +1,11 @@
 # Release Status — IHC & Immunofluorescence Quantification Skill
 
 **Current Version**: `2.3.0-rc3`
-**Validation Decision**: `v2.3.0-rc3 CANDIDATE (external real-data validation layer corrected and re-run on the frozen core; DAB backward compatibility re-verified at zero deviation; ready for release tagging)`
+**Current public release candidate**: `v2.3.0-rc3` — **RELEASED AS GITHUB PRE-RELEASE** ([release page](https://github.com/Potato-AI0815/ihc-quantification-skill/releases/tag/v2.3.0-rc3), published 2026-08-29)
+**Release tag commit**: `b025b3805800dbf1f6d3850e881a40c8e6ebac71` (immutable; verified via `git rev-list -n 1 v2.3.0-rc3` and the GitHub API)
+**Exact tag CI**: Actions run [33225049913](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/33225049913) — `success` at `b025b380`
+**Exact rc3 main CI**: Actions run [33225696218](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/33225696218) — `success` at `b025b380`
+**Post-RC3 stable-preparation status**: metadata/validation-infrastructure cleanup complete; awaiting final stable review. Post-rc3 `main` is a moving branch state and must not be conflated with the immutable rc3 tag SHA; no stable tag or stable release is created until that review passes.
 
 > [!IMPORTANT]
 > **Known limitation**: OME-TIFF metadata workflows are not yet formally validated. Standard multi-channel TIFF, ImageJ hyperstacks, and 8/16/32-bit (plus 12-bit in 16-bit container) data are fully verified and supported.
@@ -22,13 +26,18 @@
 | **G7** | Puncta / Subcellular Foci | IF | **PASS** | Validated synthetic puncta counting workflow: GT5=45->Det=43 (Err: 4.4%); GT15=135->Det=134 (Err: 0.7%); per-cell MAE = 0.17 |
 | **G8** | Public Benchmark Validation | Both | **PASS** | BBBC039 official 50-image validation split: Dice=0.8953, IoU=0.8390, precision=0.9106, recall=0.8254, F1=0.8919, Count Err=13.0%; 1-to-1 instance matching |
 | **G9** | 100% DAB Backward Compatibility| Brightfield DAB | **PASS** | Clean v2.2.2 checkout comparison ($\Delta \le 1.0\times 10^{-6}$) |
-| **G10**| Cross-Platform CI Matrix | Both | **PASS** | Exact public release-candidate commit `8099297a6b64b975e2845aabff6c08f6ca2d8efe` passed static, Ubuntu, Windows, and IF I/O contract jobs in exact-tag Actions run [32791143505](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32791143505) for `v2.3.0-rc2` |
+| **G10**| Cross-Platform CI Matrix | Both | **PASS** | Exact public release-candidate commit `b025b3805800dbf1f6d3850e881a40c8e6ebac71` passed static (incl. external report consistency gate and privacy preflight), Ubuntu, Windows, and IF I/O contract jobs in exact-tag Actions run [33225049913](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/33225049913) and exact-main run [33225696218](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/33225696218) for `v2.3.0-rc3` (historical rc2 evidence: run [32791143505](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/32791143505) at `8099297a`) |
 
 ---
 
 ## 2. Validation Deliverables Index
+
+Current evidence:
 - [`EXTERNAL_REALDATA_VALIDATION_REPORT.md`](EXTERNAL_REALDATA_VALIDATION_REPORT.md)
 - [`EXTERNAL_VALIDATION_MATRIX.csv`](EXTERNAL_VALIDATION_MATRIX.csv)
+- [`CI_PROVENANCE_REPORT.md`](CI_PROVENANCE_REPORT.md)
+
+Historical (archived) validation evidence:
 - [`VALIDATION_CLOSEOUT_REPORT.md`](VALIDATION_CLOSEOUT_REPORT.md)
 - [`IF_IO_VALIDATION_REPORT.md`](IF_IO_VALIDATION_REPORT.md)
 - [`IF_IO_VALIDATION_FINAL.md`](IF_IO_VALIDATION_FINAL.md)
@@ -36,9 +45,9 @@
 - [`BBBC039_SEGMENTATION_BENCHMARK_FINAL.md`](BBBC039_SEGMENTATION_BENCHMARK_FINAL.md)
 - [`benchmark_bbbc039_results.csv`](benchmark_bbbc039_results.csv)
 - [`RC1_READINESS_REPORT.md`](RC1_READINESS_REPORT.md)
-- [`GATE_MATRIX_RC1_FINAL.csv`](GATE_MATRIX_RC1_FINAL.csv)
+- [`GATE_MATRIX_RC1_FINAL.csv`](GATE_MATRIX_RC1_FINAL.csv) (rc1-era snapshot)
 - [`COLOCALIZATION_VALIDATION_REPORT.md`](COLOCALIZATION_VALIDATION_REPORT.md)
 - [`PUNCTA_VALIDATION_REPORT.md`](PUNCTA_VALIDATION_REPORT.md)
 - [`BACKWARD_COMPATIBILITY_REPORT_FINAL.md`](BACKWARD_COMPATIBILITY_REPORT_FINAL.md)
-- [`GATE_MATRIX_FINAL.csv`](GATE_MATRIX_FINAL.csv)
+- [`GATE_MATRIX_FINAL.csv`](GATE_MATRIX_FINAL.csv) (rc1-era snapshot)
 - [`segmentation_benchmark.csv`](segmentation_benchmark.csv)

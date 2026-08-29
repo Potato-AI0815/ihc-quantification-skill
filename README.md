@@ -2,7 +2,7 @@
 
 > A QC-first, reproducible workflow for quantitative DAB-IHC and multi-channel immunofluorescence image analysis.
 
-[![Release](https://img.shields.io/badge/release-v2.3.0--rc2-blue.svg)](https://github.com/Potato-AI0815/ihc-quantification-skill/releases)
+[![Release](https://img.shields.io/badge/release-v2.3.0--rc3-blue.svg)](https://github.com/Potato-AI0815/ihc-quantification-skill/releases/tag/v2.3.0-rc3)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![CI](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/Potato-AI0815/ihc-quantification-skill/actions)
 
@@ -67,7 +67,20 @@ The workflow has been verified across 11 comprehensive validation gates (`G0`–
 - **DAB Backward Compatibility (`G0`, `G9`)**: 100% numerical identity maintained against the clean v2.2.2 baseline ($\Delta \le 1.0\times 10^{-6}$ across all 11 tables).
 - **Cross-Platform Continuous Integration (`G10`)**: Automated GitHub Actions matrix verified on `ubuntu-latest` and `windows-latest`.
 
-See [`RELEASE_STATUS.md`](RELEASE_STATUS.md) and [`GATE_MATRIX_RC1_FINAL.csv`](GATE_MATRIX_RC1_FINAL.csv) for detailed gate metrics.
+### External Real-Data Validation
+
+Four independent public benchmarks evaluate the frozen pipelines on real data. Gate statuses are quoted from [`EXTERNAL_VALIDATION_MATRIX.csv`](EXTERNAL_VALIDATION_MATRIX.csv):
+
+| Dataset | Modality | What is evaluated | Gate status |
+| :--- | :--- | :--- | :--- |
+| **BBBC007** | IF | Manual ground-truth cell/nuclear segmentation benchmark (16 fields) | `PASS_WITH_WARNINGS` |
+| **BBBC013** | IF | Real biological FKHR-EGFP cytoplasm-to-nucleus translocation dose response (96 wells) | `PASS` |
+| **BBBC016** | IF | Real Transfluor puncta dose association (24 wells / 72 fields) | `PASS_WITH_WARNINGS` |
+| **HPA DAB-IHC** | Brightfield | Qualitative ordinal grading concordance on 64 real TMA cores (4 markers) | `PASS_WITH_WARNINGS` |
+
+Only BBBC007 is a ground-truth segmentation benchmark; BBBC013/BBBC016 test real biological dose-response concordance, and the HPA benchmark measures qualitative ordinal grading concordance — none of these are universal performance claims or clinical validation. Weak results are reported as measured (e.g. HPA ESR1 P95 OD $\rho$ = 0.4972).
+
+See [`RELEASE_STATUS.md`](RELEASE_STATUS.md), [`EXTERNAL_REALDATA_VALIDATION_REPORT.md`](EXTERNAL_REALDATA_VALIDATION_REPORT.md), and [`EXTERNAL_VALIDATION_MATRIX.csv`](EXTERNAL_VALIDATION_MATRIX.csv) for the current evidence. `GATE_MATRIX_FINAL.csv` and `GATE_MATRIX_RC1_FINAL.csv` are historical (rc1-era) gate snapshots retained as archived validation evidence.
 
 ---
 

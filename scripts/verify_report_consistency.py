@@ -268,7 +268,7 @@ else:
     # BBBC016 section
     expect_phrase_value(r"Puncta per cell Spearman rho = (\d+\.\d+)",
                         f(bbbc016, "spearman_puncta_per_cell"), "BBBC016 puncta-per-cell rho")
-    expect_phrase_value(r"Integrated puncta OD Spearman rho = (\d+\.\d+)",
+    expect_phrase_value(r"Integrated puncta intensity Spearman rho = (\d+\.\d+)",
                         f(bbbc016, "spearman_integrated_intensity"), "BBBC016 integrated-intensity rho")
     if "Positive dose association" not in report_text:
         fail("report must frame BBBC016 as a positive dose association")
@@ -322,6 +322,75 @@ else:
             continue
         if f"**Gate status**: **{status}**" not in section.group(1):
             fail(f"report gate line for {dataset} does not match its specialized report status {status}")
+
+# ---------------------------------------------------------------------------
+# 4. Terminology, HPA wording, and release-metadata guards
+# ---------------------------------------------------------------------------
+# A. IF fluorescence intensity must never be labelled "OD" (optical density is
+#    a brightfield/transmitted-light concept). DAB OD usage is unaffected: the
+#    patterns below only fire when "OD" co-occurs with a puncta/fluorescence
+#    context in the same sentence fragment.
+if_od_pattern = re.compile(
+    r"puncta[^.\n]*\bOD\b|\bOD\b[^.\n]*puncta|fluorescence\s+od",
+    re.IGNORECASE,
+)
+guard_targets = [MATRIX, REPORT, ROOT / "README.md", ROOT / "README_EN.md"]
+guard_targets += sorted(REPORTS.glob("*.md"))
+for target in guard_targets:
+    if not target.is_file():
+        continue
+    text = target.read_text(encoding="utf-8")
+    for match in if_od_pattern.finditer(text):
+        line_no = text[: match.start()].count("\n") + 1
+        fail(f"IF terminology guard: {target.name}:{line_no} labels a fluorescence "
+             f"puncta metric as 'OD' ({match.group(0).strip()!r}); use 'intensity' "
+             f"(brightfield DAB OD is unaffected)")
+
+# B. HPA wording guards: no over-claims, no hidden weak markers.
+banned_phrases = ("all endpoints are scale-invariant", "correlate strongly and monotonically")
+for target in guard_targets:
+    if not target.is_file():
+        continue
+    low = target.read_text(encoding="utf-8").lower()
+    for phrase in banned_phrases:
+        if phrase in low:
+            fail(f"HPA wording guard: {target.name} contains banned over-claim {phrase!r}")
+
+hpa_section = re.search(
+    r"### 3\.\d [^\n]*Human Protein Atlas[^\n]*\n(.*?)(?=\n### |\n---)",
+    report_text if REPORT.is_file() else "",
+    flags=re.DOTALL,
+)
+if hpa_section is None:
+    fail("report is missing the HPA section for wording guards")
+else:
+    hpa_text = hpa_section.group(1).lower()
+    for phrase in (
+        "moderate-to-strong ordinal concordance",
+        "marker-specific heterogeneity",
+        "pixel-fallback",
+        "cc by 4.0",
+        "qualitative",
+        "not a diagnostic validation",
+    ):
+        if phrase not in hpa_text:
+            fail(f"HPA wording guard: report HPA section must state {phrase!r}")
+    if "esr1" not in hpa_text:
+        fail("HPA wording guard: the weak ESR1 result must remain visible in the report")
+
+# C. Release metadata: README release badges must match VERSION.
+version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+badge_label = f"release-v{version.replace('-', '--')}-blue"
+for name in ("README.md", "README_EN.md"):
+    badge_path = ROOT / name
+    if not badge_path.is_file():
+        fail(f"release metadata guard: {name} is missing")
+        continue
+    badge_text = badge_path.read_text(encoding="utf-8")
+    if badge_label not in badge_text:
+        fail(f"release metadata guard: {name} release badge does not show VERSION {version}")
+    if f"/releases/tag/v{version}" not in badge_text and f"/releases/tag/{version}" not in badge_text:
+        fail(f"release metadata guard: {name} release badge does not link to the {version} release tag")
 
 # ---------------------------------------------------------------------------
 if failures:

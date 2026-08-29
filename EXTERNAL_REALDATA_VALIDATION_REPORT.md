@@ -1,7 +1,7 @@
 # External Real-Data Validation Comprehensive Report
 
-**Release Milestone**: `v2.3.0-rc3` Preparation & Review  
-**Date**: 2026-08-29  
+**Release Milestone**: `v2.3.0-rc3` — external real-data validation evidence  
+**Validation Date**: 2026-08-29  
 **Scope**: Level A (Manual Ground-Truth) and Level B (Biological Concordance) External Datasets  
 **Provenance**: This report and `EXTERNAL_VALIDATION_MATRIX.csv` are generated from the result CSVs by `external_validation/scripts/build_summary_reports.py`; `scripts/verify_report_consistency.py` fails CI if either artifact drifts from the measured data. Manual edits to the two summary artifacts are not permitted.
 
@@ -24,7 +24,7 @@ To validate that the dual-modality **IHC & Immunofluorescence Quantification Ski
 | :--- | :--- | :--- | :--- | :--- | :---: | :--- | :---: | :--- | :---: |
 | **BBBC007** | Immunofluorescence | Level A (Manual GT Outlines) | 16 fields | Nucleus F1 | **0.7781** | Median boundary distance (px) | **2.7257** | N/A | **PASS_WITH_WARNINGS** |
 | **BBBC013** | Immunofluorescence | Level B (Biological Dose Response) | 96 wells (2 drugs) | Spearman rho (Wortmannin N/C vs dose) | **0.8844** | Spearman rho (LY294002 N/C vs dose) | **0.9031** | Positive dose association = TRUE | **PASS** |
-| **BBBC016** | Immunofluorescence | Level B (Biological Dose Response) | 24 wells (72 fields) | Spearman rho (puncta per cell vs dose) | **0.3720** | Spearman rho (integrated puncta OD vs dose) | **0.6254** | Positive dose association = TRUE | **PASS_WITH_WARNINGS** |
+| **BBBC016** | Immunofluorescence | Level B (Biological Dose Response) | 24 wells (72 fields) | Spearman rho (puncta per cell vs dose) | **0.3720** | Spearman rho (integrated puncta intensity vs dose) | **0.6254** | Positive dose association = TRUE | **PASS_WITH_WARNINGS** |
 | **HPA_IHC** | Brightfield DAB-IHC | Level B (Clinical Staining Grading) | 64 TMA cores (4 markers) | Spearman rho (P95 DAB OD vs tier) | **0.7058** | Spearman rho (mean DAB OD vs tier) | **0.6340** | Monotonic tier progression = TRUE | **PASS_WITH_WARNINGS** |
 
 ---
@@ -67,7 +67,7 @@ To validate that the dual-modality **IHC & Immunofluorescence Quantification Ski
 **Positive dose association** (not a strict monotonicity claim): the frozen puncta workflow recovered a positive dose-associated trend across 24/24 valid wells:
 
 - Puncta per cell Spearman rho = 0.3720 (weaker endpoint).
-- Integrated puncta OD Spearman rho = 0.6254 (stronger endpoint).
+- Integrated puncta intensity Spearman rho = 0.6254 (stronger endpoint).
 - Puncta density Spearman rho = 0.4374; maximum-dose minus control effect = +0.5474.
 
 **Gate status**: **PASS_WITH_WARNINGS**.
@@ -77,9 +77,10 @@ To validate that the dual-modality **IHC & Immunofluorescence Quantification Ski
 ### 3.4 Human Protein Atlas (HPA) — DAB-IHC Pathological Grading
 
 - **Data Source**: Official HPA XML metadata API (schemaVersion 3.0, release 25). License: **Creative Commons Attribution 4.0 International (CC BY 4.0)** with the canonical HPA citation and portal-URL attribution requirements (see [`DATASET_PROVENANCE_HPA_IHC.md`](external_validation/reports/DATASET_PROVENANCE_HPA_IHC.md)).
-- **Calibration boundary**: HPA metadata carries no pixel size, so analyses ran in the pipeline's explicit pixel-fallback mode (`scale_mode = "pixel_fallback"`); endpoints are scale-invariant and no physical-length claims are made.
+- **Calibration boundary**: HPA metadata carries no pixel size, so analyses ran in the pipeline's explicit pixel-fallback mode (`scale_mode = "pixel_fallback"`). The reported endpoints do not carry physical-length units, and no physical-scale claims are made for this HPA validation because calibrated pixel size is unavailable.
 - **Cohort composition**: 64 distinct TMA cores (16 per marker) across 4 clinical biomarkers: `EPCAM`, `ESR1`, `KRT20`, `PAX8`; 64 unique image IDs and cell counts from 18 to 6067 cells per core.
-- **Ground-truth semantics**: the 4 tiers are pathologist-assigned **qualitative** staining levels spanning different tissues, patients, and antibodies; the evaluation measures ordinal grading concordance at the image level, not single-pixel or region-level ground truth.
+- **Ground-truth semantics**: the 4 tiers are pathologist-assigned **qualitative** staining levels spanning different tissues, patients, and antibodies; the evaluation measures ordinal grading concordance at the image level, not single-pixel or region-level ground truth, and is not a diagnostic validation.
+- **Concordance summary**: the evaluated quantitative endpoints showed overall moderate-to-strong ordinal concordance with HPA staining tiers, with substantial marker-specific heterogeneity. Weak results are reported as measured (see the per-gene list below).
 
 **Grading concordance**:
 

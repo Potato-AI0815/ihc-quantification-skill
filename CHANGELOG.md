@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.3.0-rc3 post-release stable-preparation cleanup — 2026-08-29
+
+Non-algorithmic hardening of the validation infrastructure; the frozen core is byte-identical to the `v2.3.0-rc3` tag.
+- Fixed the HPA checkpoint/resume contract: an interrupted-then-resumed run previously dropped the rows checkpointed before the interruption from the final results. Resume now loads and validates previously checkpointed rows (required schema, unique image_ids, manifest membership, numeric sanity), merges them explicitly with newly computed rows in manifest order, refuses duplicate or foreign image_ids instead of silently overwriting, writes checkpoints atomically (temporary file + rename), and fails the final merge unless the result covers the manifest exactly.
+- Extracted the checkpoint semantics into `external_validation/scripts/hpa_checkpoint_helpers.R` and added `tests/verify_hpa_checkpoint_resume.R` (clean run vs interrupted+resumed equality, byte-identical checkpoints, duplicate/foreign-id/malformed/mode-change/incomplete-coverage failure paths), wired into CI.
+- Terminology fix: IF fluorescence puncta metrics are labelled "integrated puncta intensity" everywhere (matrix, comprehensive report, checker); "OD" remains reserved for brightfield DAB transmittance-derived metrics. BBBC016 values are unchanged.
+- `external_validation/scripts/build_summary_reports.py` is now deterministic: the report date and release milestone come from `external_validation/VALIDATION_METADATA.json` instead of the wall clock; `tests/verify_summary_generator_determinism.py` enforces byte-identical rebuilds and is wired into CI.
+- HPA wording calibrated: overall moderate-to-strong ordinal concordance with substantial marker-specific heterogeneity (weak ESR1 result kept visible), no "scale-invariant" over-claim, explicit pixel-fallback and non-diagnostic scoping. Consistency gate now bans the withdrawn over-claims and verifies README release badges match `VERSION`.
+- README/README_EN: release badge updated to `v2.3.0-rc3` with a direct tag link, external real-data validation overview added, validation entry points repointed to `RELEASE_STATUS.md` / `EXTERNAL_REALDATA_VALIDATION_REPORT.md` / `EXTERNAL_VALIDATION_MATRIX.csv` with rc1-era gate matrices marked as archived history.
+- `CI_PROVENANCE_REPORT.md` and `RELEASE_STATUS.md` updated to the released rc3 provenance (tag commit `b025b380`, exact tag/main CI runs re-verified via the GitHub API); `CITATION.cff` release date corrected to the actual GitHub publish date (2026-08-29).
+
 ## 2.3.0-rc3 release candidate — 2026-08-28
 
 - Corrected the BBBC013 external validation to the official plate semantics: the LY294002 positive control is column 1 (80 µM, rows E–H); E12–H12 are no-drug wells and are no longer mislabeled as LY294002 positive controls. Dose units follow the official per-drug platemaps (nM for Wortmannin, µM for LY294002). Both drugs recover the expected cytoplasm-to-nucleus translocation direction (Wortmannin rho = 0.884, LY294002 rho = 0.903; gate PASS).

@@ -20,6 +20,8 @@ jobs:
         run: python scripts/static_validate_package.py
       - name: External report consistency gate
         run: python scripts/verify_report_consistency.py
+      - name: Summary generator determinism gate
+        run: python tests/verify_summary_generator_determinism.py
       - name: Public-release privacy preflight
         run: python scripts/preflight_public_release.py
       - name: Verify release manifest
@@ -86,6 +88,10 @@ jobs:
           if (length(missing)) stop("Missing R packages: ", paste(missing, collapse = ", "))
           cat("PASS: required R packages are available\n")
           cat("Library paths:\n", paste(.libPaths(), collapse = "\n"), "\n")
+
+      - name: Verify HPA checkpoint resume regression
+        shell: bash
+        run: Rscript tests/verify_hpa_checkpoint_resume.R
 
       - name: Verify IF I/O bit-depth and projection contract
         shell: bash
