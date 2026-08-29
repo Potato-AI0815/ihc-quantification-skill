@@ -34,15 +34,18 @@ cat(sprintf("Loaded HPA IHC manifest with %d images across %d genes.\n", nrow(ma
 cfg <- ihc_default_config()
 
 # Crash-resilient checkpointing: every processed image is flushed to the
-# results CSV immediately (atomic write), and a rerun resumes from validated
-# checkpoint rows instead of recomputing them. Previously completed rows are
-# always merged back into the final results — an interrupted-then-resumed run
-# must produce exactly the same result table as a clean run. The sidecar mode
-# marker (kept in the ignored cache, so it never becomes a release artifact)
-# prevents mixing rows across calibration modes; a mode change or an absent
-# marker invalidates the checkpoint. Merge/resume semantics live in
-# hpa_checkpoint_helpers.R and are regression-tested by
-# tests/verify_hpa_checkpoint_resume.R.
+# results CSV immediately via temporary-file replacement (atomic on POSIX;
+# failure-safe on Windows, where losing the checkpoint in the replacement
+# window triggers a clean restart on the next run), and a rerun resumes from
+# validated checkpoint rows instead of recomputing them. Previously completed
+# rows are always merged back into the final results — an
+# interrupted-then-resumed run must produce exactly the same result table as a
+# clean run. The sidecar mode marker (kept in the ignored cache, so it never
+# becomes a release artifact) prevents mixing rows across calibration modes;
+# resume requires the marker to match AND the checkpoint to be present — a
+# mode change, an absent marker, or a missing checkpoint restarts cleanly.
+# Merge/resume semantics live in hpa_checkpoint_helpers.R and are
+# regression-tested by tests/verify_hpa_checkpoint_resume.R.
 checkpoint_csv <- file.path(result_dir, "HPA_IHC_REALDATA_RESULTS.csv")
 checkpoint_mode_file <- file.path(root, ".external_validation_cache", "HPA", "checkpoint_mode.txt")
 checkpoint_mode <- "pixel_fallback_v1"
@@ -158,8 +161,9 @@ for (i in seq_len(nrow(manifest))) {
     positive_cell_fraction = round(pos_cell_fraction, 4)
   )
 
-  # Flush progress immediately (atomic write) so a crash can only lose the
-  # current image; previously checkpointed rows are always carried forward.
+  # Flush progress immediately via temporary-file replacement so a crash can
+  # only lose the current image; previously checkpointed rows are always
+  # carried forward.
   combined <- hpa_merge_checkpoint(existing_results,
                                    rbindlist(new_results, fill = TRUE),
                                    manifest)

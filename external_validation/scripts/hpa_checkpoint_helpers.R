@@ -31,10 +31,15 @@ HPA_RESULT_NUMERIC_COLUMNS <- c(
   "positive_cell_fraction"
 )
 
-# Decide whether an existing checkpoint may be resumed. A missing or
-# mismatched mode marker invalidates any results CSV from an unknown prior
-# run (e.g. a different calibration), which is then removed and the marker
-# rewritten.
+# Decide whether an existing checkpoint may be resumed. Resume requires ALL of:
+# a mode marker that exists, records exactly the current mode, AND a
+# checkpoint CSV that is actually present. The last condition covers the
+# replacement crash window on Windows (existing target removed, rename not yet
+# done): the marker survives but the checkpoint is gone, and the correct
+# recovery is a clean restart, never an invalid resume. A missing or
+# mismatched mode marker — or a mode change — invalidates any results CSV from
+# an unknown prior run (e.g. a different calibration), which is then removed
+# and the marker rewritten. No phantom checkpoint is ever created here.
 hpa_checkpoint_state <- function(mode_file, checkpoint_csv, current_mode) {
   restart <- TRUE
   if (file.exists(mode_file)) {
@@ -42,7 +47,10 @@ hpa_checkpoint_state <- function(mode_file, checkpoint_csv, current_mode) {
       readLines(mode_file, warn = FALSE)[1L],
       error = function(e) NA_character_
     )
-    restart <- is.na(recorded) || is.na(current_mode) || recorded != current_mode
+    restart <- is.na(recorded) ||
+      is.na(current_mode) ||
+      recorded != current_mode ||
+      !file.exists(checkpoint_csv)
   }
   if (restart) {
     unlink(checkpoint_csv)
@@ -133,18 +141,23 @@ hpa_merge_checkpoint <- function(existing_results, new_rows, manifest,
   combined
 }
 
-# Write a checkpoint atomically: the target is either the previous complete
-# checkpoint or the new complete checkpoint, never a half-written file.
+# Write a checkpoint via temporary-file replacement.
+# POSIX: file.rename provides atomic replacement semantics — the target is
+#   always either the previous complete checkpoint or the new complete
+#   checkpoint, never a half-written file.
+# Windows: rename cannot replace an existing target, so the current checkpoint
+#   is removed first. That remove/rename window is not atomic; if the process
+#   dies inside it the checkpoint disappears, and the next startup detects the
+#   missing checkpoint (hpa_checkpoint_state) and restarts cleanly instead of
+#   attempting an invalid resume. This is failure-safe replacement with clean
+#   restart semantics, not cross-platform atomic replacement.
 hpa_atomic_fwrite <- function(dt, path) {
   tmp <- paste0(path, ".tmp")
   fwrite(dt, tmp)
   on.exit(if (file.exists(tmp)) unlink(tmp), add = TRUE)
-  # POSIX rename atomically replaces an existing target. Windows blocks rename
-  # onto an existing file, so remove it first there; the remove-rename window
-  # can only lose a checkpoint (resumable), never silently corrupt a result.
   if (.Platform$OS.type == "windows" && file.exists(path)) unlink(path)
   if (!file.rename(tmp, path)) {
-    stop("HPA checkpoint atomic rename failed for: ", path)
+    stop("HPA checkpoint replacement failed for: ", path)
   }
   invisible(path)
 }

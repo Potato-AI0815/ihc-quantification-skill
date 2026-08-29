@@ -15,6 +15,7 @@
 #   E. checkpoint image_id outside manifest  -> FAIL loudly
 #   F. checkpoint mode change                -> invalidate and restart safely
 #   G. malformed / incomplete checkpoints    -> FAIL clearly, never silently
+#   H. marker present + checkpoint missing   -> clean restart, no phantom checkpoint
 
 options(stringsAsFactors = FALSE, scipen = 999)
 
@@ -112,7 +113,7 @@ res_a <- hpa_merge_checkpoint(data.table(), accumulated_a, manifest,
 check("A: clean run has 64 rows", nrow(res_a) == 64L)
 check("A: clean run ids match manifest order exactly",
       identical(as.character(res_a$image_id), as.character(manifest$image_id)))
-check("A: atomic write leaves no temp file behind", !file.exists(paste0(csv_a, ".tmp")))
+check("A: checkpoint replacement leaves no temp file behind", !file.exists(paste0(csv_a, ".tmp")))
 
 # ---- Scenario B: interrupted run checkpointed at image 32 -------------------
 work_b <- file.path(tempdir(), "hpa_ckpt_test_resume")
@@ -226,6 +227,29 @@ expect_error("G: incomplete final merge fails",
              hpa_merge_checkpoint(data.table(), incomplete, manifest,
                                   allow_incomplete = FALSE),
              "do not cover the manifest exactly")
+
+# ---- Scenario H: mode marker present and matching, checkpoint CSV missing ---
+# Reproduces the Windows replacement crash window: the existing target is
+# removed, the rename has not happened, so the marker survives but the
+# checkpoint is gone. The only correct recovery is a clean restart — never an
+# invalid resume, never a phantom checkpoint.
+work_h <- file.path(tempdir(), "hpa_ckpt_test_missing")
+unlink(work_h, recursive = TRUE)
+dir.create(work_h, recursive = TRUE)
+checkpoint_h <- file.path(work_h, "results.csv")
+mode_h <- file.path(work_h, "checkpoint_mode.txt")
+writeLines("pixel_fallback_v1", mode_h)
+check("H: setup has matching marker and no checkpoint",
+      !file.exists(checkpoint_h))
+state_h <- hpa_checkpoint_state(mode_h, checkpoint_h, "pixel_fallback_v1")
+check("H: matching mode but missing checkpoint forces restart",
+      state_h$action == "restart")
+check("H: mode marker remains the current mode",
+      readLines(mode_h, warn = FALSE)[1L] == "pixel_fallback_v1")
+check("H: no phantom checkpoint created", !file.exists(checkpoint_h))
+check("H: fresh run can start normally after the restart decision",
+      isTRUE({ acc <- hpa_merge_checkpoint(data.table(), mock_row(manifest[1]), manifest)
+               nrow(acc) == 1L && acc$image_id == "IMG_001" }))
 
 if (length(failures)) {
   cat(sprintf("\nFAIL: HPA checkpoint/resume regression (%d failure(s))\n",

@@ -8,12 +8,26 @@
 
 | Item | Value |
 |---|---|
-| Immutable released tag | `v2.3.0-rc3` → `b025b3805800dbf1f6d3850e881a40c8e6ebac71` (re-verified via `git rev-list -n 1 v2.3.0-rc3` and the GitHub API; tag untouched by this work) |
+| Immutable released tag | `v2.3.0-rc3` → `b025b3805800dbf1f6d3850e881a40c8e6ebac71` (re-verified via `git rev-list -n 1 v2.3.0-rc3` and the GitHub API; tag untouched by stable-prep work) |
 | rc3 exact-tag CI | run [33225049913](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/33225049913) — `success` at `b025b380` (verified) |
-| rc3 exact-main CI | run [33225696218](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/33225696218) — `success` at `b025b380` (verified) |
+| rc3 historical same-SHA main CI | run [33225696218](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/33225696218) — `success` at `b025b380` (verified) |
 | Historical baseline | `v2.3.0-rc2` / `8099297a6b64b975e2845aabff6c08f6ca2d8efe` (superseded) |
-| Post-rc3 cleanup commit | the `main` commit that introduces this report (single-commit cleanup; SHA and its exact-SHA CI conclusion are recorded in the stable-review audit handoff — the report is frozen inside the commit it describes so the cleanup stays one commit) |
+| Post-RC3 stable-prep main | multiple non-algorithmic hardening commits after the rc3 tag (lineage below); the final stable-prep SHA and its exact-SHA CI run are populated only after push and successful exact-SHA verification — recorded in the stable-release audit handoff, not hardcoded here, so closing out the release does not create a new tracked-file revision requiring yet another CI run |
 | Post-rc3 release actions | none: no stable tag, no stable GitHub release, no force push, no tag movement |
+
+### Post-RC3 lineage
+
+| Commit | Purpose |
+|---|---|
+| `b025b380` | `v2.3.0-rc3` — immutable released tag (validation-layer corrections, re-run) |
+| `7e28d7ed` | stable-prep cleanup: validation/provenance/resume hardening, deterministic report build, README/provenance updates |
+| `e23bd40f` | Windows R library bootstrap for the HPA resume regression CI step |
+| post-rc3 final commit | missing-checkpoint restart edge case + cross-platform atomicity wording correction (this report is frozen inside that commit) |
+
+All post-rc3 commits are non-algorithmic: documentation, validation scripts,
+reporting generators, report-consistency tests, metadata, checkpoint/resume
+implementation, and CI validation logic. `git diff v2.3.0-rc3 -- <core scripts>`
+is empty (byte-identical core, including the version constant).
 
 ## 2. Gate statuses carried into stable review
 
@@ -33,7 +47,7 @@
 | BBBC039 validation-partition regression (`tests/verify_bbbc039_benchmark.R`) | **PASS** |
 | IF I/O bit-depth contract (`scripts/verify_if_io_bitdepth_contract.R`) | **PASS_PRESERVED** |
 | Synthetic dual-modality smoke test (`tests/run_synthetic_smoke_test.sh`) | **PASS** (macOS/R 4.x; Windows coverage delegated to GitHub Actions as usual) |
-| HPA checkpoint/resume regression (`tests/verify_hpa_checkpoint_resume.R`) | **PASS** — 32/32 checks: interrupted-at-32 resumed output equals the clean 64-image run in memory and byte-for-byte; duplicate-id, foreign-id, malformed-checkpoint, mode-change and incomplete-coverage paths all fail loudly |
+| HPA checkpoint/resume regression (`tests/verify_hpa_checkpoint_resume.R`) | **PASS** — 34/34 checks across scenarios A–H: interrupted-at-32 resumed output equals the clean 64-image run in memory and byte-for-byte; duplicate-id, foreign-id, malformed-checkpoint, incomplete-coverage, mode-change, and marker-present/checkpoint-missing paths all fail safely and loudly |
 | Real-data resume proof | an interrupted real run (checkpoint at image 8) was resumed with the fixed logic; the final `HPA_IHC_REALDATA_RESULTS.csv` is **byte-identical** to the released rc3 evidence, and every summary metric is unchanged |
 | Report consistency gate (`scripts/verify_report_consistency.py`) | **PASS** — numeric agreement plus new terminology/wording/badge guards |
 | Summary generator determinism (`tests/verify_summary_generator_determinism.py`) | **PASS** — byte-identical rebuilds; report date sourced from `external_validation/VALIDATION_METADATA.json` |
@@ -42,12 +56,13 @@
 ## 4. Fixes contained in this cleanup
 
 1. **IF terminology**: "integrated puncta OD" eliminated repo-wide; IF puncta metrics are now "integrated puncta intensity". DAB OD terminology unchanged; BBBC016 measured values unchanged.
-2. **HPA checkpoint/resume data-loss bug**: previously checkpointed rows were dropped from the final table on resume. Resume now validates the checkpoint (schema, unique/known image_ids, numeric sanity), merges explicitly in manifest order with hard duplicate/foreign-id failures, writes checkpoints atomically, and asserts exact manifest coverage before finishing.
-3. **HPA scientific wording**: calibrated to "overall moderate-to-strong ordinal concordance with substantial marker-specific heterogeneity"; the weak ESR1 result (ρ = 0.4972) stays visible; "scale-invariant" over-claim removed in favour of the precise no-physical-scale statement; non-diagnostic / non-pixel-level / cross-tissue heterogeneity scoping explicit; CC BY 4.0 provenance retained.
-4. **README/README_EN**: rc3 release badge with direct tag link, external real-data validation overview (statuses quoted from the matrix), validation entry points repointed to `RELEASE_STATUS.md` / `EXTERNAL_REALDATA_VALIDATION_REPORT.md` / `EXTERNAL_VALIDATION_MATRIX.csv`; rc1-era gate matrices marked as archived history.
-5. **Provenance/status metadata**: `CI_PROVENANCE_REPORT.md` and `RELEASE_STATUS.md` rewritten to the released rc3 lineage (historical rc2 baseline separated from the immutable rc3 candidate and the moving post-rc3 `main`); `CITATION.cff` release date corrected to the actual GitHub publish date (2026-08-29).
-6. **Deterministic report build**: no wall-clock dates in the summary generator; validation date/milestone come from `external_validation/VALIDATION_METADATA.json`.
-7. **Stronger CI gates**: IF-OD terminology ban, HPA wording guards, README badge/VERSION agreement, generator determinism test, and the HPA checkpoint/resume regression are all enforced in CI.
+2. **HPA checkpoint/resume data-loss bug**: previously checkpointed rows were dropped from the final table on resume. Resume now validates the checkpoint (schema, unique/known image_ids, numeric sanity), merges explicitly in manifest order with hard duplicate/foreign-id failures, writes checkpoints via temporary-file replacement (atomic on POSIX; failure-safe with clean-restart semantics on Windows), and asserts exact manifest coverage before finishing.
+3. **HPA missing-checkpoint edge case**: resume requires the mode marker to match AND the checkpoint file to be present. If the process dies inside the Windows remove/rename replacement window (marker survives, checkpoint gone), the next startup restarts cleanly instead of attempting an invalid `fread`; no phantom checkpoint is created.
+4. **HPA scientific wording**: calibrated to "overall moderate-to-strong ordinal concordance with substantial marker-specific heterogeneity"; the weak ESR1 result (ρ = 0.4972) stays visible; "scale-invariant" over-claim removed in favour of the precise no-physical-scale statement; non-diagnostic / non-pixel-level / cross-tissue heterogeneity scoping explicit; CC BY 4.0 provenance retained.
+5. **README/README_EN**: rc3 release badge with direct tag link, external real-data validation overview (statuses quoted from the matrix), validation entry points repointed to `RELEASE_STATUS.md` / `EXTERNAL_REALDATA_VALIDATION_REPORT.md` / `EXTERNAL_VALIDATION_MATRIX.csv`; rc1-era gate matrices marked as archived history.
+6. **Provenance/status metadata**: `CI_PROVENANCE_REPORT.md` and `RELEASE_STATUS.md` rewritten to the released rc3 lineage (historical rc2 baseline separated from the immutable rc3 candidate and the moving post-rc3 `main`); `CITATION.cff` release date corrected to the actual GitHub publish date (2026-08-29).
+7. **Deterministic report build**: no wall-clock dates in the summary generator; validation date/milestone come from `external_validation/VALIDATION_METADATA.json`.
+8. **Stronger CI gates**: IF-OD terminology ban, HPA wording guards, README badge/VERSION agreement, generator determinism test, and the HPA checkpoint/resume regression are all enforced in CI.
 
 ## 5. Remaining warnings (unchanged from rc3, disclosed)
 
