@@ -48,12 +48,26 @@ PRIVATE_TOKEN_FILE = ROOT / ".private_tokens.txt"
 # Every bundled public-derived image must carry verified license provenance.
 PROVENANCE_CSV = ROOT / "docs/assets" / "public_validation" / "provenance.csv"
 PROVENANCE_REQUIRED_COLUMNS = {
-    "asset_path", "source_dataset", "source_url", "license", "attribution",
-    "derived_or_original", "transformation", "source_access_date",
+    "asset_path", "source_dataset", "source_item", "source_url", "license",
+    "license_url", "attribution", "derived_or_original", "transformation",
+    "source_access_date", "source_identifier",
 }
 # "Freely downloadable" is not a license. Only explicitly reviewed
-# redistribution-permitting licenses may be bundled.
-ALLOWED_LICENSES = {"public domain", "cc0", "cc by 4.0"}
+# redistribution-permitting licenses may be bundled. Matching is exact on the
+# normalized license string (lowercased, whitespace-collapsed) so negated or
+# padded text such as "not public domain" cannot match an allow-list entry.
+ALLOWED_LICENSES = {
+    "public domain",
+    "cc0",
+    "cc0 1.0 public domain",
+    "cc by 4.0",
+    "creative commons attribution 4.0",
+}
+
+
+def normalize_license(text: str) -> str:
+    return " ".join(text.strip().lower().split())
+
 PROVENANCE_REQUIRED_PREFIXES = {
     Path("docs/assets/public_validation"),
     Path("external_validation/results/figures"),
@@ -114,11 +128,13 @@ def check_public_asset_provenance(findings: list[str]) -> None:
             if row is None:
                 findings.append(f"PROVENANCE\t{rel}\tno provenance entry for a bundled public-derived image")
                 continue
-            for column in ("source_dataset", "source_url", "license", "attribution", "transformation", "source_access_date"):
+            for column in ("source_dataset", "source_item", "source_url", "license",
+                           "license_url", "attribution", "transformation",
+                           "source_access_date", "source_identifier"):
                 if not (row.get(column) or "").strip():
                     findings.append(f"PROVENANCE\t{rel}\tprovenance field '{column}' is empty")
-            license_text = (row.get("license") or "").strip().lower()
-            if not any(allowed in license_text for allowed in ALLOWED_LICENSES):
+            license_text = normalize_license(row.get("license") or "")
+            if license_text not in ALLOWED_LICENSES:
                 findings.append(f"PROVENANCE\t{rel}\tlicense '{row.get('license')}' is not in the approved allow-list (Public Domain / CC0 / CC BY 4.0)")
 
 

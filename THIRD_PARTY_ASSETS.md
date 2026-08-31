@@ -20,7 +20,7 @@ non-empty source URL, an allow-listed license (Public Domain / CC0 / CC BY 4.0),
 
 | Asset(s) | Source | License | Notes |
 |---|---|---|---|
-| `docs/assets/public_validation/cil45501_if_colocalization_pearson_r.png` | Cell Image Library **CIL:45501** (human iPSC-derived cells; nestin / beta3-tubulin(Tuj1) / DAPI) | **Public Domain** (DOI 10.7295/W9CIL45501) | Attribution: CIL:45501; Abraham Al-Ahmad and Eric Shusta. Derived IF colocalization figure; source OME-TIFF SHA-256 recorded in `provenance.csv`. |
+| `docs/assets/public_validation/cil45501_if_colocalization_pearson_r.png` | Cell Image Library **CIL:45501** (human iPSC-derived cells; nestin / beta3-tubulin(Tuj1) / DAPI) | **Public Domain** — usage policy stated on the CIL image page ([cellimagelibrary.org/images/45501](https://www.cellimagelibrary.org/images/45501)); DOI 10.7295/W9CIL45501 is the citation identifier, not the license statement | Attribution: CIL:45501; Abraham Al-Ahmad and Eric Shusta. Derived IF colocalization figure; source OME-TIFF SHA-256 recorded in `provenance.csv`. |
 | `docs/assets/public_validation/bbbc007_if_8panel_qc.png` | Broad **BBBC007v1**, field A9 p5 (DNA + actin) | **CC0 1.0 Public Domain** (copyright waived by Anne Carpenter; images courtesy of the laboratory of David Sabatini, Whitehead Institute) | Derived 8-panel IF QC overview; the two public single-channel TIFFs were stacked into one 2-channel TIFF and processed with the frozen IF pipeline. |
 | `external_validation/results/figures/BBBC007/*.png` (6 QC plates) | Broad **BBBC007v1** | **CC0 1.0 Public Domain** | Deterministic segmentation QC plates rendered by `external_validation/scripts/validate_bbbc007.R`. |
 

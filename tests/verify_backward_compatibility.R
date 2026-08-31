@@ -1,6 +1,7 @@
 #!/usr/bin/env Rscript
 # verify_backward_compatibility.R
-# Validates 100% numerical and structural backward compatibility with v2.2.2 DAB-IHC results.
+# Validates structural/categorical backward compatibility (exact match) and bounded
+# numeric backward compatibility (tolerance 1e-6) with v2.2.2 DAB-IHC results.
 
 options(stringsAsFactors = FALSE)
 suppressPackageStartupMessages(library(data.table))
@@ -35,7 +36,9 @@ tables_to_check <- c(
   "source_data/ihc_roi_registry.csv",
   "source_data/ihc_roi_overlap_audit.csv",
   "source_data/ihc_metric_dictionary.csv",
-  "source_data/ihc_qc_color_legend.csv"
+  "source_data/ihc_qc_color_legend.csv",
+  "source_data/ihc_design_summary.csv",
+  "source_data/ihc_manual_qc_template.csv"
 )
 
 diff_count <- 0L

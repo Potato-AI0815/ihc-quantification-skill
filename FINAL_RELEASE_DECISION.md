@@ -22,8 +22,10 @@
    pass on Ubuntu and Windows.
 2. **Post-rc3 stable preparation**: `main` carries only non-algorithmic
    hardening (validation reporting, provenance/licensing, checkpoint/resume,
-   CI gates). The frozen core is byte-identical to the rc3 tag; DAB backward
-   compatibility re-verifies at zero deviation.
+   CI gates). The frozen analysis core carries no analytical behavior change
+   relative to the rc3 tag (differences are limited to non-executable
+   version-neutral header comments); DAB backward compatibility re-verifies
+   at zero deviation.
 3. **External real-data gates** (`EXTERNAL_VALIDATION_MATRIX.csv`): BBBC013
    `PASS`; BBBC007, BBBC016, and HPA `PASS_WITH_WARNINGS`. Weak results
    (ESR1 ρ = 0.4972, BBBC016 puncta/cell ρ = 0.3720) are reported as measured.
@@ -44,8 +46,8 @@
 | G5 | 8-Panel QC & Publication Plots | IF | **PASS** |
 | G6 | Dual-Channel Colocalization | IF | **PASS** |
 | G7 | Puncta / Subcellular Foci | IF | **PASS_WITH_WARNINGS** (synthetic aggregate counting only; no coordinate-level ground truth) |
-| G8 | Public Benchmark Validation | Both | **PASS** |
-| G9 | 100% DAB Backward Compatibility | Brightfield DAB | **PASS** |
+| G8 | Public Benchmark Validation | IF / nuclear segmentation | **PASS** |
+| G9 | DAB Backward Compatibility | Brightfield DAB | **PASS** |
 | G10 | Cross-Platform CI Matrix | Both | **PASS** |
 
 Warnings are accepted, disclosed findings; no gate was relaxed to obtain them.

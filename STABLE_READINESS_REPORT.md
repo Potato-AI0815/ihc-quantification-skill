@@ -20,14 +20,17 @@
 | Commit | Purpose |
 |---|---|
 | `b025b380` | `v2.3.0-rc3` — immutable released tag (validation-layer corrections, re-run) |
-| `7e28d7ed` | stable-prep cleanup: validation/provenance/resume hardening, deterministic report build, README/provenance updates |
-| `e23bd40f` | Windows R library bootstrap for the HPA resume regression CI step |
-| post-rc3 final commit | missing-checkpoint restart edge case + cross-platform atomicity wording correction (this report is frozen inside that commit) |
+| `7e28d7ed` | `fix(stable-prep): harden rc3 validation provenance and resume contracts` |
+| `e23bd40f` | `fix(stable-prep): bootstrap CI Rlib in HPA resume regression test` |
+| `257e2bf0` | `fix(stable-prep): harden cross-platform HPA checkpoint recovery` |
+| `e5ad231f` | `fix(stable-prep): normalize release evidence and public asset provenance` (current `main` HEAD at the time of this report) |
 
 All post-rc3 commits are non-algorithmic: documentation, validation scripts,
 reporting generators, report-consistency tests, metadata, checkpoint/resume
-implementation, and CI validation logic. `git diff v2.3.0-rc3 -- <core scripts>`
-is empty (byte-identical core, including the version constant).
+implementation, and CI validation logic. `git diff v2.3.0-rc3 -- <frozen
+analysis scripts>` shows no analytical behavior change: the only differences
+in the frozen analysis files are non-executable, version-neutral header
+comments (release version strings removed from source headers).
 
 ## 2. Gate statuses carried into stable review
 
@@ -42,7 +45,7 @@ is empty (byte-identical core, including the version constant).
 
 | Check | Result |
 |---|---|
-| Core algorithm drift vs `v2.3.0-rc3` (`if_segmentation.R`, `if_quantification_helpers.R`, `if_puncta.R`, `if_preprocessing.R`, `run_ihc_quantification.R`, `run_if_quantification.R`, `ihc_helpers.R`) | **Zero diff** (byte-identical, including the version constant) |
+| Core algorithm drift vs `v2.3.0-rc3` (`if_segmentation.R`, `if_quantification_helpers.R`, `if_puncta.R`, `if_preprocessing.R`, `if_colocalization.R`, `if_qc_helpers.R`, `run_ihc_quantification.R`, `run_if_quantification.R`, `ihc_helpers.R`) | **No analytical behavior change** — the only diffs are non-executable version-neutral header comments (7 of 9 files, one line each) |
 | DAB backward compatibility (`tests/verify_backward_compatibility.R`) | **PASS** (11 tables, Δ ≤ 1e-6; observed Δ = 0) |
 | BBBC039 validation-partition regression (`tests/verify_bbbc039_benchmark.R`) | **PASS** |
 | IF I/O bit-depth contract (`scripts/verify_if_io_bitdepth_contract.R`) | **PASS_PRESERVED** |

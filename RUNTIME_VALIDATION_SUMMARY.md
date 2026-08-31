@@ -19,9 +19,11 @@ current post-rc3 `main` is a stable-preparation state validated by exact-SHA CI.
 
 ## Current post-rc3 stable-prep validation
 
-- The frozen core is byte-identical to the rc3 tag (`git diff v2.3.0-rc3` over
-  the core scripts is empty); DAB backward compatibility against the clean
-  v2.2.2 baseline re-verifies at zero numeric deviation.
+- The frozen analysis core carries no analytical behavior change relative to
+  the rc3 tag (`git diff v2.3.0-rc3` over the frozen analysis scripts shows
+  only non-executable version-neutral header comments); DAB backward
+  compatibility against the clean v2.2.2 baseline re-verifies at zero numeric
+  deviation.
 - Tracked release-evidence reports are regenerated deterministically from the
   current checkout (version from `VERSION`, date from
   `external_validation/VALIDATION_METADATA.json`), and CI fails if a tracked

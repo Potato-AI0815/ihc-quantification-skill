@@ -64,7 +64,7 @@ Publication-Ready Biological Aggregation Figures & Auditable Source Data
 The workflow has been verified across 11 comprehensive validation gates (`G0`–`G10`):
 
 - **BBBC039 Instance Segmentation Benchmark (`G8`)**: Evaluated on the official 50-image validation partition with per-color instance decoding and greedy 1-to-1 IoU matching at $\text{IoU} \ge 0.5$ (Dice: `0.8953`, IoU: `0.8390`, Object F1: `0.8919`, Count Error: `13.0%`).
-- **DAB Backward Compatibility (`G0`, `G9`)**: 100% numerical identity maintained against the clean v2.2.2 baseline ($\Delta \le 1.0\times 10^{-6}$ across all 11 tables).
+- **DAB Backward Compatibility (`G0`, `G9`)**: Exact structural and categorical agreement against the clean v2.2.2 baseline across all 11 tables; observed maximum numeric deviation `0` (acceptance tolerance `≤ 1.0×10⁻⁶` for bounded cross-platform floating-point serialization differences).
 - **Cross-Platform Continuous Integration (`G10`)**: Automated GitHub Actions matrix verified on `ubuntu-latest` and `windows-latest`.
 
 ### External Real-Data Validation

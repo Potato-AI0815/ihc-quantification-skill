@@ -56,8 +56,8 @@ failing runs are retained as history and describe no released artifact.
 
 Post-rc3 `main` commits are restricted to non-algorithmic work: documentation,
 validation scripts, reporting generators, report-consistency tests, metadata,
-checkpoint/resume implementation, and CI validation logic. Core analysis
-scripts must remain byte-identical to the rc3 tag (`git diff v2.3.0-rc3 -- <core>`
-must be empty apart from, at most, release version strings). No stable tag and
-no stable GitHub release are created from this work; the next release action is
-a final stable review.
+checkpoint/resume implementation, and CI validation logic. The frozen analysis
+scripts must carry no analytical behavior change relative to the rc3 tag
+(`git diff v2.3.0-rc3 -- <core>` may show, at most, non-executable
+version-neutral header comments). No stable tag and no stable GitHub release
+are created from this work; the next release action is a final stable review.

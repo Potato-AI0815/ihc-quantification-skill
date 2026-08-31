@@ -13,9 +13,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          # Full history + tags so the frozen-core guard can read v2.3.0-rc3.
+          fetch-depth: 0
       - uses: actions/setup-python@v6
         with:
           python-version: "3.x"
+      - name: Frozen-core non-comment diff guard
+        run: python tests/verify_frozen_core_diff.py
       - name: Static package validation
         run: python scripts/static_validate_package.py
       - name: External report consistency gate

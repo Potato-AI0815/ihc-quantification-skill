@@ -8,6 +8,7 @@ release.
 ## Code and tests
 
 - [ ] `python scripts/static_validate_package.py` passes.
+- [ ] `python tests/verify_frozen_core_diff.py` passes (frozen analysis core shows no non-comment executable differences vs the base candidate tag; comment-only header changes are allowed and reported).
 - [ ] `python scripts/preflight_public_release.py` passes.
 - [ ] `python scripts/verify_report_consistency.py` passes (external evidence + gate/wording guards).
 - [ ] `python tests/verify_summary_generator_determinism.py` passes (generated evidence rebuilds byte-identically).

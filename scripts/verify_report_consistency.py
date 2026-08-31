@@ -13,6 +13,7 @@ from __future__ import annotations
 import csv
 import math
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -474,6 +475,22 @@ else:
         fail("generic-file guard: STATIC_VALIDATION.txt is missing")
     elif f"INFO\tversion\t{version}" not in static_txt:
         fail(f"generic-file guard: STATIC_VALIDATION.txt version does not match VERSION ({version})")
+
+    # F. PUBLIC_RELEASE_PREFLIGHT.txt must match the current preflight policy.
+    preflight_txt = file_text(ROOT / "PUBLIC_RELEASE_PREFLIGHT.txt")
+    if preflight_txt is None:
+        fail("generic-file guard: PUBLIC_RELEASE_PREFLIGHT.txt is missing")
+    else:
+        preflight_run = subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / "preflight_public_release.py")],
+            capture_output=True, text=True,
+        )
+        if preflight_run.returncode != 0:
+            fail("generic-file guard: preflight_public_release.py did not run cleanly, "
+                 "so PUBLIC_RELEASE_PREFLIGHT.txt drift cannot be verified")
+        elif preflight_run.stdout != preflight_txt:
+            fail("generic-file guard: PUBLIC_RELEASE_PREFLIGHT.txt is stale — regenerate "
+                 "with `python scripts/preflight_public_release.py > PUBLIC_RELEASE_PREFLIGHT.txt`")
 
 # ---------------------------------------------------------------------------
 if failures:
