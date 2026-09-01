@@ -42,6 +42,24 @@ if (!all(c("global", "nucleus", "cytoplasm", "extracellular") %in% unique(compar
   stop("Missing 4-compartment definitions in IF compartment summary.")
 }
 
+# Physical-scale schema: synthetic fixtures are calibrated at 0.5 um/px.
+required_scale_cols <- c("pixel_size_um", "scale_mode", "area_px2", "area_um2")
+if (!all(required_scale_cols %in% names(compartment))) {
+  stop("IF compartment summary is missing physical-scale contract columns: ",
+       paste(setdiff(required_scale_cols, names(compartment)), collapse = ", "))
+}
+if (!all(compartment$scale_mode == "physical_calibrated") ||
+    any(!is.finite(compartment$pixel_size_um)) ||
+    any(!is.finite(compartment$area_px2)) ||
+    any(!is.finite(compartment$area_um2))) {
+  stop("Calibrated synthetic IF fixture must emit finite physical-scale fields.")
+}
+if (!all(c("total_area_px2", "total_area_um2", "pixel_size_um", "scale_mode") %in% names(biological)) ||
+    any(!is.finite(biological$total_area_px2)) ||
+    any(!is.finite(biological$total_area_um2))) {
+  stop("IF biological-unit summary is missing valid calibrated area columns.")
+}
+
 # 3. Scientific Terminology Contract: NO DAB/OD in IF tables
 forbidden_terms <- c("optical_density", "h_score", "dab_od", "iod")
 all_col_names <- tolower(c(names(compartment), names(biological), names(channel_qc), names(primary_long)))

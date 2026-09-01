@@ -7,6 +7,20 @@ suppressPackageStartupMessages({
   library(EBImage)
 })
 
+# Physical-scale contract: a pixel size is usable only when it is one finite,
+# strictly positive numeric value.  Missing/NA/empty/non-finite/<=0 values
+# switch all physical-unit metrics to pixel_fallback mode; they are never
+# silently converted to the forbidden assumption 1 px == 1 um.
+resolve_if_scale_contract <- function(pixel_size_um) {
+  value <- suppressWarnings(as.numeric(pixel_size_um))
+  calibrated <- length(value) == 1L && is.finite(value) && value > 0
+  list(
+    pixel_size_um = if (calibrated) value[[1L]] else NA_real_,
+    scale_mode = if (calibrated) "physical_calibrated" else "pixel_fallback",
+    qc_warning = if (calibrated) character() else "MISSING_PIXEL_SIZE_CALIBRATION"
+  )
+}
+
 # Calculate positivity threshold on a channel matrix
 calculate_positivity_threshold <- function(
   channel_mat,
@@ -91,9 +105,20 @@ quantify_if_compartments <- function(
   biological_unit_id,
   condition,
   threshold_res,
-  pixel_size_um = 1.0
+  pixel_size_um = NA_real_,
+  scale_mode = NULL
 ) {
-  pixel_area_um2 <- pixel_size_um * pixel_size_um
+  scale_contract <- if (is.null(scale_mode)) {
+    resolve_if_scale_contract(pixel_size_um)
+  } else {
+    list(
+      pixel_size_um = suppressWarnings(as.numeric(pixel_size_um)),
+      scale_mode = as.character(scale_mode)[[1L]]
+    )
+  }
+  calibrated <- identical(scale_contract$scale_mode, "physical_calibrated")
+  pixel_size_um_out <- if (calibrated) scale_contract$pixel_size_um else NA_real_
+  pixel_area_um2 <- if (calibrated) pixel_size_um_out * pixel_size_um_out else NA_real_
   th_val <- threshold_res$threshold_value
 
   compartment_masks <- list(
@@ -118,8 +143,11 @@ quantify_if_compartments <- function(
         marker = marker_name,
         channel_name = channel_name,
         compartment = comp_name,
+        pixel_size_um = pixel_size_um_out,
+        scale_mode = scale_contract$scale_mode,
         pixel_count = 0L,
-        area_um2 = 0.0,
+        area_px2 = 0.0,
+        area_um2 = if (calibrated) 0.0 else NA_real_,
         mean_intensity = NA_real_,
         median_intensity = NA_real_,
         integrated_intensity = 0.0,
@@ -154,8 +182,11 @@ quantify_if_compartments <- function(
         marker = marker_name,
         channel_name = channel_name,
         compartment = comp_name,
+        pixel_size_um = pixel_size_um_out,
+        scale_mode = scale_contract$scale_mode,
         pixel_count = n_pix,
-        area_um2 = n_pix * pixel_area_um2,
+        area_px2 = as.numeric(n_pix),
+        area_um2 = if (calibrated) n_pix * pixel_area_um2 else NA_real_,
         mean_intensity = mean(pixels, na.rm = TRUE),
         median_intensity = stats::median(pixels, na.rm = TRUE),
         integrated_intensity = sum(pixels, na.rm = TRUE),
@@ -184,14 +215,26 @@ quantify_if_single_cells <- function(
   biological_unit_id,
   condition,
   threshold_val,
-  pixel_size_um = 1.0
+  pixel_size_um = NA_real_,
+  scale_mode = NULL
 ) {
   n_cells <- seg_res$n_cells
   if (n_cells == 0L) {
     return(data.table())
   }
 
-  pixel_area_um2 <- pixel_size_um * pixel_size_um
+  scale_contract <- if (is.null(scale_mode)) {
+    resolve_if_scale_contract(pixel_size_um)
+  } else {
+    list(
+      pixel_size_um = suppressWarnings(as.numeric(pixel_size_um)),
+      scale_mode = as.character(scale_mode)[[1L]]
+    )
+  }
+  calibrated <- identical(scale_contract$scale_mode, "physical_calibrated")
+  pixel_size_um_out <- if (calibrated) scale_contract$pixel_size_um else NA_real_
+  pixel_area_um2 <- if (calibrated) pixel_size_um_out * pixel_size_um_out else NA_real_
+
   nuc_labels <- seg_res$nuc_labels
   cell_labels <- seg_res$cell_labels
 
@@ -237,18 +280,23 @@ quantify_if_single_cells <- function(
       cell_id = k,
       marker = marker_name,
       channel_name = channel_name,
+      pixel_size_um = pixel_size_um_out,
+      scale_mode = scale_contract$scale_mode,
       nuclear_pixel_count = length(nuc_idx),
-      nuclear_area_um2 = length(nuc_idx) * pixel_area_um2,
+      nuclear_area_px2 = as.numeric(length(nuc_idx)),
+      nuclear_area_um2 = if (calibrated) length(nuc_idx) * pixel_area_um2 else NA_real_,
       nuclear_mean_intensity = nuc_m,
       nuclear_median_intensity = nuc_med,
       nuclear_integrated_intensity = nuc_int,
       cytoplasmic_pixel_count = length(cyto_idx),
-      cytoplasmic_area_um2 = length(cyto_idx) * pixel_area_um2,
+      cytoplasmic_area_px2 = as.numeric(length(cyto_idx)),
+      cytoplasmic_area_um2 = if (calibrated) length(cyto_idx) * pixel_area_um2 else NA_real_,
       cytoplasmic_mean_intensity = cyto_m,
       cytoplasmic_median_intensity = cyto_med,
       cytoplasmic_integrated_intensity = cyto_int,
       cell_pixel_count = length(cell_idx),
-      cell_area_um2 = length(cell_idx) * pixel_area_um2,
+      cell_area_px2 = as.numeric(length(cell_idx)),
+      cell_area_um2 = if (calibrated) length(cell_idx) * pixel_area_um2 else NA_real_,
       cell_mean_intensity = cell_m,
       cell_median_intensity = cell_med,
       cell_integrated_intensity = cell_int,
@@ -263,7 +311,9 @@ quantify_if_single_cells <- function(
 # Aggregate to biological unit level (n = biological replicate)
 aggregate_if_biological_units <- function(compartment_dt) {
   # Aggregate mean_intensity, median_intensity, integrated_intensity, positive_area_fraction
-  # by biological_unit_id, condition, marker, compartment
+  # by biological_unit_id, condition, marker, compartment.  Physical-unit area
+  # is summed only when every contributing image is physical_calibrated;
+  # pixel-domain area is always available.
   mean_or_na <- function(x) {
     x <- x[is.finite(x)]
     if (!length(x)) NA_real_ else mean(x)
@@ -272,14 +322,29 @@ aggregate_if_biological_units <- function(compartment_dt) {
     x <- x[is.finite(x)]
     if (!length(x)) NA_real_ else stats::median(x)
   }
-  agg <- compartment_dt[, .(
-    n_images = uniqueN(image_id),
-    total_area_um2 = sum(area_um2, na.rm = TRUE),
-    mean_intensity = mean_or_na(mean_intensity),
-    median_intensity = median_or_na(median_intensity),
-    integrated_intensity = sum(integrated_intensity, na.rm = TRUE),
-    positive_area_fraction = mean_or_na(positive_area_fraction)
-  ), by = .(biological_unit_id, condition, marker, compartment)]
+  sum_physical_or_na <- function(x) {
+    x <- x[is.finite(x)]
+    if (!length(x)) NA_real_ else sum(x)
+  }
+  agg <- compartment_dt[, {
+    modes <- unique(scale_mode)
+    calibrated_all <- all(modes == "physical_calibrated")
+    .(
+      n_images = uniqueN(image_id),
+      pixel_size_um = if (calibrated_all && uniqueN(pixel_size_um[is.finite(pixel_size_um)]) == 1L) {
+        pixel_size_um[is.finite(pixel_size_um)][[1L]]
+      } else {
+        NA_real_
+      },
+      scale_mode = if (length(modes) == 1L) modes[[1L]] else "MIXED_SCALE",
+      total_area_px2 = sum(area_px2, na.rm = TRUE),
+      total_area_um2 = if (calibrated_all) sum_physical_or_na(area_um2) else NA_real_,
+      mean_intensity = mean_or_na(mean_intensity),
+      median_intensity = median_or_na(median_intensity),
+      integrated_intensity = sum(integrated_intensity, na.rm = TRUE),
+      positive_area_fraction = mean_or_na(positive_area_fraction)
+    )
+  }, by = .(biological_unit_id, condition, marker, compartment)]
 
   return(agg)
 }

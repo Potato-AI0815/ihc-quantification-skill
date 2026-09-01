@@ -1,0 +1,543 @@
+# Approved v2.3.2 IF analytical-core patch vs immutable v2.3.1 (normalized non-comment executable lines).
+
+@@ scripts/if_quantification_helpers.R
+--- v2.3.1:scripts/if_quantification_helpers.R
++++ worktree:scripts/if_quantification_helpers.R
+@@ -2,6 +2,15 @@
+ library(data.table)
+ library(EBImage)
+ })
++resolve_if_scale_contract <- function(pixel_size_um) {
++value <- suppressWarnings(as.numeric(pixel_size_um))
++calibrated <- length(value) == 1L && is.finite(value) && value > 0
++list(
++pixel_size_um = if (calibrated) value[[1L]] else NA_real_,
++scale_mode = if (calibrated) "physical_calibrated" else "pixel_fallback",
++qc_warning = if (calibrated) character() else "MISSING_PIXEL_SIZE_CALIBRATION"
++)
++}
+ calculate_positivity_threshold <- function(
+ channel_mat,
+ method = "otsu",
+@@ -75,9 +84,20 @@
+ biological_unit_id,
+ condition,
+ threshold_res,
+-pixel_size_um = 1.0
++pixel_size_um = NA_real_,
++scale_mode = NULL
+ ) {
+-pixel_area_um2 <- pixel_size_um * pixel_size_um
++scale_contract <- if (is.null(scale_mode)) {
++resolve_if_scale_contract(pixel_size_um)
++} else {
++list(
++pixel_size_um = suppressWarnings(as.numeric(pixel_size_um)),
++scale_mode = as.character(scale_mode)[[1L]]
++)
++}
++calibrated <- identical(scale_contract$scale_mode, "physical_calibrated")
++pixel_size_um_out <- if (calibrated) scale_contract$pixel_size_um else NA_real_
++pixel_area_um2 <- if (calibrated) pixel_size_um_out * pixel_size_um_out else NA_real_
+ th_val <- threshold_res$threshold_value
+ compartment_masks <- list(
+ global = seg_res$tissue_mask,
+@@ -98,8 +118,11 @@
+ marker = marker_name,
+ channel_name = channel_name,
+ compartment = comp_name,
++pixel_size_um = pixel_size_um_out,
++scale_mode = scale_contract$scale_mode,
+ pixel_count = 0L,
+-area_um2 = 0.0,
++area_px2 = 0.0,
++area_um2 = if (calibrated) 0.0 else NA_real_,
+ mean_intensity = NA_real_,
+ median_intensity = NA_real_,
+ integrated_intensity = 0.0,
+@@ -127,8 +150,11 @@
+ marker = marker_name,
+ channel_name = channel_name,
+ compartment = comp_name,
++pixel_size_um = pixel_size_um_out,
++scale_mode = scale_contract$scale_mode,
+ pixel_count = n_pix,
+-area_um2 = n_pix * pixel_area_um2,
++area_px2 = as.numeric(n_pix),
++area_um2 = if (calibrated) n_pix * pixel_area_um2 else NA_real_,
+ mean_intensity = mean(pixels, na.rm = TRUE),
+ median_intensity = stats::median(pixels, na.rm = TRUE),
+ integrated_intensity = sum(pixels, na.rm = TRUE),
+@@ -154,13 +180,24 @@
+ biological_unit_id,
+ condition,
+ threshold_val,
+-pixel_size_um = 1.0
++pixel_size_um = NA_real_,
++scale_mode = NULL
+ ) {
+ n_cells <- seg_res$n_cells
+ if (n_cells == 0L) {
+ return(data.table())
+ }
+-pixel_area_um2 <- pixel_size_um * pixel_size_um
++scale_contract <- if (is.null(scale_mode)) {
++resolve_if_scale_contract(pixel_size_um)
++} else {
++list(
++pixel_size_um = suppressWarnings(as.numeric(pixel_size_um)),
++scale_mode = as.character(scale_mode)[[1L]]
++)
++}
++calibrated <- identical(scale_contract$scale_mode, "physical_calibrated")
++pixel_size_um_out <- if (calibrated) scale_contract$pixel_size_um else NA_real_
++pixel_area_um2 <- if (calibrated) pixel_size_um_out * pixel_size_um_out else NA_real_
+ nuc_labels <- seg_res$nuc_labels
+ cell_labels <- seg_res$cell_labels
+ cell_dt_list <- list()
+@@ -193,18 +230,23 @@
+ cell_id = k,
+ marker = marker_name,
+ channel_name = channel_name,
++pixel_size_um = pixel_size_um_out,
++scale_mode = scale_contract$scale_mode,
+ nuclear_pixel_count = length(nuc_idx),
+-nuclear_area_um2 = length(nuc_idx) * pixel_area_um2,
++nuclear_area_px2 = as.numeric(length(nuc_idx)),
++nuclear_area_um2 = if (calibrated) length(nuc_idx) * pixel_area_um2 else NA_real_,
+ nuclear_mean_intensity = nuc_m,
+ nuclear_median_intensity = nuc_med,
+ nuclear_integrated_intensity = nuc_int,
+ cytoplasmic_pixel_count = length(cyto_idx),
+-cytoplasmic_area_um2 = length(cyto_idx) * pixel_area_um2,
++cytoplasmic_area_px2 = as.numeric(length(cyto_idx)),
++cytoplasmic_area_um2 = if (calibrated) length(cyto_idx) * pixel_area_um2 else NA_real_,
+ cytoplasmic_mean_intensity = cyto_m,
+ cytoplasmic_median_intensity = cyto_med,
+ cytoplasmic_integrated_intensity = cyto_int,
+ cell_pixel_count = length(cell_idx),
+-cell_area_um2 = length(cell_idx) * pixel_area_um2,
++cell_area_px2 = as.numeric(length(cell_idx)),
++cell_area_um2 = if (calibrated) length(cell_idx) * pixel_area_um2 else NA_real_,
+ cell_mean_intensity = cell_m,
+ cell_median_intensity = cell_med,
+ cell_integrated_intensity = cell_int,
+@@ -223,13 +265,28 @@
+ x <- x[is.finite(x)]
+ if (!length(x)) NA_real_ else stats::median(x)
+ }
+-agg <- compartment_dt[, .(
++sum_physical_or_na <- function(x) {
++x <- x[is.finite(x)]
++if (!length(x)) NA_real_ else sum(x)
++}
++agg <- compartment_dt[, {
++modes <- unique(scale_mode)
++calibrated_all <- all(modes == "physical_calibrated")
++.(
+ n_images = uniqueN(image_id),
+-total_area_um2 = sum(area_um2, na.rm = TRUE),
++pixel_size_um = if (calibrated_all && uniqueN(pixel_size_um[is.finite(pixel_size_um)]) == 1L) {
++pixel_size_um[is.finite(pixel_size_um)][[1L]]
++} else {
++NA_real_
++},
++scale_mode = if (length(modes) == 1L) modes[[1L]] else "MIXED_SCALE",
++total_area_px2 = sum(area_px2, na.rm = TRUE),
++total_area_um2 = if (calibrated_all) sum_physical_or_na(area_um2) else NA_real_,
+ mean_intensity = mean_or_na(mean_intensity),
+ median_intensity = median_or_na(median_intensity),
+ integrated_intensity = sum(integrated_intensity, na.rm = TRUE),
+ positive_area_fraction = mean_or_na(positive_area_fraction)
+-), by = .(biological_unit_id, condition, marker, compartment)]
++)
++}, by = .(biological_unit_id, condition, marker, compartment)]
+ return(agg)
+ }
+
+@@ scripts/if_puncta.R
+--- v2.3.1:scripts/if_puncta.R
++++ worktree:scripts/if_puncta.R
+@@ -15,11 +15,22 @@
+ threshold_sd_multiplier = 3.0,
+ min_area = 2,
+ max_area = 150,
+-pixel_size_um = 1.0
++pixel_size_um = NA_real_,
++scale_mode = NULL
+ ) {
+ nr <- nrow(channel_mat)
+ nc <- ncol(channel_mat)
+-pixel_area_um2 <- pixel_size_um * pixel_size_um
++scale_contract <- if (is.null(scale_mode)) {
++resolve_if_scale_contract(pixel_size_um)
++} else {
++list(
++pixel_size_um = suppressWarnings(as.numeric(pixel_size_um)),
++scale_mode = as.character(scale_mode)[[1L]]
++)
++}
++calibrated <- identical(scale_contract$scale_mode, "physical_calibrated")
++pixel_size_um_out <- if (calibrated) scale_contract$pixel_size_um else NA_real_
++pixel_area_um2 <- if (calibrated) pixel_size_um_out * pixel_size_um_out else NA_real_
+ g1 <- EBImage::gblur(EBImage::Image(as.matrix(channel_mat), colormode = "Grayscale"), sigma = sigma1)
+ g2 <- EBImage::gblur(EBImage::Image(as.matrix(channel_mat), colormode = "Grayscale"), sigma = sigma2)
+ dog_mat <- as.matrix(g1 - g2)
+@@ -55,8 +66,14 @@
+ unique_puncta_ids <- unique(puncta_labels[pts_in_comp])
+ unique_puncta_ids <- unique_puncta_ids[unique_puncta_ids > 0]
+ p_count <- length(unique_puncta_ids)
+-comp_area_um2 <- sum(c_m) * pixel_area_um2
+-p_density <- if (comp_area_um2 > 0) p_count / comp_area_um2 else 0.0
++comp_area_px2 <- as.numeric(sum(c_m))
++comp_area_um2 <- if (calibrated) comp_area_px2 * pixel_area_um2 else NA_real_
++p_density_px2 <- if (comp_area_px2 > 0) p_count / comp_area_px2 else NA_real_
++p_density_um2 <- if (calibrated && is.finite(comp_area_um2) && comp_area_um2 > 0) {
++p_count / comp_area_um2
++} else {
++NA_real_
++}
+ p_per_cell <- if (comp != "extracellular") p_count / n_cells else NA_real_
+ p_pix_vals <- channel_mat[pts_in_comp]
+ p_mean_int <- if (length(p_pix_vals)) mean(p_pix_vals, na.rm = TRUE) else 0.0
+@@ -68,10 +85,14 @@
+ marker = marker_name,
+ channel_name = channel_name,
+ compartment = comp,
++pixel_size_um = pixel_size_um_out,
++scale_mode = scale_contract$scale_mode,
+ puncta_count = p_count,
+ puncta_count_per_cell = p_per_cell,
+-total_puncta_area_um2 = length(pts_in_comp) * pixel_area_um2,
+-puncta_density_per_um2 = p_density,
++total_puncta_area_px2 = as.numeric(length(pts_in_comp)),
++total_puncta_area_um2 = if (calibrated) as.numeric(length(pts_in_comp)) * pixel_area_um2 else NA_real_,
++puncta_density_per_px2 = p_density_px2,
++puncta_density_per_um2 = p_density_um2,
+ puncta_mean_intensity = p_mean_int,
+ puncta_integrated_intensity = p_int_int,
+ sigma1 = sigma1,
+
+@@ scripts/if_preprocessing.R
+--- v2.3.1:scripts/if_preprocessing.R
++++ worktree:scripts/if_preprocessing.R
+@@ -104,7 +104,7 @@
+ t_norm <- (t_crop - mean(t_crop)) / (stats::sd(as.vector(t_crop)) + 1e-8)
+ best_shift_x <- 0L
+ best_shift_y <- 0L
+-best_cor <- stats::cor(as.vector(r_norm), as.vector(t_norm))
++best_cor <- suppressWarnings(stats::cor(as.vector(r_norm), as.vector(t_norm)))
+ for (dx in seq(-max_shift, max_shift, by = 2)) {
+ for (dy in seq(-max_shift, max_shift, by = 2)) {
+ if (dx == 0 && dy == 0) next
+@@ -117,8 +117,8 @@
+ if (len_x < 10 || len_y < 10) next
+ sub_r <- r_norm[sx_r[1:len_x], sy_r[1:len_y]]
+ sub_t <- t_norm[sx_t[1:len_x], sy_t[1:len_y]]
+-val_cor <- stats::cor(as.vector(sub_r), as.vector(sub_t))
+-if (!is.na(val_cor) && val_cor > best_cor) {
++val_cor <- suppressWarnings(stats::cor(as.vector(sub_r), as.vector(sub_t)))
++if (is.finite(val_cor) && val_cor > 0 && val_cor > best_cor) {
+ best_cor <- val_cor
+ best_shift_x <- dx
+ best_shift_y <- dy
+
+@@ scripts/if_colocalization.R
+--- v2.3.1:scripts/if_colocalization.R
++++ worktree:scripts/if_colocalization.R
+@@ -1,6 +1,61 @@
+ suppressPackageStartupMessages({
+ library(data.table)
+ })
++assess_coloc_dynamic_range <- function(channel_mat, mask = NULL) {
++values <- if (is.null(mask)) as.vector(channel_mat) else channel_mat[mask]
++values <- values[is.finite(values)]
++if (length(values) < 2L) return(0.0)
++value_range <- max(values) - min(values)
++if (!is.finite(value_range) || value_range <= 0) return(0.0)
++p999 <- stats::quantile(values, 0.999, na.rm = TRUE, names = FALSE)
++p001 <- stats::quantile(values, 0.001, na.rm = TRUE, names = FALSE)
++dr <- (p999 - p001) / value_range
++if (!is.finite(dr)) 0.0 else max(0.0, dr)
++}
++make_colocalization_row <- function(
++image_id,
++biological_unit_id,
++condition,
++compartment,
++marker_A,
++marker_B,
++pixel_count,
++dynamic_range_A,
++dynamic_range_B,
++registration_shift_x,
++registration_shift_y,
++registration_correlation,
++registration_status,
++pearson_r,
++manders_m1,
++manders_m2,
++threshold_A,
++threshold_B,
++colocalization_qc_status
++) {
++data.table(
++image_id = image_id,
++biological_unit_id = biological_unit_id,
++condition = condition,
++compartment = compartment,
++marker_A = marker_A,
++marker_B = marker_B,
++pixel_count = pixel_count,
++dynamic_range_A = dynamic_range_A,
++dynamic_range_B = dynamic_range_B,
++registration_shift_x = registration_shift_x,
++registration_shift_y = registration_shift_y,
++registration_correlation = registration_correlation,
++registration_status = registration_status,
++pearson_r = pearson_r,
++manders_m1 = manders_m1,
++manders_m2 = manders_m2,
++threshold_A = threshold_A,
++threshold_B = threshold_B,
++colocalization_input_contract = "raw_channel_pixels",
++colocalization_qc_status = colocalization_qc_status
++)
++}
+ compute_if_colocalization <- function(
+ channel_A_mat,
+ channel_B_mat,
+@@ -12,37 +67,109 @@
+ image_id = "IMG",
+ biological_unit_id = "BU",
+ condition = "COND",
+-compartment = "global"
++compartment = "global",
++dynamic_range_min = 0.05,
++registration_max_shift = 5,
++registration_search_shift = 15
+ ) {
+ if (is.null(mask)) {
+ mask <- matrix(TRUE, nrow = nrow(channel_A_mat), ncol = ncol(channel_A_mat))
++}
++if (!identical(dim(channel_A_mat), dim(channel_B_mat)) ||
++!identical(dim(channel_A_mat), dim(mask))) {
++return(make_colocalization_row(
++image_id, biological_unit_id, condition, compartment, marker_A, marker_B,
++pixel_count = NA_integer_,
++dynamic_range_A = NA_real_, dynamic_range_B = NA_real_,
++registration_shift_x = NA_integer_, registration_shift_y = NA_integer_,
++registration_correlation = NA_real_,
++registration_status = "DIMENSION_MISMATCH",
++pearson_r = NA_real_, manders_m1 = NA_real_, manders_m2 = NA_real_,
++threshold_A = NA_real_, threshold_B = NA_real_,
++colocalization_qc_status = "NOT_EVALUABLE_DIMENSION_MISMATCH"
++))
+ }
+ vec_A <- channel_A_mat[mask]
+ vec_B <- channel_B_mat[mask]
+ valid_idx <- which(is.finite(vec_A) & is.finite(vec_B))
+ n_pix <- length(valid_idx)
+ if (n_pix < 30L) {
+-return(data.table(
+-image_id = image_id,
+-biological_unit_id = biological_unit_id,
+-condition = condition,
+-compartment = compartment,
+-marker_A = marker_A,
+-marker_B = marker_B,
+-pixel_count = n_pix,
+-pearson_r = NA_real_,
+-manders_m1 = NA_real_,
+-manders_m2 = NA_real_,
+-threshold_A = NA_real_,
+-threshold_B = NA_real_,
++return(make_colocalization_row(
++image_id, biological_unit_id, condition, compartment, marker_A, marker_B,
++pixel_count = n_pix,
++dynamic_range_A = NA_real_, dynamic_range_B = NA_real_,
++registration_shift_x = NA_integer_, registration_shift_y = NA_integer_,
++registration_correlation = NA_real_,
++registration_status = "NOT_ASSESSED_LOW_PIXEL_COUNT",
++pearson_r = NA_real_, manders_m1 = NA_real_, manders_m2 = NA_real_,
++threshold_A = NA_real_, threshold_B = NA_real_,
+ colocalization_qc_status = "NOT_EVALUABLE_LOW_PIXEL_COUNT"
+ ))
+ }
+ vA <- vec_A[valid_idx]
+ vB <- vec_B[valid_idx]
++dr_A <- assess_coloc_dynamic_range(channel_A_mat, mask)
++dr_B <- assess_coloc_dynamic_range(channel_B_mat, mask)
++registration <- if (exists("compute_channel_registration", mode = "function")) {
++tryCatch(
++compute_channel_registration(channel_A_mat, channel_B_mat,
++max_shift = registration_search_shift),
++error = function(e) {
++list(shift_x = NA_integer_, shift_y = NA_integer_,
++correlation = NA_real_, registration_status = "REGISTRATION_ASSESSMENT_UNAVAILABLE")
++}
++)
++} else {
++list(shift_x = NA_integer_, shift_y = NA_integer_,
++correlation = NA_real_, registration_status = "REGISTRATION_ASSESSMENT_UNAVAILABLE")
++}
++registration_shift_x <- suppressWarnings(as.numeric(registration$shift_x[[1L]]))
++registration_shift_y <- suppressWarnings(as.numeric(registration$shift_y[[1L]]))
++registration_correlation <- suppressWarnings(as.numeric(registration$correlation[[1L]]))
++if (!is.finite(registration_shift_x) || !is.finite(registration_shift_y)) {
++registration_status <- "REGISTRATION_ASSESSMENT_UNAVAILABLE"
++} else if (abs(registration_shift_x) > registration_max_shift ||
++abs(registration_shift_y) > registration_max_shift) {
++registration_status <- "CHANNEL_REGISTRATION_SUSPECT"
++} else {
++registration_status <- if (identical(registration$registration_status, "ALIGNED")) {
++"ALIGNED"
++} else {
++"ALIGNED_WITH_WARNING"
++}
++}
++if (dr_A < dynamic_range_min || dr_B < dynamic_range_min) {
++return(make_colocalization_row(
++image_id, biological_unit_id, condition, compartment, marker_A, marker_B,
++pixel_count = n_pix,
++dynamic_range_A = dr_A, dynamic_range_B = dr_B,
++registration_shift_x = registration_shift_x,
++registration_shift_y = registration_shift_y,
++registration_correlation = registration_correlation,
++registration_status = registration_status,
++pearson_r = NA_real_, manders_m1 = NA_real_, manders_m2 = NA_real_,
++threshold_A = NA_real_, threshold_B = NA_real_,
++colocalization_qc_status = "NOT_EVALUABLE_LOW_DYNAMIC_RANGE"
++))
++}
++if (registration_status %in% c("CHANNEL_REGISTRATION_SUSPECT",
++"REGISTRATION_ASSESSMENT_UNAVAILABLE")) {
++return(make_colocalization_row(
++image_id, biological_unit_id, condition, compartment, marker_A, marker_B,
++pixel_count = n_pix,
++dynamic_range_A = dr_A, dynamic_range_B = dr_B,
++registration_shift_x = registration_shift_x,
++registration_shift_y = registration_shift_y,
++registration_correlation = registration_correlation,
++registration_status = registration_status,
++pearson_r = NA_real_, manders_m1 = NA_real_, manders_m2 = NA_real_,
++threshold_A = NA_real_, threshold_B = NA_real_,
++colocalization_qc_status = "NOT_EVALUABLE_REGISTRATION_SUSPECT"
++))
++}
+ sd_A <- stats::sd(vA)
+ sd_B <- stats::sd(vB)
+-pearson_r <- if (sd_A > 1e-8 && sd_B > 1e-8) {
++pearson_r <- if (is.finite(sd_A) && is.finite(sd_B) && sd_A > 1e-8 && sd_B > 1e-8) {
+ stats::cor(vA, vB, method = "pearson")
+ } else {
+ NA_real_
+@@ -70,19 +197,19 @@
+ m1 <- if (sum_A > 1e-8) sum(vA[vB >= thB], na.rm = TRUE) / sum_A else NA_real_
+ m2 <- if (sum_B > 1e-8) sum(vB[vA >= thA], na.rm = TRUE) / sum_B else NA_real_
+ qc_status <- if (is.na(pearson_r)) "ZERO_VARIANCE" else "PASS"
+-return(data.table(
+-image_id = image_id,
+-biological_unit_id = biological_unit_id,
+-condition = condition,
+-compartment = compartment,
+-marker_A = marker_A,
+-marker_B = marker_B,
+-pixel_count = n_pix,
++make_colocalization_row(
++image_id, biological_unit_id, condition, compartment, marker_A, marker_B,
++pixel_count = n_pix,
++dynamic_range_A = dr_A, dynamic_range_B = dr_B,
++registration_shift_x = registration_shift_x,
++registration_shift_y = registration_shift_y,
++registration_correlation = registration_correlation,
++registration_status = registration_status,
+ pearson_r = pearson_r,
+ manders_m1 = m1,
+ manders_m2 = m2,
+ threshold_A = thA,
+ threshold_B = thB,
+ colocalization_qc_status = qc_status
+-))
+-}
++)
++}
+
+@@ scripts/run_if_quantification.R
+--- v2.3.1:scripts/run_if_quantification.R
++++ worktree:scripts/run_if_quantification.R
+@@ -198,6 +198,7 @@
+ }
+ ch_roles_vec <- structure(img_rows$channel_role, names = img_rows$channel_name)
+ composite_rgb <- create_composite_rgb(channels, ch_roles_vec)
++primary_scale <- resolve_if_scale_contract(target_rows$pixel_size_um[1L])
+ for (t_idx in seq_len(nrow(target_rows))) {
+ t_row <- target_rows[t_idx]
+ t_ch_name <- t_row$channel_name
+@@ -210,6 +211,10 @@
+ bit_depth = read_res$image_meta$bit_depth
+ )
+ t_corr_mat <- t_prep$corrected_mat
++scale_contract <- resolve_if_scale_contract(t_row$pixel_size_um)
++if (length(scale_contract$qc_warning)) {
++img_qc_flags <- c(img_qc_flags, scale_contract$qc_warning)
++}
+ ch_qc <- compute_channel_qc_metrics(
+ raw_mat = t_raw_mat,
+ corr_mat = t_corr_mat,
+@@ -220,6 +225,8 @@
+ channel_name = t_ch_name,
+ marker = t_marker,
+ channel_role = "target",
++pixel_size_um = scale_contract$pixel_size_um,
++scale_mode = scale_contract$scale_mode,
+ background_method = t_prep$background_method,
+ background_estimated = t_prep$background_value
+ )]
+@@ -240,7 +247,6 @@
+ if (identical(th_res$threshold_qc_status, "EMPTY_CHANNEL")) {
+ img_qc_flags <- c(img_qc_flags, "EMPTY_CHANNEL")
+ }
+-pix_size <- if (!is.na(t_row$pixel_size_um)) as.numeric(t_row$pixel_size_um) else 1.0
+ comp_df <- quantify_if_compartments(
+ channel_mat = t_corr_mat,
+ seg_res = seg_res,
+@@ -250,7 +256,8 @@
+ biological_unit_id = t_row$biological_unit_id,
+ condition = t_row$condition,
+ threshold_res = th_res,
+-pixel_size_um = pix_size
++pixel_size_um = scale_contract$pixel_size_um,
++scale_mode = scale_contract$scale_mode
+ )
+ all_compartment_summaries[[length(all_compartment_summaries) + 1L]] <- comp_df
+ cell_df <- quantify_if_single_cells(
+@@ -262,7 +269,8 @@
+ biological_unit_id = t_row$biological_unit_id,
+ condition = t_row$condition,
+ threshold_val = th_res$threshold_value,
+-pixel_size_um = pix_size
++pixel_size_um = scale_contract$pixel_size_um,
++scale_mode = scale_contract$scale_mode
+ )
+ if (nrow(cell_df) > 0) {
+ all_cell_summaries[[length(all_cell_summaries) + 1L]] <- cell_df
+@@ -281,7 +289,8 @@
+ sigma1 = cfg$puncta_sigma1,
+ sigma2 = cfg$puncta_sigma2,
+ threshold_sd_multiplier = cfg$puncta_threshold_sd,
+-pixel_size_um = pix_size
++pixel_size_um = scale_contract$pixel_size_um,
++scale_mode = scale_contract$scale_mode
+ )
+ all_puncta_summaries[[length(all_puncta_summaries) + 1L]] <- p_res$summary
+ }
+@@ -324,6 +333,8 @@
+ biological_unit_id = img_rows$biological_unit_id[1L],
+ condition = img_rows$condition[1L],
+ n_cells = seg_res$n_cells,
++pixel_size_um = primary_scale$pixel_size_um,
++scale_mode = primary_scale$scale_mode,
+ requested_cell_propagation_radius = seg_res$metrics$requested_cell_propagation_radius,
+ max_cytoplasm_expansion_radius = seg_res$metrics$max_cytoplasm_expansion_radius,
+ effective_cell_propagation_radius = seg_res$metrics$effective_cell_propagation_radius,

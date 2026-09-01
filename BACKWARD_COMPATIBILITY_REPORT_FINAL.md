@@ -1,5 +1,12 @@
 # DAB-IHC Final Backward Compatibility Audit Report (Clean v2.2.2 Provenance)
 
+> **HISTORICAL SNAPSHOT — NOT CURRENT RELEASE EVIDENCE**
+>
+> This report documents the v2.2.2 baseline audit at the time it was written.
+> Current DAB compatibility evidence is produced by `tests/verify_backward_compatibility.R`.
+
+
+
 **Baseline Provenance**:
 - Git Base Commit: `3ae199b8b333fd75d62739e835492a7334f5f016` (Clean checkout of tagged release v2.2.2)
 - Baseline Manifest: [`tests/baseline_v222_reference/baseline_manifest.sha256`](tests/baseline_v222_reference/baseline_manifest.sha256)

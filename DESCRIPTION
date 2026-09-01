@@ -1,8 +1,8 @@
 Package: ihcQuantificationSkill
 Type: Project
 Title: Reproducible DAB IHC and Immunofluorescence Quantification Workflow
-Version: 2.3.1
-X-Release-Version: 2.3.1
+Version: 2.3.2
+X-Release-Version: 2.3.2
 Authors@R: person("IHC/IF Quantification Skill", "Contributors", role = c("aut", "cre"), email = "noreply@example.invalid")
 Description: A script-based R and EBImage workflow for auditable brightfield DAB-IHC and multi-channel immunofluorescence (IF) quantification. Provides whole-tissue default analysis, reviewed ROI support, four measurement domains, colocalization, puncta quantification, and biological-unit-level figures.
 License: MIT + file LICENSE

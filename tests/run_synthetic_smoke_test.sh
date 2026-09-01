@@ -41,6 +41,10 @@ Rscript "$ROOT/tests/verify_if_synthetic_output.R" "$IF_OUT"
 echo "=== 3. Running Advanced IF Modules (Colocalization & Puncta) ==="
 Rscript "$ROOT/tests/verify_if_advanced_modules.R"
 
+echo "=== 3a. Running IF Scientific Contract Regressions ==="
+Rscript "$ROOT/tests/verify_if_physical_scale_contract.R"
+Rscript "$ROOT/tests/verify_if_colocalization_qc_contract.R"
+
 echo "=== 3b. Running IF Runtime Repair Regression Contracts ==="
 Rscript "$ROOT/tests/verify_if_runtime_repairs.R"
 

@@ -21,11 +21,23 @@ detect_if_puncta <- function(
   threshold_sd_multiplier = 3.0,
   min_area = 2,
   max_area = 150,
-  pixel_size_um = 1.0
+  pixel_size_um = NA_real_,
+  scale_mode = NULL
 ) {
   nr <- nrow(channel_mat)
   nc <- ncol(channel_mat)
-  pixel_area_um2 <- pixel_size_um * pixel_size_um
+
+  scale_contract <- if (is.null(scale_mode)) {
+    resolve_if_scale_contract(pixel_size_um)
+  } else {
+    list(
+      pixel_size_um = suppressWarnings(as.numeric(pixel_size_um)),
+      scale_mode = as.character(scale_mode)[[1L]]
+    )
+  }
+  calibrated <- identical(scale_contract$scale_mode, "physical_calibrated")
+  pixel_size_um_out <- if (calibrated) scale_contract$pixel_size_um else NA_real_
+  pixel_area_um2 <- if (calibrated) pixel_size_um_out * pixel_size_um_out else NA_real_
 
   # 1. Compute DoG filter
   g1 <- EBImage::gblur(EBImage::Image(as.matrix(channel_mat), colormode = "Grayscale"), sigma = sigma1)
@@ -77,8 +89,14 @@ detect_if_puncta <- function(
     unique_puncta_ids <- unique_puncta_ids[unique_puncta_ids > 0]
     p_count <- length(unique_puncta_ids)
 
-    comp_area_um2 <- sum(c_m) * pixel_area_um2
-    p_density <- if (comp_area_um2 > 0) p_count / comp_area_um2 else 0.0
+    comp_area_px2 <- as.numeric(sum(c_m))
+    comp_area_um2 <- if (calibrated) comp_area_px2 * pixel_area_um2 else NA_real_
+    p_density_px2 <- if (comp_area_px2 > 0) p_count / comp_area_px2 else NA_real_
+    p_density_um2 <- if (calibrated && is.finite(comp_area_um2) && comp_area_um2 > 0) {
+      p_count / comp_area_um2
+    } else {
+      NA_real_
+    }
     p_per_cell <- if (comp != "extracellular") p_count / n_cells else NA_real_
 
     p_pix_vals <- channel_mat[pts_in_comp]
@@ -92,10 +110,14 @@ detect_if_puncta <- function(
       marker = marker_name,
       channel_name = channel_name,
       compartment = comp,
+      pixel_size_um = pixel_size_um_out,
+      scale_mode = scale_contract$scale_mode,
       puncta_count = p_count,
       puncta_count_per_cell = p_per_cell,
-      total_puncta_area_um2 = length(pts_in_comp) * pixel_area_um2,
-      puncta_density_per_um2 = p_density,
+      total_puncta_area_px2 = as.numeric(length(pts_in_comp)),
+      total_puncta_area_um2 = if (calibrated) as.numeric(length(pts_in_comp)) * pixel_area_um2 else NA_real_,
+      puncta_density_per_px2 = p_density_px2,
+      puncta_density_per_um2 = p_density_um2,
       puncta_mean_intensity = p_mean_int,
       puncta_integrated_intensity = p_int_int,
       sigma1 = sigma1,
@@ -133,6 +155,7 @@ detect_if_puncta <- function(
       )
     }
   }
+
 
   return(list(
     puncta_mask = puncta_mask,

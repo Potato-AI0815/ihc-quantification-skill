@@ -13,6 +13,9 @@ release.
 - [ ] `python scripts/verify_report_consistency.py` passes (external evidence + gate/wording guards).
 - [ ] `python tests/verify_summary_generator_determinism.py` passes (generated evidence rebuilds byte-identically).
 - [ ] Synthetic dual-modality smoke test passes on the intended R/EBImage environment, and the working tree is unchanged afterwards (`git diff --exit-code`).
+- [ ] `tests/verify_if_physical_scale_contract.R` passes (missing calibration never emits finite physical-unit metrics).
+- [ ] `tests/verify_if_colocalization_qc_contract.R` passes (registration suspect and low dynamic range emit `NA` metrics).
+
 - [ ] `tests/verify_plot_contract.R` passes.
 - [ ] GitHub Actions passes on Windows and Linux for the **exact** release-commit SHA (`headSha == FINAL_MAIN_SHA`, conclusion `success`).
 

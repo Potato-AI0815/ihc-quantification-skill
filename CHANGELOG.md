@@ -1,5 +1,29 @@
 # Changelog
 
+## 2.3.2 — 2026-09-01
+
+- Scientific-contract hotfix for the IF modality.
+- Fixed physical-unit reporting when pixel-size calibration is unavailable:
+  pixel-domain measurements (`area_px2`, `puncta_density_per_px2`) remain
+  available while `*_um2` / `*_per_um2` metrics are now `NA` in
+  `pixel_fallback` mode rather than assuming `1 px = 1 um`. Added
+  `scale_mode`, `pixel_size_um`, and `MISSING_PIXEL_SIZE_CALIBRATION`
+  provenance.
+- Enforced production colocalization QC for channel registration and
+  dynamic range before Pearson/Manders interpretation; blocked rows now
+  report `NOT_EVALUABLE_LOW_DYNAMIC_RANGE` or
+  `NOT_EVALUABLE_REGISTRATION_SUSPECT` and emit `NA` metrics.
+- Fixed the cross-correlation registration helper to update only on positive
+  normalized correlation, preventing biologically anti-correlated but aligned
+  channels from being misclassified as shifted.
+- Added deterministic regressions for missing calibration, aligned/low
+  colocalization, channel misregistration, low dynamic range, and low pixel
+  count. These run locally and in CI on Ubuntu and Windows.
+- No DAB analytical behavior change; the full 11-table v2.2.2 compatibility
+  contract remains preserved.
+- Existing external-validation limitations and `PASS_WITH_WARNINGS` findings
+  remain explicitly disclosed.
+
 ## 2.3.1 — 2026-08-31
 
 - Canonical stable release following v2.3.0 release-identity correction.

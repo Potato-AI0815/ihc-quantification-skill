@@ -139,7 +139,7 @@ compute_channel_registration <- function(ref_mat, target_mat, max_shift = 15) {
 
   best_shift_x <- 0L
   best_shift_y <- 0L
-  best_cor <- stats::cor(as.vector(r_norm), as.vector(t_norm))
+  best_cor <- suppressWarnings(stats::cor(as.vector(r_norm), as.vector(t_norm)))
 
   # Search within [-max_shift, max_shift] grid
   for (dx in seq(-max_shift, max_shift, by = 2)) {
@@ -158,8 +158,15 @@ compute_channel_registration <- function(ref_mat, target_mat, max_shift = 15) {
       sub_r <- r_norm[sx_r[1:len_x], sy_r[1:len_y]]
       sub_t <- t_norm[sx_t[1:len_x], sy_t[1:len_y]]
 
-      val_cor <- stats::cor(as.vector(sub_r), as.vector(sub_t))
-      if (!is.na(val_cor) && val_cor > best_cor) {
+      val_cor <- suppressWarnings(stats::cor(as.vector(sub_r), as.vector(sub_t)))
+      # Translation registration is meaningful only for positive normalized
+      # cross-correlation.  Biologically anti-correlated channels (for example
+      # the mutually exclusive low-colocalization fixture) can otherwise
+      # produce a spurious border shift because their zero-shift correlation
+      # is negative and any less-negative border overlap wins the old
+      # comparison.  Positive-only update keeps such channels aligned at
+      # shift 0 instead of misclassifying them as registration failures.
+      if (is.finite(val_cor) && val_cor > 0 && val_cor > best_cor) {
         best_cor <- val_cor
         best_shift_x <- dx
         best_shift_y <- dy

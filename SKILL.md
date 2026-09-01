@@ -1,10 +1,10 @@
 ---
 name: ihc-if-quantification
-version: 2.3.1
+version: 2.3.2
 description: Reproducible, auditable quantification of brightfield DAB/hematoxylin IHC and multi-channel immunofluorescence (IF) images. Automatically routes between brightfield DAB-IHC (v2.2.2 backward-compatible) and multi-channel IF pipelines. Supports four measurement domains (global tissue, nucleus, cytoplasm, extracellular), single-cell scoring, H-DAB reconstruction, 8-panel IF QC overviews, colocalization (Pearson/Manders), puncta/foci detection, and publication-ready biological-unit aggregation figures.
 ---
 
-# IHC & Immunofluorescence (IF) Quantification Skill v2.3.1
+# IHC & Immunofluorescence (IF) Quantification Skill v2.3.2
 
 ## Purpose
 
@@ -99,14 +99,14 @@ Allowed `channel_role`: `nucleus`, `target`, `cytoplasm_reference`, `membrane_re
 results/
 └── immunofluorescence_run/
     ├── source_data/
-    │   ├── if_compartment_summary.csv          # 4-compartment MFI, area, integrated intensity
+    │   ├── if_compartment_summary.csv          # 4-compartment MFI, area_px2/area_um2, scale_mode, integrated intensity
     │   ├── if_biological_unit_summary.csv      # Biological-unit aggregated statistics
-    │   ├── if_cell_summary.csv.gz              # Single-cell measurements and N/C ratios
-    │   ├── if_channel_summary.csv              # Channel saturation, dynamic range, background QC
+    │   ├── if_cell_summary.csv.gz              # Single-cell measurements, pixel/physical areas, and N/C ratios
+    │   ├── if_channel_summary.csv              # Channel saturation, dynamic range, background QC, scale_mode
     │   ├── if_channel_metadata.csv             # Parsed channel/page/axis metadata
     │   ├── if_roi_exclusion_summary.csv        # Reviewed include/exclude mask audit
-    │   ├── if_colocalization_summary.csv       # Pearson r, Manders M1/M2 (if enabled)
-    │   ├── if_puncta_summary.csv               # Foci counts, density, intensity (if enabled)
+    │   ├── if_colocalization_summary.csv       # Pearson r, Manders M1/M2 only after pixel/dynamic-range/registration QC
+    │   ├── if_puncta_summary.csv               # Foci counts, density_per_px2/_um2, scale_mode, intensity (if enabled)
     │   ├── if_image_qc.csv                     # Image-level QC flags and cell counts
     │   └── if_manual_qc_template.csv           # Human auditor sign-off template
     ├── qc/

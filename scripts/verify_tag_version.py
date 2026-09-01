@@ -36,7 +36,7 @@ def main() -> int:
     version = read_version("VERSION", r"^\s*([^\s]+)\s*$")
 
     # R package tooling also carries a numeric Version field in DESCRIPTION;
-    # for the canonical stable line 2.3.1 it must equal VERSION exactly.
+    # for a canonical stable line such as 2.3.2 it must equal VERSION exactly.
     sources = {
         "DESCRIPTION Version": (read_version("DESCRIPTION", r"^Version:\s*([^\s]+)"), "DESCRIPTION"),
         "DESCRIPTION X-Release-Version": (read_version("DESCRIPTION", r"^X-Release-Version:\s*([^\s]+)"), "DESCRIPTION"),

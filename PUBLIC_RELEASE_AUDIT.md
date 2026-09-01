@@ -1,8 +1,8 @@
-# Public release audit — current v2.3.1 stable-release recovery state
+# Public release audit — current v2.3.2 pre-release contract state
 
 **Scope**: what the repository bundles and excludes, as enforced by
 `scripts/preflight_public_release.py` and `THIRD_PARTY_ASSETS.md`. The
-validation evidence originates from the immutable candidate `v2.3.0-rc3`; `v2.3.0` is a withdrawn historical release identity; current `main` targets the canonical stable version `v2.3.1` and makes no stable tag/release claim until exact-SHA CI and exact-tag CI pass.
+validation evidence originates from the immutable candidate `v2.3.0-rc3`; `v2.3.0` is withdrawn; `v2.3.1` is the current canonical stable release; current `main` targets the `v2.3.2` scientific-contract hotfix candidate and makes no `v2.3.2` tag/release claim until exact-SHA CI passes and release authorization is explicit.
 
 ## Included
 

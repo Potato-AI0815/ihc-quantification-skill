@@ -344,7 +344,7 @@ Tier-mean progression is strictly monotonic for both mean OD and P95 OD: **{'TRU
 
 ## 5. Conclusion & Release Gate Recommendation
 
-All 4 external benchmarks evaluate to **`PASS`** or **`PASS_WITH_WARNINGS`** under frozen parameter baselines, with every summary artifact numerically aligned to the underlying result CSVs by the consistency gate. The repository satisfies the criteria for the canonical stable release **`v2.3.1`**; the validation evidence itself originates from the immutable **`v2.3.0-rc3`** baseline.
+All 4 external benchmarks evaluate to **`PASS`** or **`PASS_WITH_WARNINGS`** under frozen parameter baselines, with every summary artifact numerically aligned to the underlying result CSVs by the consistency gate. The repository satisfies the criteria for the current release milestone **`{RELEASE_MILESTONE}`**; the validation evidence itself originates from the immutable **`v2.3.0-rc3`** baseline.
 """
 
 REPORT_OUT.write_text(report, encoding="utf-8")

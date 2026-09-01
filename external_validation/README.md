@@ -2,7 +2,7 @@
 
 This directory contains reproducible download/conversion scripts, fixed
 manifests, derived numerical results, compact audit figures where redistribution
-is permitted, and validation evidence that originates from the immutable `v2.3.0-rc3` decision gate. `external_validation/VALIDATION_METADATA.json` records `current_release_milestone` as `v2.3.1`.
+is permitted, and validation evidence that originates from the immutable `v2.3.0-rc3` decision gate. `external_validation/VALIDATION_METADATA.json` records `current_release_milestone` as `v2.3.2`.
 
 Large raw public datasets are downloaded to `.external_validation_cache/`,
 which is ignored by Git. No raw BBBC, HPA, or IDR microscopy archive is bundled

@@ -96,6 +96,14 @@ jobs:
           cat("PASS: required R packages are available\n")
           cat("Library paths:\n", paste(.libPaths(), collapse = "\n"), "\n")
 
+      - name: Verify IF physical-scale contract
+        shell: bash
+        run: Rscript tests/verify_if_physical_scale_contract.R
+
+      - name: Verify IF colocalization production QC contract
+        shell: bash
+        run: Rscript tests/verify_if_colocalization_qc_contract.R
+
       - name: Verify HPA checkpoint resume regression
         shell: bash
         run: Rscript tests/verify_hpa_checkpoint_resume.R

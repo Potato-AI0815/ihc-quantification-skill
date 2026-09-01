@@ -8,7 +8,7 @@
 # Usage:
 #   source(file.path(root, "scripts", "validation_report_metadata.R"))
 #   meta <- validation_report_metadata(root)
-#   meta$version   # e.g. "2.3.1"
+#   meta$version   # e.g. "2.3.2"
 #   meta$date      # e.g. "2026-08-29"
 
 validation_report_metadata <- function(root) {

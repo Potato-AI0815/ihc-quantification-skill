@@ -1,3 +1,4 @@
+# HISTORICAL SNAPSHOT - NOT CURRENT RELEASE EVIDENCE; see RELEASE_STATUS.md for current gates
 gate_id,gate_name,modality,evaluation_status,evaluator_script,key_metrics,notes
 G0,DAB_Baseline_Audit,brightfield_dab,PASS,tests/verify_synthetic_output.R,"100% table & QC schema integrity","Baseline v2.2.2 established from clean tag checkout"
 G1,IF_Input_and_IO,immunofluorescence,PASS_WITH_WARNINGS,scripts/verify_if_io_bitdepth_contract.R,"Standard TIFF/ImageJ parser; 8/16/32-bit and 12-bit-in-16-bit-container values passed","OME-XML metadata-aware axes and packed native-12-bit TIFF remain experimental"

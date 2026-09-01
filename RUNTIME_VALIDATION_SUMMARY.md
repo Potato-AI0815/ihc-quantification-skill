@@ -2,55 +2,54 @@
 
 ## Scope
 
-This file records where the quantitative core has actually been executed, and
-what a successful run does and does not demonstrate. It is updated as part of
-release-evidence normalization; the immutable validation candidate is
-`v2.3.0-rc3` (tag commit `b025b3805800dbf1f6d3850e881a40c8e6ebac71`), the
-`v2.3.0` tag is withdrawn because its commit still identified as `2.3.0-rc3`,
-and current `main` targets canonical stable `v2.3.1` pending exact-SHA CI.
+This file records where the quantitative core has actually been executed and
+what each run does and does not demonstrate. `v2.3.1` is the canonical stable
+release; `v2.3.2` is a pre-release scientific-contract hotfix candidate on
+`main`.
 
-## Immutable rc3 evidence
+## v2.3.1 stable release provenance
 
-- Exact-tag CI run [33225049913](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/33225049913)
-  and same-SHA main run [33225696218](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/33225696218):
-  static (incl. report-consistency and privacy preflight gates), synthetic
-  dual-modality smoke test, and IF I/O contract jobs pass on Ubuntu and Windows.
-- External real-data gates at rc3: BBBC013 `PASS`; BBBC007, BBBC016, and HPA
-  `PASS_WITH_WARNINGS` (see `EXTERNAL_VALIDATION_MATRIX.csv`).
+- Exact-SHA main CI: run [33504060489](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/33504060489) — `success`
+- Exact-tag CI: run [33505086731](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/33505086731) — `success`
+- tag-version-contract: `2.3.1 == 2.3.1`
+- GitHub Release: `prerelease = false`.
 
-## Current v2.3.1 stable-candidate validation
+## Immutable external-validation evidence
 
-- The frozen analysis core carries no analytical behavior change relative to
-  the rc3 tag (`git diff v2.3.0-rc3` over the frozen analysis scripts shows
-  only non-executable version-neutral header comments plus the exact
-  allow-listed release version constant); DAB backward
-  compatibility against the clean v2.2.2 baseline re-verifies at zero numeric
-  deviation.
-- Tracked release-evidence reports are regenerated deterministically from the
-  current checkout (version from `VERSION`, date from
-  `external_validation/VALIDATION_METADATA.json`), and CI fails if a tracked
-  report drifts from a fresh regeneration.
-- The current `main` is a **stable release candidate** for `v2.3.1`. No `v2.3.1`
-  tag or stable GitHub release is claimed until exact-SHA main CI and exact-tag
-  CI both pass.
+External validation evidence originates from `v2.3.0-rc3`
+(`b025b3805800dbf1f6d3850e881a40c8e6ebac71`):
+- BBBC013 `PASS`
+- BBBC007, BBBC016, and HPA `PASS_WITH_WARNINGS`
+No external dataset is re-run for the v2.3.2 patch because DAB analytics,
+IF segmentation, puncta detection, and external benchmark analytical inputs
+are unchanged; the frozen-core guard and the full regression suite are the
+preservation evidence.
 
-## Historical runtime baseline (pre-2.3.0 line)
+## v2.3.2 local runtime validation
 
-The quantitative core was exercised in a private Windows 11 environment using
-R 4.5.3, EBImage 4.52.0, and data.table 1.18.2.1. Two RGB fields completed
-without image-level errors, and the four-domain outputs, H-DAB reconstruction,
-masks, ROI evidence, and biological-unit aggregation were generated. Only
-aggregate software-validation facts are retained; original images, identifiers,
-local paths, and private-derived figures are not in the public repository.
+- Physical-scale contract regression: **PASS** (calibrated, missing, `0`,
+  negative, `Inf`, `NaN`)
+- Colocalization production QC regression: **PASS** (aligned, low, shifted,
+  low dynamic range, low pixel count)
+- Synthetic DAB + IF smoke test: **PASS**
+- HPA checkpoint/resume regression: **PASS**
+- DAB 11-table v2.2.2 compatibility: **PASS**; observed max numeric deviation
+  `0`; acceptance tolerance `<= 1e-6`
+- IF I/O contract and BBBC039 regression: **PASS**
+- Cross-platform CI: pending exact-SHA main run; no v2.3.2 tag exists.
 
 ## Confirmed safeguards (unchanged)
 
+- unknown pixel scale must not produce finite physical-unit metrics;
+- registration suspect must not produce interpretable colocalization metrics;
+- low dynamic range must not produce interpretable colocalization metrics;
+- empty target must not become 100% positive;
+- cells/pixels are not inferential biological n;
+- fluorescence metrics are not labelled OD/IOD;
+- DAB v2.2.2 compatibility remains intact;
 - literal condition labels are not biologically reinterpreted;
-- tumor/stroma/interface identity is not inferred from a single stain;
-- missing physical calibration remains an explicit QC warning;
-- cells, pixels, fields, and ROIs are not counted as independent biological replicates;
 - low-n paired inference is blocked;
-- manual review remains required for stain separation, thresholds, segmentation, background, and exclusions.
+- manual review remains required.
 
 Runtime success validates software execution, not universal validity across
 markers, tissues, scanners, magnifications, or staining batches.

@@ -25,6 +25,10 @@ Each processed IF image automatically generates a standardized 8-panel montage s
 | `CHANNEL_REGISTRATION_SUSPECT` | WARNING | Cross-channel registration shift $> 5\text{ px}$ | Verify optical alignment or enable shift correction |
 | `NO_SIGNAL` | CRITICAL | Max pixel intensity $= 0$ | Verify channel assignment in manifest |
 | `EMPTY_CHANNEL` | CRITICAL | All pixels zero or unreadable | Exclude image from statistical aggregation |
+| `MISSING_PIXEL_SIZE_CALIBRATION` | WARNING | `pixel_size_um` missing, `NA`, non-finite, or `<= 0` | Pixel-domain metrics remain available; all `*_um2` / `*_per_um2` metrics are `NA`; do not assume `1 px = 1 um` |
+| `NOT_EVALUABLE_LOW_PIXEL_COUNT` | BLOCKING (colocalization only) | Fewer than 30 valid colocalization pixels | Pearson/Manders reported as `NA` |
+| `NOT_EVALUABLE_LOW_DYNAMIC_RANGE` | BLOCKING (colocalization only) | Either channel dynamic range `< 0.05` | Pearson/Manders reported as `NA` |
+| `NOT_EVALUABLE_REGISTRATION_SUSPECT` | BLOCKING (colocalization only) | Cross-channel shift `> 5 px` or registration unavailable | Pearson/Manders reported as `NA`; do not auto-translate |
 
 `NO_SIGNAL`, `EMPTY_CHANNEL`, `NO_TISSUE_DETECTED`, and critical segmentation failures block publication-figure rendering and return a non-zero run status. The output directory is retained with the QC montage and source tables so that a reviewer can correct the manifest or image rather than receiving a fabricated positive mask.
 

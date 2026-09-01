@@ -254,6 +254,12 @@ for (idx in seq_along(image_ids)) {
   ch_roles_vec <- structure(img_rows$channel_role, names = img_rows$channel_name)
   composite_rgb <- create_composite_rgb(channels, ch_roles_vec)
 
+  # Physical-scale contract for the image.  Pixel-domain metrics are always
+  # produced; um-based metrics are produced only when a finite positive
+  # pixel_size_um is supplied.  A missing/invalid value is pixel_fallback and
+  # emits MISSING_PIXEL_SIZE_CALIBRATION, never an assumed 1 px = 1 um.
+  primary_scale <- resolve_if_scale_contract(target_rows$pixel_size_um[1L])
+
   # Process targets
   for (t_idx in seq_len(nrow(target_rows))) {
     t_row <- target_rows[t_idx]
@@ -270,6 +276,11 @@ for (idx in seq_along(image_ids)) {
     )
     t_corr_mat <- t_prep$corrected_mat
 
+    scale_contract <- resolve_if_scale_contract(t_row$pixel_size_um)
+    if (length(scale_contract$qc_warning)) {
+      img_qc_flags <- c(img_qc_flags, scale_contract$qc_warning)
+    }
+
     # Saturation & Channel QC
     ch_qc <- compute_channel_qc_metrics(
       raw_mat = t_raw_mat,
@@ -281,6 +292,8 @@ for (idx in seq_along(image_ids)) {
       channel_name = t_ch_name,
       marker = t_marker,
       channel_role = "target",
+      pixel_size_um = scale_contract$pixel_size_um,
+      scale_mode = scale_contract$scale_mode,
       background_method = t_prep$background_method,
       background_estimated = t_prep$background_value
     )]
@@ -307,8 +320,9 @@ for (idx in seq_along(image_ids)) {
       img_qc_flags <- c(img_qc_flags, "EMPTY_CHANNEL")
     }
 
-    # Four-compartment quantification
-    pix_size <- if (!is.na(t_row$pixel_size_um)) as.numeric(t_row$pixel_size_um) else 1.0
+    # Four-compartment quantification.  pixel_size_um is already resolved
+    # through resolve_if_scale_contract above, so physical metrics are NA in
+    # pixel_fallback mode and finite in physical_calibrated mode.
     comp_df <- quantify_if_compartments(
       channel_mat = t_corr_mat,
       seg_res = seg_res,
@@ -318,7 +332,8 @@ for (idx in seq_along(image_ids)) {
       biological_unit_id = t_row$biological_unit_id,
       condition = t_row$condition,
       threshold_res = th_res,
-      pixel_size_um = pix_size
+      pixel_size_um = scale_contract$pixel_size_um,
+      scale_mode = scale_contract$scale_mode
     )
     all_compartment_summaries[[length(all_compartment_summaries) + 1L]] <- comp_df
 
@@ -332,7 +347,8 @@ for (idx in seq_along(image_ids)) {
       biological_unit_id = t_row$biological_unit_id,
       condition = t_row$condition,
       threshold_val = th_res$threshold_value,
-      pixel_size_um = pix_size
+      pixel_size_um = scale_contract$pixel_size_um,
+      scale_mode = scale_contract$scale_mode
     )
     if (nrow(cell_df) > 0) {
       all_cell_summaries[[length(all_cell_summaries) + 1L]] <- cell_df
@@ -353,7 +369,8 @@ for (idx in seq_along(image_ids)) {
         sigma1 = cfg$puncta_sigma1,
         sigma2 = cfg$puncta_sigma2,
         threshold_sd_multiplier = cfg$puncta_threshold_sd,
-        pixel_size_um = pix_size
+        pixel_size_um = scale_contract$pixel_size_um,
+        scale_mode = scale_contract$scale_mode
       )
       all_puncta_summaries[[length(all_puncta_summaries) + 1L]] <- p_res$summary
     }
@@ -402,6 +419,8 @@ for (idx in seq_along(image_ids)) {
     biological_unit_id = img_rows$biological_unit_id[1L],
     condition = img_rows$condition[1L],
     n_cells = seg_res$n_cells,
+    pixel_size_um = primary_scale$pixel_size_um,
+    scale_mode = primary_scale$scale_mode,
     requested_cell_propagation_radius = seg_res$metrics$requested_cell_propagation_radius,
     max_cytoplasm_expansion_radius = seg_res$metrics$max_cytoplasm_expansion_radius,
     effective_cell_propagation_radius = seg_res$metrics$effective_cell_propagation_radius,

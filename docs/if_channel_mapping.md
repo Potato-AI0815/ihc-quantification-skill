@@ -14,7 +14,7 @@ Each row in the IF manifest declares a single channel for an image.
 | `channel_name` | String | Channel descriptor in image | `Alexa488_SPATS2` |
 | `channel_index` | Integer | 1-based channel slice index | `2` |
 | `channel_role` | String | Functional role of the channel | `target` |
-| `pixel_size_um` | Numeric | Physical pixel calibration in microns | `0.325` |
+| `pixel_size_um` | Numeric (optional) | Physical pixel calibration in microns; missing/`NA`/non-finite/`<=0` switches IF quantification to `pixel_fallback` mode | `0.325` |
 | `file_path` | String | Relative or absolute path to TIFF | `images/sample1.tif` |
 
 ### Allowed `channel_role` Values
@@ -28,3 +28,8 @@ Each row in the IF manifest declares a single channel for an image.
 
 > [!CAUTION]
 > The pipeline strictly forbids guessing channel roles based on display colors or arbitrary assumptions. All channel semantics must be explicitly mapped in the manifest.
+
+## Physical-scale contract
+- `pixel_size_um` finite positive -> `scale_mode = physical_calibrated`; `*_um2` and `*_per_um2` metrics are emitted.
+- `pixel_size_um` missing / `NA` / empty / non-finite / `<= 0` -> `scale_mode = pixel_fallback`; `MISSING_PIXEL_SIZE_CALIBRATION` is emitted; all physical-unit metrics are `NA`.
+- The pipeline never assumes `1 px = 1 um`. Pixel-domain metrics (`area_px2`, `puncta_density_per_px2`, intensity metrics) remain available.
