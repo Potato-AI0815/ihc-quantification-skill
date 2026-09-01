@@ -48,7 +48,11 @@ FROZEN_FILES = (
 # differ from the base tag: (file, base_line, current_line). Keep this
 # minimal; entries require release-review justification. Comment-only and
 # blank-line changes never appear here because comments are stripped.
-ALLOWED_LINE_CHANGES: tuple[tuple[str, str, str], ...] = ()
+ALLOWED_LINE_CHANGES: tuple[tuple[str, str, str], ...] = (
+    # Canonical v2.3.1 release identity recovery. The release version
+    # constant is metadata, not an analytical parameter or threshold.
+    ("scripts/ihc_helpers.R", 'version = "2.3.0-rc3",', 'version = "2.3.1",'),
+)
 
 
 def fail(message: str) -> None:

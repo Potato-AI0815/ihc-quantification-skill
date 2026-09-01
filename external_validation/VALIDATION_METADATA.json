@@ -1,4 +1,5 @@
 {
   "validation_date": "2026-08-29",
-  "release_milestone": "v2.3.0-rc3"
+  "validation_evidence_origin": "v2.3.0-rc3",
+  "current_release_milestone": "v2.3.1"
 }

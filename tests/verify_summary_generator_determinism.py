@@ -54,8 +54,8 @@ def main() -> int:
             print(f"PASS\tsummary-determinism\t{path.name} byte-identical across rebuilds ({first[path][:12]}...)")
 
     source = (ROOT / "external_validation" / "VALIDATION_METADATA.json").read_text(encoding="utf-8")
-    if '"validation_date"' not in source or '"release_milestone"' not in source:
-        failures.append("VALIDATION_METADATA.json is missing validation_date/release_milestone")
+    if '"validation_date"' not in source or '"current_release_milestone"' not in source:
+        failures.append("VALIDATION_METADATA.json is missing validation_date/current_release_milestone")
     else:
         print("PASS\tsummary-determinism\tvalidation date sourced from VALIDATION_METADATA.json")
 

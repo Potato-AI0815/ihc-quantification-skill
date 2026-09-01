@@ -2,7 +2,7 @@
 
 > A QC-first, reproducible workflow for quantitative DAB-IHC and multi-channel immunofluorescence image analysis.
 
-[![Release](https://img.shields.io/badge/release-v2.3.0--rc3-blue.svg)](https://github.com/Potato-AI0815/ihc-quantification-skill/releases/tag/v2.3.0-rc3)
+[![Release](https://img.shields.io/badge/release-v2.3.1-blue.svg)](https://github.com/Potato-AI0815/ihc-quantification-skill/releases/tag/v2.3.1)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![CI](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/Potato-AI0815/ihc-quantification-skill/actions)
 

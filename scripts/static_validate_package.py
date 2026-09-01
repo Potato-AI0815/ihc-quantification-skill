@@ -55,6 +55,7 @@ REQUIRED = [
     "scripts/preflight_public_release.py",
     "scripts/verify_package_manifest.py",
     "scripts/verify_report_consistency.py",
+    "scripts/verify_tag_version.py",
     "scripts/bootstrap_renv.R",
     "external_validation/scripts/build_summary_reports.py",
     "external_validation/scripts/hpa_checkpoint_helpers.R",

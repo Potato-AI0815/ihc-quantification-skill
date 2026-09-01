@@ -35,6 +35,7 @@ release.
 ## Release metadata
 
 - [ ] `VERSION`, `SKILL.md`, `DESCRIPTION` (`X-Release-Version`), `CITATION.cff`, and `CHANGELOG.md` agree.
+- [ ] `python scripts/verify_tag_version.py` passes; on a tag event, the tag name must equal `VERSION` exactly.
 - [ ] `RELEASE_STATUS.md` reflects the exact runtime evidence for this build, including the completed GitHub CI run.
 - [ ] The release archive SHA256 is published as a sidecar asset with the GitHub prerelease.
 - [ ] Immutable-tag discipline: a released tag is never moved, deleted, or recreated; release-body fixes (if any) are metadata-only (`gh release edit`), never archive replacements or tag rewrites.

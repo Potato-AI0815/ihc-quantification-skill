@@ -30,7 +30,7 @@ METADATA = ROOT / "external_validation" / "VALIDATION_METADATA.json"
 with METADATA.open(encoding="utf-8") as _meta_handle:
     _METADATA = json.load(_meta_handle)
 VALIDATION_DATE = _METADATA["validation_date"]
-RELEASE_MILESTONE = _METADATA["release_milestone"]
+RELEASE_MILESTONE = _METADATA["current_release_milestone"]
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -233,7 +233,7 @@ def matrix_table_rows() -> list[str]:
 
 report = f"""# External Real-Data Validation Comprehensive Report
 
-**Release Milestone**: `{RELEASE_MILESTONE}` — external real-data validation evidence  
+**Release Milestone**: `{RELEASE_MILESTONE}` — external real-data validation evidence
 **Validation Date**: {VALIDATION_DATE}  
 **Scope**: Level A (Manual Ground-Truth) and Level B (Biological Concordance) External Datasets  
 **Provenance**: This report and `EXTERNAL_VALIDATION_MATRIX.csv` are generated from the result CSVs by `external_validation/scripts/build_summary_reports.py`; `scripts/verify_report_consistency.py` fails CI if either artifact drifts from the measured data. Manual edits to the two summary artifacts are not permitted.
@@ -344,7 +344,7 @@ Tier-mean progression is strictly monotonic for both mean OD and P95 OD: **{'TRU
 
 ## 5. Conclusion & Release Gate Recommendation
 
-All 4 external benchmarks evaluate to **`PASS`** or **`PASS_WITH_WARNINGS`** under frozen parameter baselines, with every summary artifact numerically aligned to the underlying result CSVs by the consistency gate. The repository satisfies the criteria for promotion to **`v2.3.0-rc3`**.
+All 4 external benchmarks evaluate to **`PASS`** or **`PASS_WITH_WARNINGS`** under frozen parameter baselines, with every summary artifact numerically aligned to the underlying result CSVs by the consistency gate. The repository satisfies the criteria for the canonical stable release **`v2.3.1`**; the validation evidence itself originates from the immutable **`v2.3.0-rc3`** baseline.
 """
 
 REPORT_OUT.write_text(report, encoding="utf-8")

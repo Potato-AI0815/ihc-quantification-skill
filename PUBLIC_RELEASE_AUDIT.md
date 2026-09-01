@@ -1,9 +1,8 @@
-# Public release audit — current post-rc3 stable-prep state
+# Public release audit — current v2.3.1 stable-release recovery state
 
 **Scope**: what the repository bundles and excludes, as enforced by
 `scripts/preflight_public_release.py` and `THIRD_PARTY_ASSETS.md`. The
-immutable released candidate is `v2.3.0-rc3`; current `main` is a
-stable-preparation state with no stable claim.
+validation evidence originates from the immutable candidate `v2.3.0-rc3`; `v2.3.0` is a withdrawn historical release identity; current `main` targets the canonical stable version `v2.3.1` and makes no stable tag/release claim until exact-SHA CI and exact-tag CI pass.
 
 ## Included
 

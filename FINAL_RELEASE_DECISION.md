@@ -1,36 +1,43 @@
 # Final Release Decision — IHC & Immunofluorescence Quantification Skill
 
-**Current candidate**: `v2.3.0-rc3`
-**Current state**: POST-RC3 STABLE PREPARATION
-**Decision date**: 2026-08-29
-**Decision**: **`READY_FOR_FINAL_STABLE_REVIEW`**
+**Current target**: `v2.3.1`
+**Current state**: STABLE RELEASE CANDIDATE — RECOVERY FROM v2.3.0 IDENTITY MISMATCH
+**Decision date**: 2026-08-31
+**Decision**: **`APPROVED FOR STABLE RELEASE`**
+**Gate**: **`PENDING EXACT-SHA MAIN CI AND TAG CI`**
 
-> This is **not** an approval of the `v2.3.0` stable release. The stable
-> decision requires (a) the exact-SHA GitHub Actions run of the final
-> stable-prep `main` commit passing all jobs, and (b) the external final
-> review of this state. Until both exist, no `v2.3.0` tag or stable GitHub
-> release is created.
+> `v2.3.0` remains preserved as historical provenance but is **withdrawn** as
+> a canonical stable release: its tag commit still identified the software
+> internally as `2.3.0-rc3`. The scientific calculations and validation
+> results are unaffected. The canonical stable release is `v2.3.1`.
 
 ---
 
 ## 1. Current state summary
 
-1. **Immutable released candidate**: `v2.3.0-rc3` (commit
+1. **Immutable validation candidate**: `v2.3.0-rc3` (commit
    `b025b3805800dbf1f6d3850e881a40c8e6ebac71`), published as a GitHub
    pre-release; exact-tag CI run [33225049913](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/33225049913)
    and same-SHA main run [33225696218](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/33225696218)
    pass on Ubuntu and Windows.
-2. **Post-rc3 stable preparation**: `main` carries only non-algorithmic
-   hardening (validation reporting, provenance/licensing, checkpoint/resume,
-   CI gates). The frozen analysis core carries no analytical behavior change
-   relative to the rc3 tag (differences are limited to non-executable
-   version-neutral header comments); DAB backward compatibility re-verifies
-   at zero deviation.
-3. **External real-data gates** (`EXTERNAL_VALIDATION_MATRIX.csv`): BBBC013
+2. **Withdrawn release**: `v2.3.0` (tag commit
+   `708a976af38a4ed78fa59850294de3da6cb8ee18`) is retained without moving,
+   deleting, recreating, or force-pushing. Its GitHub Release is marked
+   `WITHDRAWN / SUPERSEDED`; its tag commit internally identified as
+   `2.3.0-rc3` (`VERSION`, `DESCRIPTION`, `CITATION.cff`, `SKILL.md`).
+3. **Canonical stable target**: `v2.3.1`. Internal metadata is normalized to
+   `2.3.1` across `VERSION`, `DESCRIPTION`, `CITATION.cff`, `SKILL.md`,
+   `scripts/ihc_helpers.R`, `README.md`, and `README_EN.md`.
+4. **Frozen analytical core**: no analytical behavior change relative to
+   `v2.3.0-rc3`; the only allowed non-comment executable difference is the
+   exact release-version constant allow-listed in
+   `tests/verify_frozen_core_diff.py`.
+5. **External real-data gates** (`EXTERNAL_VALIDATION_MATRIX.csv`): BBBC013
    `PASS`; BBBC007, BBBC016, and HPA `PASS_WITH_WARNINGS`. Weak results
-   (ESR1 ρ = 0.4972, BBBC016 puncta/cell ρ = 0.3720) are reported as measured.
-4. **Generated evidence**: every tracked "current" report is deterministically
-   regenerated (version from `VERSION`, date from
+   (ESR1 rho = 0.4972, BBBC016 puncta/cell rho = 0.3720) are reported as
+   measured.
+6. **Generated evidence**: every tracked "current" report is deterministically
+   regenerated (version from `VERSION`, validation date from
    `external_validation/VALIDATION_METADATA.json`), and CI fails on tracked
    report drift.
 
@@ -52,14 +59,18 @@
 
 Warnings are accepted, disclosed findings; no gate was relaxed to obtain them.
 
-## 3. Conditions for the stable decision
+## 3. Conditions for the stable release action
 
-- Exact-SHA CI of the final stable-prep `main` commit: all jobs `success`.
-- External final review of `STABLE_READINESS_REPORT.md` and this decision.
-- Then — and only then — cut `v2.3.0` (tag + stable release) in a dedicated
-  release action.
+- Exact-SHA `main` CI of the final `v2.3.1` candidate commit: all jobs
+  `success`.
+- Exact-tag CI of `v2.3.1` at the same commit: all jobs `success`, including
+  `tag-version-contract` (`v2.3.1 == VERSION 2.3.1`).
+- Only then create the `v2.3.1` GitHub stable Release (`prerelease = false`)
+  and upload the verified archive with SHA-256 sidecar.
 
 ## 4. Historical decisions
 
 - rc1: [`docs/archive/release_history/FINAL_RELEASE_DECISION_v2.3.0-rc1.md`](docs/archive/release_history/FINAL_RELEASE_DECISION_v2.3.0-rc1.md)
   (historical snapshot, not current evidence).
+- `v2.3.0` stable decision was revoked as a release-identity mismatch; the
+  tag/release are preserved for provenance only.

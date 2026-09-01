@@ -19,6 +19,8 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.x"
+      - name: Verify tag/internal release version contract
+        run: python scripts/verify_tag_version.py
       - name: Frozen-core non-comment diff guard
         run: python tests/verify_frozen_core_diff.py
       - name: Static package validation

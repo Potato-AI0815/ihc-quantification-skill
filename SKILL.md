@@ -1,10 +1,10 @@
 ---
 name: ihc-if-quantification
-version: 2.3.0-rc3
+version: 2.3.1
 description: Reproducible, auditable quantification of brightfield DAB/hematoxylin IHC and multi-channel immunofluorescence (IF) images. Automatically routes between brightfield DAB-IHC (v2.2.2 backward-compatible) and multi-channel IF pipelines. Supports four measurement domains (global tissue, nucleus, cytoplasm, extracellular), single-cell scoring, H-DAB reconstruction, 8-panel IF QC overviews, colocalization (Pearson/Manders), puncta/foci detection, and publication-ready biological-unit aggregation figures.
 ---
 
-# IHC & Immunofluorescence (IF) Quantification Skill v2.3.0-rc3
+# IHC & Immunofluorescence (IF) Quantification Skill v2.3.1
 
 ## Purpose
 

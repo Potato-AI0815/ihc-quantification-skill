@@ -1,8 +1,8 @@
 # Public Release Preflight Audit
 
 **Package**: `ihc-quantification-skill`
-**Version**: `2.3.0-rc3`
-**Date**: 2026-08-29
+**Version**: `2.3.1`
+**Date**: 2026-08-31
 **Result**: **PASS**
 
 ---

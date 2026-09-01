@@ -1,13 +1,21 @@
 # Release Status — IHC & Immunofluorescence Quantification Skill
 
-**Current Version**: `2.3.0-rc3`
-**Current public release candidate**: `v2.3.0-rc3` — **RELEASED AS GITHUB PRE-RELEASE** ([release page](https://github.com/Potato-AI0815/ihc-quantification-skill/releases/tag/v2.3.0-rc3), published 2026-08-29)
+**Current Version**: `2.3.1`
+**Release state**: `STABLE RELEASE CANDIDATE — exact-SHA CI required before tagging`
+**Canonical stable target**: `v2.3.1` (no `v2.3.1` tag/release claim is made in this state)
+**Withdrawn historical release**: `v2.3.0` — tag commit `708a976af38a4ed78fa59850294de3da6cb8ee18`; GitHub Release marked `WITHDRAWN / SUPERSEDED`; tag preserved for provenance and not moved, deleted, or recreated.
+**Immutable validation candidate**: `v2.3.0-rc3` — **RELEASED AS GITHUB PRE-RELEASE** ([release page](https://github.com/Potato-AI0815/ihc-quantification-skill/releases/tag/v2.3.0-rc3), published 2026-08-29)
 **Release tag commit**: `b025b3805800dbf1f6d3850e881a40c8e6ebac71` (immutable; verified via `git rev-list -n 1 v2.3.0-rc3` and the GitHub API)
 **Exact tag CI**: Actions run [33225049913](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/33225049913) — `success` at `b025b380`
 **Exact rc3 main CI**: Actions run [33225696218](https://github.com/Potato-AI0815/ihc-quantification-skill/actions/runs/33225696218) — `success` at `b025b380`
-**Post-RC3 stable-preparation status**: metadata/validation-infrastructure cleanup complete; awaiting final stable review. Post-rc3 `main` is a moving branch state and must not be conflated with the immutable rc3 tag SHA; no stable tag or stable release is created until that review passes.
+**v2.3.1 release gate**: exact-SHA `main` CI and exact-tag CI must both pass before a `v2.3.1` stable tag and GitHub Release are created. The tag-version contract (`scripts/verify_tag_version.py`) is enforced in CI.
 
 > [!IMPORTANT]
+> **Release identity correction**: `v2.3.0` is preserved as historical
+> provenance but is **not** the canonical stable release. Its tagged commit
+> still identified the package internally as `2.3.0-rc3`. Use `v2.3.1` or
+> later. Scientific calculations and validation results are unaffected.
+>
 > **Known limitation**: OME-TIFF metadata workflows are not yet formally validated. Standard multi-channel TIFF, ImageJ hyperstacks, and 8/16/32-bit (plus 12-bit in 16-bit container) data are fully verified and supported.
 
 ---
@@ -30,7 +38,17 @@
 
 ---
 
-## 2. Evidence Index
+## 2. Release Identity Correction
+
+- **Historical release**: `v2.3.0` tag points at commit `708a976af38a4ed78fa59850294de3da6cb8ee18`.
+- **Mismatch**: that commit's `VERSION`, `DESCRIPTION`, `CITATION.cff`, and `SKILL.md` all identify `2.3.0-rc3` while the tag/Release claimed `v2.3.0 stable`.
+- **Action**: the `v2.3.0` GitHub Release body was edited to state `WITHDRAWN / SUPERSEDED` and `DO NOT USE AS CANONICAL STABLE RELEASE`; it is marked prerelease. The tag itself is unchanged.
+- **Canonical replacement**: `v2.3.1`.
+- **Scientific scope**: analytical behavior, DAB 11-table compatibility, and external-validation metrics are unchanged.
+
+---
+
+## 3. Evidence Index
 
 ### Current evidence (active claims)
 

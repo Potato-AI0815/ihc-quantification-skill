@@ -468,8 +468,8 @@ else:
     else:
         if re.search(r"\*\*Release Candidate\*\*:\s*`v2\.3\.0-rc1`", decision_text):
             fail("generic-file guard: FINAL_RELEASE_DECISION.md still presents rc1 as the current candidate")
-        if "READY_FOR_FINAL_STABLE_REVIEW" not in decision_text:
-            fail("generic-file guard: FINAL_RELEASE_DECISION.md must state READY_FOR_FINAL_STABLE_REVIEW")
+        if "APPROVED FOR STABLE RELEASE" not in decision_text:
+            fail("generic-file guard: FINAL_RELEASE_DECISION.md must state APPROVED FOR STABLE RELEASE")
     static_txt = file_text(ROOT / "STATIC_VALIDATION.txt")
     if static_txt is None:
         fail("generic-file guard: STATIC_VALIDATION.txt is missing")

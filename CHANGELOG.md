@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.3.1 — 2026-08-31
+
+- Canonical stable release following v2.3.0 release-identity correction.
+- No analytical behavior change relative to v2.3.0-rc3.
+- Internal version metadata normalized to 2.3.1.
+- Added tag-to-package-version CI contract.
+- Full 11-table DAB compatibility retained.
+- External validation metrics unchanged.
+- v2.3.0 remains preserved but is withdrawn because its tagged commit
+  internally identified as 2.3.0-rc3.
+
 ## 2.3.0-rc3 post-release stable-preparation cleanup — 2026-08-29
 
 Non-algorithmic hardening of the validation infrastructure; the frozen analysis core carries no analytical behavior change relative to the `v2.3.0-rc3` tag (differences are limited to non-executable version-neutral header comments).

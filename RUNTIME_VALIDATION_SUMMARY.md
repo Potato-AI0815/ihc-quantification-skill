@@ -4,9 +4,10 @@
 
 This file records where the quantitative core has actually been executed, and
 what a successful run does and does not demonstrate. It is updated as part of
-release-evidence normalization; the immutable released candidate is
-`v2.3.0-rc3` (tag commit `b025b3805800dbf1f6d3850e881a40c8e6ebac71`), and the
-current post-rc3 `main` is a stable-preparation state validated by exact-SHA CI.
+release-evidence normalization; the immutable validation candidate is
+`v2.3.0-rc3` (tag commit `b025b3805800dbf1f6d3850e881a40c8e6ebac71`), the
+`v2.3.0` tag is withdrawn because its commit still identified as `2.3.0-rc3`,
+and current `main` targets canonical stable `v2.3.1` pending exact-SHA CI.
 
 ## Immutable rc3 evidence
 
@@ -17,19 +18,21 @@ current post-rc3 `main` is a stable-preparation state validated by exact-SHA CI.
 - External real-data gates at rc3: BBBC013 `PASS`; BBBC007, BBBC016, and HPA
   `PASS_WITH_WARNINGS` (see `EXTERNAL_VALIDATION_MATRIX.csv`).
 
-## Current post-rc3 stable-prep validation
+## Current v2.3.1 stable-candidate validation
 
 - The frozen analysis core carries no analytical behavior change relative to
   the rc3 tag (`git diff v2.3.0-rc3` over the frozen analysis scripts shows
-  only non-executable version-neutral header comments); DAB backward
+  only non-executable version-neutral header comments plus the exact
+  allow-listed release version constant); DAB backward
   compatibility against the clean v2.2.2 baseline re-verifies at zero numeric
   deviation.
 - Tracked release-evidence reports are regenerated deterministically from the
   current checkout (version from `VERSION`, date from
   `external_validation/VALIDATION_METADATA.json`), and CI fails if a tracked
   report drifts from a fresh regeneration.
-- The current `main` remains a stable-preparation state: it is **not** stable
-  and carries no stable claim until the final release gate.
+- The current `main` is a **stable release candidate** for `v2.3.1`. No `v2.3.1`
+  tag or stable GitHub release is claimed until exact-SHA main CI and exact-tag
+  CI both pass.
 
 ## Historical runtime baseline (pre-2.3.0 line)
 
