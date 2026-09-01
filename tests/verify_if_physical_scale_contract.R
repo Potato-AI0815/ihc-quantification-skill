@@ -11,6 +11,8 @@ options(stringsAsFactors = FALSE)
 script_arg <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
 if (length(script_arg) != 1L) stop("Run this tool with Rscript.")
 root <- dirname(dirname(normalizePath(path.expand(sub("^--file=", "", script_arg[[1L]])), mustWork = TRUE)))
+local_lib <- file.path(root, "Rlib")
+if (dir.exists(local_lib)) .libPaths(c(normalizePath(local_lib), .libPaths()))
 
 suppressPackageStartupMessages({
   library(data.table)
